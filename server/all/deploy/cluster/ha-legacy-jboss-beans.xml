@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!-- High Availability for legacy services (e.g. EJB2)                     -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- ==================================================================== -->
+   <!-- HA Detached Invoker using JRMP for transport                         -->
+   <!-- ==================================================================== -->
+
+   <bean name="JRMPInvokerHA"
+         class="org.jboss.invocation.jrmp.server.JRMPInvokerHA">
+          
+      <depends>jboss:service=TransactionManager</depends>
+      <depends>HAPartition</depends>
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=invoker,type=jrmpha", exposedInterface=org.jboss.invocation.jrmp.server.JRMPInvokerMBean.class, registerDirectly=true)</annotation>
+      
+      <property name="serverAddress">
+          <!-- Get the interface from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding" 
+            parameter="jboss:service=invoker,type=jrmpha"/>
+      </property>
+      <property name="RMIObjectPort">
+          <!-- Get the port from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getIntBinding" 
+            parameter="jboss:service=invoker,type=jrmpha"/>
+      </property>
+      
+      <!--
+      <property name="RMIClientSocketFactory">custom</property>
+      <property name="RMIServerSocketFactory">custom</property>
+      -->
+   </bean>
+
+   <!-- ==================================================================== -->
+   <!-- HA Detached Invoker using pooled socket-based transport              -->
+   <!-- ==================================================================== -->
+
+   <bean name="PooledInvokerHA"
+         class="org.jboss.invocation.pooled.server.PooledInvokerHA">
+          
+      <depends>jboss:service=TransactionManager</depends>
+      <depends>HAPartition</depends>
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=invoker,type=pooledha", exposedInterface=org.jboss.invocation.pooled.server.PooledInvokerMBean.class, registerDirectly=true)</annotation>
+      
+      <property name="numAcceptThreads">1</property>
+      <property name="maxPoolSize">300</property>
+      <property name="clientMaxPoolSize">300</property>
+      <property name="socketTimeout">60000</property>
+      <property name="serverBindAddress">
+         <!-- Get the interface from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding" 
+            parameter="jboss:service=invoker,type=pooledha"/>
+      </property>
+      <property name="serverBindPort">
+         <!-- Get the port from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getIntBinding" 
+            parameter="jboss:service=invoker,type=pooledha"/>
+      </property>
+      <property name="clientConnectAddress">${jboss.bind.address}</property>
+      <property name="clientConnectPort">0</property>
+      <property name="enableTcpNoDelay">false</property>
+      <property name="transactionManagerService">jboss:service=TransactionManager</property>
+
+   </bean>
+
+   <!-- ==================================================================== -->
+   <!-- HA Detached Invoker using JBoss Remoting for transport               -->
+   <!-- ==================================================================== -->
+
+   <bean name="UnifiedInvokerHA"
+         class="org.jboss.invocation.unified.server.UnifiedInvokerHA">
+      
+      <depends>jboss:service=TransactionManager</depends>       
+      <depends>HAPartition</depends>
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=invoker,type=unifiedha", exposedInterface=org.jboss.invocation.unified.server.UnifiedInvokerMBean.class, registerDirectly=true)</annotation>
+      
+      <property name="connector"><inject bean="jboss.remoting:service=Connector,transport=socket"/></property>
+   </bean>
+   
+   <!-- ==================================================================== -->
+   <!-- HA Session State Service for EJB2 SFSBs                              -->
+   <!-- ==================================================================== -->
+
+   <bean name="HASessionStateService"
+         class="org.jboss.ha.hasessionstate.server.HASessionStateService">
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=HASessionState", exposedInterface=org.jboss.ha.hasessionstate.server.HASessionStateServiceMBean.class, registerDirectly=true)</annotation>
+      
+      <!--  Partition used for group RPCs -->
+      <property name="HAPartition"><inject bean="HAPartition"/></property>
+      
+      <!-- JNDI name under which the service is bound -->
+      <property name="jndiName">/HASessionState/Default</property>
+      <!-- Max delay before cleaning unreclaimed state.
+           Defaults to 30*60*1000 => 30 minutes -->
+      <property name="beanCleaningDelay">0</property>
+      
+   </bean>
+
+   <!-- ==================================================================== -->
+   <!-- Distributed EJB2 entity cache invalidation                           -->
+   <!-- ==================================================================== -->
+
+   <bean name="JGCacheInvalidationBridge"
+        class="org.jboss.cache.invalidation.bridges.JGCacheInvalidationBridge">
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.cache:service=InvalidationBridge,type=JavaGroups", exposedInterface=org.jboss.cache.invalidation.bridges.JGCacheInvalidationBridgeMBean.class, registerDirectly=true)</annotation>
+      
+      <!--  Partition used for group RPCs -->
+      <property name="HAPartition"><inject bean="HAPartition"/></property>
+      <property name="invalidationManager"><inject bean="jboss.cache:service=InvalidationManager"/></property>
+      <property name="bridgeName">DefaultJGBridge</property>
+      
+   </bean>
+
+</deployment>

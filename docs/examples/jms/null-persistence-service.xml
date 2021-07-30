@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     Null persistence config.
+     
+     Use this if you don't actually want to persist anything
+     
+     $Id$
+ -->
+
+<server>
+
+   <!-- Persistence Manager MBean configuration
+       ======================================== -->
+
+   <mbean code="org.jboss.messaging.core.jmx.NullPersistenceManagerService"
+      name="jboss.messaging:service=PersistenceManager"
+      xmbean-dd="xmdesc/NullPersistenceManager-xmbean.xml"/>
+     
+   <!-- Messaging Post Office MBean configuration
+        ========================================= -->
+
+   <mbean code="org.jboss.messaging.core.jmx.MessagingPostOfficeService"
+      name="jboss.messaging:service=PostOffice"
+      xmbean-dd="xmdesc/MessagingPostOffice-xmbean.xml">
+
+      <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+      
+      <!-- The name of the post office -->
+
+      <attribute name="PostOfficeName">JMS post office</attribute>
+     
+      <!-- This post office is clustered. If you don't want a clustered post office then set to false -->
+
+      <attribute name="Clustered">false</attribute>
+
+      <!-- All the remaining properties only have to be specified if the post office is clustered.
+           You can safely comment them out if your post office is non clustered -->
+
+      <!-- The JGroups group name that the post office will use -->
+
+      <attribute name="GroupName">${jboss.messaging.groupname:MessagingPostOffice}</attribute>
+
+      <!-- Max time to wait for state to arrive when the post office joins the cluster -->
+
+      <attribute name="StateTimeout">30000</attribute>
+
+      <!-- Max time to wait for a synchronous call to node members using the MessageDispatcher -->
+
+      <attribute name="CastTimeout">30000</attribute>
+      
+      <!-- Set this to true if you want failover of connections to occur when a node is shut down -->
+      
+      <attribute name="FailoverOnNodeLeave">false</attribute>
+      
+      <depends optional-attribute-name="ChannelFactoryName">jboss.jgroups:service=ChannelFactory</depends>
+      <attribute name="ControlChannelName">jbm-control</attribute>
+      <attribute name="DataChannelName">jbm-data</attribute>
+      <attribute name="ChannelPartitionName">${jboss.partition.name:DefaultPartition}-JMS</attribute>
+   </mbean>
+
+   <!-- Messaging JMS User Manager MBean config
+        ======================================= -->
+
+   <mbean code="org.jboss.jms.server.plugin.JDBCJMSUserManagerService"
+      name="jboss.messaging:service=JMSUserManager"
+      xmbean-dd="xmdesc/JMSUserManager-xmbean.xml"/>
+
+</server>

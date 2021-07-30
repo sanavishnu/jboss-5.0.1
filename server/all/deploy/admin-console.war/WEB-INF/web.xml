@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<web-app version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <!-- RichFaces -->
+
+    <!-- From Seam docs: If RichFaces is used in your project, Seam will install
+         the RichFaces Ajax filter for you, making sure to install it before all
+         other built-in filters. You don't need to install the RichFaces Ajax
+         filter in web.xml yourself. -->
+
+    <context-param>
+        <param-name>org.richfaces.SKIN</param-name>
+        <param-value>jboss-console</param-value>
+    </context-param>
+
+    <!-- Seam (lazy loaded)-->
+    <context-param>
+        <param-name>org.jboss.on.embedded.LazyStartupListener</param-name>
+        <param-value>org.jboss.seam.servlet.SeamListener</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.jboss.on.embedded.LazyStartupListener</listener-class>
+    </listener>
+
+    <!-- From Seam docs: The Seam master filter must be the first filter specified
+         in web.xml. This ensures it is run first. -->
+    <filter>
+        <filter-name>Seam Filter</filter-name>
+        <!-- Lazily start up the Seam Filter -->
+        <filter-class>org.jboss.on.embedded.LazyStartupFilter</filter-class>
+        <init-param>
+            <param-name>org.jboss.on.embedded.LazyStartupFilter</param-name>
+            <param-value>org.jboss.seam.servlet.SeamFilter</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>Seam Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- JSF -->
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.seam</url-pattern>
+    </servlet-mapping>
+
+    <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>/WEB-INF/navigation.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>client</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param>
+
+    <!-- JSF RI -->
+    <listener>
+        <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+    </listener>
+
+    <!-- Facelets -->
+
+    <!-- load our Facelets taglibs (value must be semicolon-delimited) -->
+    <context-param>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>/WEB-INF/on.component.taglib.xml</param-value>
+    </context-param>
+
+    <!-- enable special debug output for development -->
+    <context-param>
+        <param-name>facelets.DEVELOPMENT</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!--<security-constraint>-->
+    <!--<web-resource-collection>-->
+    <!--<web-resource-name>HtmlAdaptor</web-resource-name>-->
+    <!--<description> An example security config that only allows users with-->
+    <!--the role JBossAdmin to access the embedded console web-->
+    <!--application </description>-->
+    <!--<url-pattern>/*</url-pattern>-->
+    <!--<http-method>GET</http-method>-->
+    <!--<http-method>POST</http-method>-->
+    <!--</web-resource-collection>-->
+    <!--<auth-constraint>-->
+    <!--<role-name>JBossAdmin</role-name>-->
+    <!--</auth-constraint>-->
+    <!--</security-constraint>-->
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>JBoss embedded Console</realm-name>
+    </login-config>
+    <security-role>
+        <role-name>JBossAdmin</role-name>
+    </security-role>
+
+</web-app>

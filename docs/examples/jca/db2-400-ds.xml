@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: db2-400-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+<!-- You need the jt400.jar that is delivered with IBM iSeries Access or the
+     OpenSource Project jtopen.
+
+     [systemname] Hostame of the iSeries
+     [schema]     Default schema is needed so jboss could use metadat to test if the tables exists
+
+     See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource
+  -->
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>DB2-400</jndi-name>
+    <connection-url>jdbc:as400://[systemname]/[schema];extended dynamic=true;package=jbpkg;package cache=true;package library=jboss;errors=full</connection-url>
+    <driver-class>com.ibm.as400.access.AS400JDBCDriver</driver-class>
+    <user-name>[username]</user-name>
+    <password>[password]</password>
+    <min-pool-size>0</min-pool-size>
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>DB2/400</type-mapping>
+      </metadata>
+
+  </local-tx-datasource>
+
+</datasources>

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:onc="http://jboss.org/on/component">
+<f:view>
+    <ui:composition template="/layout.xhtml">
+
+        <ui:define name="pagetitle">#{resource.resource.name}</ui:define>
+
+        <!-- This rendered might be an issue if actionType is neither UPDATE or CREATE, which shouldn't happen-->
+        <ui:define name="tabmenu">
+            <h:panelGroup rendered="#{resourceConfigurationUIBean.actionType eq 'UPDATE'}">
+                <ui:include src="/include/tabMenu.xhtml">
+                    <ui:param name="activeTab" value="configuration"/>
+                </ui:include>
+            </h:panelGroup>
+        </ui:define>
+
+        <ui:define name="body">
+            <div class="tabmenubox">
+                <h:panelGroup styleClass="messagingBox"
+                              rendered="#{resourceAction.hasGlobalMessages || resourceAction.hasOnlyNonInfoNonGlobalMessages}">
+                    <h:outputText styleClass="messagingFail"
+                                  value="#{messages['resource.status.update.validationErrors']}"
+                                  rendered="#{resourceAction.hasOnlyNonInfoNonGlobalMessages}"/>
+                    <h:messages globalOnly="true"
+                                errorClass="messagingFail"
+                                infoClass="messagingSuccess"
+                                warnClass="messagingFail"
+                                fatalClass="messagingFail"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{resourceConfigurationUIBean.actionType eq 'UPDATE'}">
+                    <h1>#{messages['resource.edit.title']}</h1>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{resourceConfigurationUIBean.actionType eq 'CREATE'}">
+                    <h1>#{messages['resource.add.pageTitlePrefix']} #{resource.resource.resourceType.name}</h1>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{resourceConfigurationUIBean.configuration eq null}">
+                    #{messages['resource.configuration.null']}
+                </h:panelGroup>
+                <h:form id="resourceConfigurationForm" onsubmit="prepareInputsForSubmission(this)"
+                        rendered="#{resourceConfigurationUIBean.configuration ne null}">
+
+                    <onc:config configurationDefinition="#{resourceConfigurationUIBean.configurationDefinition}"
+                                configuration="#{resourceConfigurationUIBean.configuration}"
+                                fullyEditable="#{resourceConfigurationUIBean.actionType eq 'CREATE'}"
+                                nullConfigurationDefinitionMessage="#{resourceConfigurationUIBean.nullConfigurationDefinitionMessage}"
+                                nullConfigurationMessage="#{resourceConfigurationUIBean.nullConfigurationMessage}"
+                                nullConfigurationStyle="infoBlock"/>
+
+                    <h:panelGrid columns="2" styleClass="buttons-table" columnClasses="button-cell">
+                        <h:commandButton id="saveButton"
+                                         type="submit"
+                                         action="#{resourceConfigurationUIBean.saveConfiguration()}"
+                                         value="Save"
+                                         alt="Click to Save Changes"
+                                         styleClass="buttonmed"/>
+                        <s:button id="cancelButton"
+                                  value="#{messages['resource.add.button.cancel']}"
+                                  view="/secure/summary.xhtml"
+                                  styleClass="buttonmed"
+                                  propagation="end"/>
+                    </h:panelGrid>
+
+                </h:form>
+
+            </div>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</html>

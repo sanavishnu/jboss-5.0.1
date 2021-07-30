@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   The base deployers
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader><inject bean="deployers-classloader:0.0.0"/></classloader>
+
+   <classloader name="deployers-classloader" xmlns="urn:jboss:classloader:1.0" export-all="NON_EMPTY" import-all="true">
+      <root>${jboss.lib.url}jboss-deployers-core-spi.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-core.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-client-spi.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-client.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-structure-spi.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-spi.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-impl.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-vfs-spi.jar</root>
+      <root>${jboss.lib.url}jboss-deployers-vfs.jar</root>
+     <!-- Bean annotation handling -->
+      <root>${jboss.lib.url}jboss-dependency.jar</root>
+      <root>${jboss.lib.url}jboss-kernel.jar</root>
+
+      <!-- JAXB impl here, api is in endorsed -->
+      <root>${jboss.lib.url}jaxb-impl.jar</root>
+      <!-- STAX2 impl here, api is in endorsed -->
+      <root>${jboss.lib.url}wstx.jar</root>
+   </classloader>
+
+  <!-- use legacy ordering -->
+   <bean name="topContextComparator">
+     <constructor factoryClass="org.jboss.system.deployers.LegacyDeploymentContextComparator" factoryMethod="getInstance"/>
+   </bean>
+
+   <!-- MetaValueFactory -->
+   <bean name="MetaValueFactory" >
+      <constructor factoryClass="org.jboss.metatype.api.values.MetaValueFactory" factoryMethod="getInstance"/>      
+   </bean>
+   <!-- The ManagedObjectFactory -->
+   <bean name="ManagedObjectFactory">
+      <constructor factoryClass="org.jboss.managed.api.factory.ManagedObjectFactory" factoryMethod="getInstance"/>
+      <!-- Accept any implementor of InstanceClassFactory -->
+      <incallback method="addInstanceClassFactory"/>
+      <uncallback method="removeInstanceClassFactory"/>
+     <!-- Accept any ManagedObjectDefinition -->
+      <incallback method="addManagedObjectDefinition"/>
+      <uncallback method="removeManagedObjectDefinition"/>
+      <property name="metaValueFactory"><inject bean="MetaValueFactory"/></property>
+   </bean>
+   <!-- The ManagedObjectCreator implementation -->
+   <bean name="ManagedObjectCreator" class="org.jboss.deployers.spi.deployer.helpers.DefaultManagedObjectCreator">
+      <property name="mof"><inject bean="ManagedObjectFactory"/></property>
+   </bean>
+
+   <!-- The MainDeployer -->
+   <bean name="MainDeployer" class="org.jboss.deployers.plugins.main.MainDeployerImpl">
+      <property name="structuralDeployers"><inject bean="StructuralDeployers"/></property>
+      <property name="deployers"><inject bean="Deployers"/></property>
+      <property name="mgtDeploymentCreator"><inject bean="ManagedDeploymentCreator"/></property>
+      <property name="comparator"><inject bean="topContextComparator"/></property>
+   </bean>
+
+   <!-- The ManagedDeploymentCreator implementation that supports mapping
+      attachment types to ManagedDeployment#getTypes
+   -->
+   <bean name="ManagedDeploymentCreator" class="org.jboss.deployers.plugins.managed.TypedManagedDeploymentCreator" />
+
+   <!-- ModificationType structure processor -->
+   <bean name="ModificationTypeStructureProcessor" class="org.jboss.deployers.vfs.plugins.structure.modify.ModificationTypeStructureProcessor">
+     <incallback method="addMatcher"/>
+     <uncallback method="removeMatcher"/>
+   </bean>
+
+   <!-- The holder for deployers that determine structure -->
+   <bean name="StructuralDeployers" class="org.jboss.deployers.vfs.plugins.structure.VFSStructuralDeployersImpl">
+      <property name="structureBuilder">
+         <!-- The consolidator of the structure information -->
+         <bean name="StructureBuilder" class="org.jboss.deployers.vfs.plugins.structure.VFSStructureBuilder">
+           <property name="structureProcessor"><inject bean="ModificationTypeStructureProcessor"/></property>
+         </bean>
+      </property>
+      <!-- Accept any implementor of structure deployer -->
+      <incallback method="addDeployer"/>
+      <uncallback method="removeDeployer"/>
+   </bean>
+
+   <!-- The holder for deployers that do real deployment -->
+   <bean name="Deployers" class="org.jboss.deployers.plugins.deployers.DeployersImpl">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.deployment:service=DeployersImpl", exposedInterface=org.jboss.deployers.plugins.deployers.DeployersImplMBean.class, registerDirectly=true)</annotation>
+      <constructor><parameter><inject bean="jboss.kernel:service=KernelController"/></parameter></constructor>
+      <!-- Accept any implementor of deployer -->
+      <incallback method="addDeployer"/>
+      <uncallback method="removeDeployer"/>
+      <property name="mgtObjectCreator"><inject bean="ManagedObjectCreator"/></property>
+   </bean>
+
+   <!-- A declared structure descriptor deployer -->
+   <bean name="DeclaredStructure" class="org.jboss.deployers.vfs.plugins.structure.explicit.DeclaredStructure"/>
+
+    <!-- JAR Structure -->
+    <bean name="JARStructure" class="org.jboss.deployers.vfs.plugins.structure.jar.JARStructure">
+       <!-- Unless specified the default list of suffixes is .zip, .ear, .jar, ,.rar, .war, .sar, .har, .aop -->
+       <constructor>
+          <parameter>
+             <set elementClass="java.lang.String">
+                <value>.zip</value>
+                <value>.ear</value>
+                <value>.jar</value>
+                <value>.rar</value>
+                <value>.war</value>
+                <value>.sar</value>
+                <value>.har</value>
+                <value>.aop</value>
+                <value>.deployer</value>
+                <value>.beans</value>
+             </set>
+          </parameter>
+       </constructor>
+       <property name="candidateStructureVisitorFactory">
+          <!-- Any file that is not an ordinary directory is a candidate -->
+          <bean name="JARStructureCandidates" class="org.jboss.deployers.vfs.spi.structure.helpers.DefaultCandidateStructureVisitorFactory">
+             <!-- A filter to exclude some obvious non-subdeployments -->
+             <property name="filter">
+                <bean name="JARFilter" class="org.jboss.virtual.plugins.vfs.helpers.SuffixesExcludeFilter">
+                   <constructor><parameter>
+                      <list elementClass="java.lang.String">
+                         <!-- Exclude class files as subdeployments -->
+                         <value>.class</value>
+                      </list>
+                   </parameter></constructor>
+                </bean>
+             </property>
+          </bean>
+       </property>
+    </bean>
+
+    <!-- File Structure -->
+    <bean name="FileStructure" class="org.jboss.deployers.vfs.plugins.structure.file.FileStructure">
+       <!-- Unless specified the default list of suffixes is -service.xml, -beans.xml, -ds.xml, -aop.xml -->
+       <constructor>
+          <parameter>
+             <set elementClass="java.lang.String">
+                <value>-service.xml</value>
+                <value>-beans.xml</value>
+                <value>-ds.xml</value>
+                <value>-aop.xml</value>
+             </set>
+          </parameter>
+       </constructor>
+    </bean>
+
+    <!-- Old AOP deployment 
+    <bean name="AspectAppParsingDeployer" class="org.jboss.aop.asintegration.jboss5.AspectAppParsingDeployer"/>
+    <bean name="AspectDeployer" class="org.jboss.aop.asintegration.jboss5.AspectDeployer">
+       <property name="aspectManager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean>
+   -->
+
+   <bean name="AOPXMLMetaDataParserDeployer" class="org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer">
+      <constructor>
+         <parameter>org.jboss.aop.microcontainer.beans.metadata.AOPDeployment</parameter>
+      </constructor>
+      <property name="suffix">-aop.xml</property>
+   </bean>
+   <bean name="AOPAnnotationMetaDataParserDeployer" class="org.jboss.aop.asintegration.jboss5.AOPAnnotationMetaDataParserDeployer">
+      <constructor>
+         <parameter><inject bean="AOPXMLMetaDataParserDeployer" property="relativeOrder"/></parameter>
+      </constructor>
+   </bean>
+   <bean name="AOPClassLoaderDeployer" class="org.jboss.aop.asintegration.jboss5.AOPClassLoaderDeployer">
+      <property name="aspectManager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean>
+   <bean name="AOPDeploymentAopMetaDataDeployer" class="org.jboss.aop.asintegration.jboss5.AOPDeploymentAopMetaDataDeployer">
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="aspectManager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean>
+   <bean name="BeansDeploymentAopMetaDataDeployer" class="org.jboss.aop.asintegration.jboss5.BeansDeploymentAopMetaDataDeployer">
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="aspectManager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean>
+
+   <!-- POJO Deployment -->
+  
+   <bean name="CoreBeanAnnotationAdapterFactory">
+      <constructor factoryClass="org.jboss.kernel.plugins.annotations.BeanAnnotationAdapterFactory" factoryMethod="getInstance"/>
+   </bean>
+
+   <bean name="CoreBeanAnnotationAdapter">
+      <constructor factoryMethod="getBeanAnnotationAdapter">
+        <factory bean="CoreBeanAnnotationAdapterFactory"/>
+      </constructor>
+      <incallback method="addAnnotationPlugin"/>
+      <uncallback method="removeAnnotationPlugin"/>
+   </bean>
+
+   <bean name="BeanMetaDataICF" class="org.jboss.deployers.plugins.managed.BeanMetaDataICF">
+      <property name="controller"><inject bean="jboss.kernel:service=KernelController"/></property>
+      <property name="delegateICF"><inject bean="ManagedObjectFactory" property="defaultInstanceFactory"/></property>
+   </bean>
+   <bean name="KernelDeploymentManagedObjectCreator" class="org.jboss.deployers.plugins.managed.KernelDeploymentManagedObjectCreator">
+      <constructor><parameter><inject bean="ManagedObjectFactory"/></parameter></constructor>
+   </bean>
+   <bean name="BeanDeployer" class="org.jboss.deployers.vfs.deployer.kernel.BeanDeployer">
+      <property name="suffix">jboss-beans.xml</property>
+   </bean>
+   <bean name="KernelDeploymentDeployer" class="org.jboss.deployers.vfs.deployer.kernel.KernelDeploymentDeployer">
+      <install bean="ManagedDeploymentCreator" method="addAttachmentType">
+         <parameter>
+            <value>org.jboss.kernel.spi.deployment.KernelDeployment</value>
+         </parameter>
+         <parameter>
+            <value>beans</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeAttachmentType">
+         <parameter>
+            <value>org.jboss.kernel.spi.deployment.KernelDeployment</value>
+         </parameter>        
+      </uninstall>
+      <property name="mgtObjectCreator"><inject bean="KernelDeploymentManagedObjectCreator"/></property>
+   </bean>
+   <bean name="BeanMetaDataDeployer" class="org.jboss.deployers.vfs.deployer.kernel.BeanMetaDataDeployer">
+      <constructor><parameter class="org.jboss.kernel.Kernel"><inject bean="jboss.kernel:service=Kernel"/></parameter></constructor>
+   </bean>
+
+   <!-- JMX Deployment -->
+   <bean name="ServiceMetaDataICF" class="org.jboss.system.deployers.managed.ServiceMetaDataICF">
+      <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+      <property name="controller"><inject bean="JMXKernel" property="serviceController"/></property>
+   </bean>
+   <bean name="SARDeployer" class="org.jboss.system.deployers.SARDeployer"/>
+   <bean name="ServiceClassLoaderDeployer" class="org.jboss.system.deployers.ServiceClassLoaderDeployer"/>
+   <bean name="ServiceDeploymentDeployer" class="org.jboss.system.deployers.ServiceDeploymentDeployer"/>
+   <bean name="ServiceDeployer" class="org.jboss.system.deployers.ServiceDeployer">
+       <constructor><parameter><inject bean="JMXKernel" property="serviceController"/></parameter></constructor>
+   </bean>
+
+   <bean name="ClassLoadingMetaDataParser" class="org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer">
+      <constructor>
+         <parameter>org.jboss.classloading.spi.metadata.ClassLoadingMetaData</parameter>
+      </constructor>
+      <property name="name">jboss-classloading.xml</property>
+      <property name="buildManagedObject">true</property>
+   </bean>
+   <bean name="ClassLoadingDefaultDeployer" class="org.jboss.deployers.plugins.classloading.ClassLoadingDefaultDeployer">
+      <property name="defaultMetaData">
+         <classloading xmlns="urn:jboss:classloading:1.0" export-all="NON_EMPTY" import-all="true"/>
+      </property>
+   </bean>
+   <bean name="InMemoryClassesDeployer" class="org.jboss.deployers.vfs.plugins.classloader.InMemoryClassesDeployer"/>
+   <bean name="ClassLoaderClassPathDeployer" class="org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderClassPathDeployer"/>
+   <bean name="ClassLoaderDescribeDeployer" class="org.jboss.deployers.vfs.plugins.classloader.VFSClassLoaderDescribeDeployer">
+      <property name="classLoading"><inject bean="ClassLoading"/></property>
+   </bean>
+   <bean name="ClassLoaderDeployer" class="org.jboss.deployers.plugins.classloading.AbstractLevelClassLoaderSystemDeployer">
+      <property name="classLoading"><inject bean="ClassLoading"/></property>
+      <property name="system"><inject bean="ClassLoaderSystem"/></property>
+   </bean>
+   
+</deployment>

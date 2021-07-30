@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jboss-web PUBLIC
+        "-//JBoss//DTD Web Application 2.3V2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-web_4_0.dtd">
+
+<jboss-web>
+    <context-root>juddi</context-root>
+    <resource-ref>
+        <res-ref-name>jdbc/juddiDB</res-ref-name>
+        <jndi-name>java:/DefaultDS</jndi-name>
+    </resource-ref> 
+</jboss-web>

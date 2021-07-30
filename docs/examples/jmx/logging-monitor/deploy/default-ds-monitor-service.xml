@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE server PUBLIC
+    "-//JBoss//DTD MBean Service 4.0//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-service_4_0.dtd">
+
+<!-- $Id: default-ds-monitor-service.xml 75351 2008-07-03 15:51:14Z dimitris@jboss.org $ -->
+
+<!--============================================================================
+ | DefaultDS LoggingMonitor Service Configuration
+ |
+ | An example configuration of the LoggingMonitor service to monitor the JBoss
+ | default datasource.
+ |===========================================================================-->
+<server>
+
+   <mbean code="org.jboss.services.loggingmonitor.LoggingMonitor"
+          name="jboss.monitor:type=LoggingMonitor,name=DefaultDSMonitor">
+
+      <!--
+       | The name of the file to which monitoring information will be logged.
+       -->
+      <attribute name="Filename">${jboss.server.log.dir}/default-ds.log</attribute>
+
+      <!--
+       | Whether or not this monitor's log file should have information appended
+       | to it, if it already exists.  This attribute is *not* required, and the
+       | default value is true.
+       -->
+      <attribute name="AppendToFile">false</attribute>
+
+      <!--
+       | Controls the org.apache.log4j.PatternLayout for logging entries.
+       | The default pattern is "%d %-5p [%c] %m%n".
+      <attribute name="PatternLayout">%d %-5p [%c] %m%n</attribute>
+       -->
+       
+      <!--
+       | The rollover period for this monitor's log file.  Valid values are
+       | MONTH, WEEK, DAY, HALFDAY, HOUR, MINUTE (case insensitive).  This
+       | attributes is *not* required, and the default value is DAY.
+       -->
+      <attribute name="RolloverPeriod">DAY</attribute>
+
+      <!--
+       | The period to delay in between monitoring snapshots (in milliseconds).
+       -->
+      <attribute name="MonitorPeriod">5000</attribute>
+      
+      <!--
+       | The list of objects (MBeans) and their corresponding attributes to be
+       | monitored.
+       |
+       | This parameter is specified as a XML fragment as follows:
+       |
+       | <attribute name="MonitoredObjects">
+       |    <configuration>
+       |       <monitoredmbean name="[object name]"
+       |                       logger="[logger name]">
+       |          <attribute>[an attribute name]</attribute>
+       |          <attribute>[an attribute name]</attribute>
+       |          ...
+       |       </monitoredmbean>
+       |    </configuration>
+       | </attribute>
+       -->
+       <attribute name="MonitoredObjects">
+          <configuration>
+             <monitoredmbean name="jboss.jca:name=DefaultDS,service=ManagedConnectionPool"
+                             logger="jca.defaultds">
+                <attribute>InUseConnectionCount</attribute>
+                <attribute>AvailableConnectionCount</attribute>
+                <attribute>ConnectionCreatedCount</attribute>
+                <attribute>ConnectionDestroyedCount</attribute>
+                <attribute>MaxConnectionsInUseCount</attribute>
+             </monitoredmbean>
+          </configuration>
+       </attribute>
+
+      <depends>jboss.jca:name=DefaultDS,service=ManagedConnectionPool</depends>
+   </mbean>
+   
+</server>

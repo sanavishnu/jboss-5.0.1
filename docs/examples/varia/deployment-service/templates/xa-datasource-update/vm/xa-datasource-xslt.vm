@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+## This Velocity template is used to generate an XSLT used to update the
+## properties of an existing local transaction data source
+## author:  Peter.Johnson2@unisys.com
+## version: $Revision: 41613 $
+-->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
+
+    <!-- Transform the desired local-tx-datasource data -->
+    <xsl:template match="/datasources/xa-datasource[jndi-name='${jndi-name}']">
+
+    <xa-datasource>
+
+      <!-- The empty xsl:text blocks provide proper spacing and newlines for the comment -->
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Where to bind the datasource, under the "java:/" prefix</xsl:comment><xsl:text>
+      </xsl:text>
+      <jndi-name>${jndi-name}</jndi-name>
+#if($helper.isDefined(${use-java-context}))
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Setting this to false will bind the DataSource into global jndi</xsl:comment><xsl:text>
+      </xsl:text>
+      <use-java-context>${use-java-context}</use-java-context>
+#end   
+#if(${track-connection-by-tx})
+      <xsl:text>
+
+      </xsl:text>
+      <xsl:comment>All work on one tx will go through one connection</xsl:comment><xsl:text>
+      </xsl:text>
+      <track-connection-by-tx/>
+#end
+      <xsl:text>
+
+      </xsl:text>
+      <xsl:comment>The fully qualifed name of the javax.sql.XADataSource implementation class</xsl:comment><xsl:text>
+      </xsl:text>
+      <xa-datasource-class>${xa-datasource-class}</xa-datasource-class>
+#if(${xa-datasource-properties})
+      <xsl:text>
+
+      </xsl:text>
+      <xsl:comment>Pass arbitrary connection properties (string name/value pairs) to the XADataSource</xsl:comment>
+#foreach($key in ${xa-datasource-properties.keySet()})
+      <xsl:text>
+      </xsl:text>
+      <xa-datasource-property name="$key">${xa-datasource-properties.get($key)}</xa-datasource-property>
+#end
+#end
+#if($helper.isDefined(${is-same-RM-override-value}))
+      <xsl:text>
+
+      </xsl:text>
+      <xsl:comment>Force javax.transaction.xa.XAResource.isSameRM(XAResource) to return true or false</xsl:comment><xsl:text>
+      </xsl:text>
+      <isSameRM-override-value>${is-same-RM-override-value}</isSameRM-override-value>
+#end      
+#if(${transaction-isolation})    
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>The java.sql.Connection transaction isolation level to use</xsl:comment><xsl:text>
+      </xsl:text>
+      <transaction-isolation>${transaction-isolation}</transaction-isolation>
+#end    
+#if(${user-name})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Specifies the default username used when creating a new connection</xsl:comment><xsl:text>
+      </xsl:text>
+      <user-name>${user-name}</user-name>
+#end
+#if(${password})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Specifies the default password used when creating a new connection</xsl:comment><xsl:text>
+      </xsl:text>
+      <password>${password}</password>
+#end
+#if(${security-config})
+#if(${security-config.equalsIgnoreCase("APPLICATION-MANAGED-SECURITY")})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>App supplied parameters (such as from getConnection(user, pw))</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>are used to distinguish connections in the pool</xsl:comment><xsl:text>
+      </xsl:text>
+      <application-managed-security/>
+#elseif(${security-config.equalsIgnoreCase("SECURITY-DOMAIN")})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Indicates that the Subject (from the security domain)</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>is used to distinguish connections in the pool</xsl:comment><xsl:text>
+      </xsl:text>
+      <security-domain>${security-domain}</security-domain>
+#elseif(${security-config.equalsIgnoreCase("SECURITY-DOMAIN-AND-APPLICATION")})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Indicates that either app suplied parameters or the</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>Subject are used to distinguish connections in the pool</xsl:comment><xsl:text>
+      </xsl:text>
+      <security-domain-and-application>${security-domain}</security-domain-and-application>
+#end
+#end
+#if(${min-pool-size})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>The minimum number of connections a pool should hold</xsl:comment><xsl:text>
+      </xsl:text>
+      <min-pool-size>${min-pool-size}</min-pool-size>
+#end
+#if(${max-pool-size})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>The maximum number of connections for a pool</xsl:comment><xsl:text>
+      </xsl:text>
+      <max-pool-size>${max-pool-size}</max-pool-size>
+#end
+#if(${blocking-timeout-millis})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>The maximum time in milliseconds to block while waiting for a connection</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>before throwing an exception. Note that this blocks only while waiting</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>for a permit for a connection, and will never throw an exception if</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>creating a new connection takes an inordinately long time</xsl:comment><xsl:text>
+      </xsl:text>
+      <blocking-timeout-millis>${blocking-timeout-millis}</blocking-timeout-millis>
+#end
+#if(${idle-timeout-minutes})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>The maximum time in minutes a connection may be idle before being closed</xsl:comment><xsl:text>
+      </xsl:text>
+      <idle-timeout-minutes>${idle-timeout-minutes}</idle-timeout-minutes>
+#end
+#if(${no-tx-separate-pools})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>use separete pools for connection retrieved in a transaction</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>and those retrieved outside a transaction</xsl:comment><xsl:text>
+      </xsl:text>
+      <no-tx-separate-pools/>
+#end
+#if(${new-connection-sql})
+<xsl:text>
+
+      </xsl:text>
+          <xsl:comment>SQL statement to execute whenever a connection is added to the connection pool</xsl:comment><xsl:text>
+      </xsl:text>
+      <new-connection-sql>${new-connection-sql}</new-connection-sql>
+#end
+#if(${check-valid-connection-sql})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>SQL statement to check validity of a pool connection</xsl:comment><xsl:text>
+      </xsl:text>
+      <check-valid-connection-sql>${check-valid-connection-sql}</check-valid-connection-sql>
+#end
+#if(${valid-connection-checker-class-name})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>An org.jboss.resource.adapter.jdbc.ValidConnectionChecker</xsl:comment><xsl:text>
+      </xsl:text>
+      <valid-connection-checker-class-name>${valid-connection-checker-class-name}</valid-connection-checker-class-name>
+#end
+#if(${exception-sorter-class-name})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>An org.jboss.resource.adapter.jdbc.ExceptionSorter</xsl:comment><xsl:text>
+      </xsl:text>
+      <exception-sorter-class-name>${exception-sorter-class-name}</exception-sorter-class-name>
+#end
+#if(${track-statements})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Whether to check for unclosed statements when a connection is</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>returned to the pool, and result sets are closed when a statement</xsl:comment>
+      <xsl:text>
+      </xsl:text>
+          <xsl:comment>is closed/return to the prepared statement cache</xsl:comment><xsl:text>
+      </xsl:text>
+      <track-statements>${track-statements.toLowerCase()}</track-statements>
+#end
+#if(${prepared-statement-cache-size})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>The number of prepared statements per connection in an LRU cache</xsl:comment><xsl:text>
+      </xsl:text>
+      <prepared-statement-cache-size>${prepared-statement-cache-size}</prepared-statement-cache-size>
+#end
+#if(${dependencies})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>ObjectNames of services the connection manager depends on</xsl:comment>
+#foreach($dependency in ${dependencies})
+      <xsl:text>
+      </xsl:text>
+      <depends>$dependency</depends>
+#end
+#end
+#if(${type-mapping})
+      <xsl:text>
+
+      </xsl:text>
+          <xsl:comment>Datasource/connection factory type-mapping</xsl:comment><xsl:text>
+      </xsl:text>
+      <metadata><xsl:text>
+         </xsl:text><type-mapping>${type-mapping}</type-mapping><xsl:text>
+      </xsl:text></metadata>
+#end
+   <xsl:text>
+
+   </xsl:text>
+	</xa-datasource>
+
+    </xsl:template>
+
+    <!-- Copy all other data -->
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+          <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>

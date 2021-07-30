@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: user-roles_1_0.xsd 36257 2005-09-22 23:41:22Z starksm $ -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   elementFormDefault="qualified"
+   targetNamespace="urn:jboss:user-roles:1.0"
+   xmlns:jbxb="http://www.jboss.org/xml/ns/jbxb"
+   xmlns:ur="urn:jboss:user-roles:1.0">
+
+   <xsd:element name="users">
+      <xsd:annotation>
+         <xsd:documentation>
+            This is the jbossxb annotated schema for the embedded users content
+            for the org.jboss.security.auth.spi.XMLLoginModule
+         </xsd:documentation>
+         <xsd:appinfo>
+            <jbxb:class impl="org.jboss.security.auth.spi.Users"/>
+         </xsd:appinfo>
+      </xsd:annotation>
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" ref="ur:user"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="user">
+      <xsd:annotation>
+         <xsd:appinfo>
+            <jbxb:class impl="org.jboss.security.auth.spi.Users$User"/>
+            <jbxb:addMethod name="addUser" valueType="child"/>
+         </xsd:appinfo>
+      </xsd:annotation>
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="unbounded" ref="ur:role"/>
+         </xsd:sequence>
+         <xsd:attribute name="name" use="required" type="xsd:NCName"/>
+         <xsd:attribute name="password" use="required" type="xsd:NCName"/>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="role">
+      <xsd:annotation>
+         <xsd:appinfo>
+            <jbxb:mapEntry/>
+            <jbxb:putMethod name="addRole"
+               keyType="java.lang.String" valueType="java.lang.String" />
+         </xsd:appinfo>
+      </xsd:annotation>
+
+      <xsd:complexType>
+         <xsd:attribute name="group" use="optional" type="xsd:NCName" default="Roles">
+            <xsd:annotation>
+               <xsd:appinfo>
+                  <jbxb:mapEntryValue/>
+               </xsd:appinfo>
+            </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="name" use="required" type="xsd:NCName">
+            <xsd:annotation>
+               <xsd:appinfo>
+                  <jbxb:mapEntryKey/>
+               </xsd:appinfo>
+            </xsd:annotation>
+         </xsd:attribute> 
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

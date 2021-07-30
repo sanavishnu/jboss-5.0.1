@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Messaging beans
+    $Id: messaging-jboss-beans.xml 88672 2009-05-11 20:49:47Z anil.saldhana@jboss.com $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- messaging application-policy definition -->
+   <application-policy xmlns="urn:jboss:security-beans:1.0" name="messaging">
+      <authentication>
+         <login-module code="org.jboss.security.auth.spi.DatabaseServerLoginModule" flag="required">
+            <module-option name="unauthenticatedIdentity">guest</module-option>
+            <module-option name="dsJndiName">java:/DefaultDS</module-option>
+            <module-option name="principalsQuery">SELECT PASSWD FROM JBM_USER WHERE USER_ID=?</module-option>
+            <module-option name="rolesQuery">SELECT ROLE_ID, 'Roles' FROM JBM_ROLE WHERE USER_ID=?</module-option>
+         </login-module>
+      </authentication>
+   </application-policy>
+
+   <bean name="SecurityStore" class="org.jboss.jms.server.jbosssx.JBossASSecurityMetadataStore">
+      <!-- default security configuration -->
+      <property name="defaultSecurityConfig">
+         <![CDATA[
+            <security>
+               <role name="guest" read="true" write="true" create="true"/>
+            </security>
+         ]]>
+      </property>
+      <property name="suckerPassword">CHANGE ME!!</property>
+      <property name="securityDomain">messaging</property>
+      <property name="securityManagement"><inject bean="JNDIBasedSecurityManagement"/></property>
+      <!-- @JMX annotation to export the management view of this bean -->
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.messaging:service=SecurityStore",exposedInterface=org.jboss.jms.server.jbosssx.JBossASSecurityMetadataStoreMBean.class)</annotation>
+      <!-- Password Annotation to inject the password from the common password utility
+       <annotation>@org.jboss.security.integration.password.Password(securityDomain="messaging",methodName="setSuckerPassword")</annotation>
+       -->
+   </bean>
+
+   <bean name="MessagingDeploymentTemplateInfoFactory"
+      class="org.jboss.managed.plugins.factory.DeploymentTemplateInfoFactory"/>
+
+   <bean name="QueueTemplate" class="org.jboss.profileservice.management.templates.JmsDestinationTemplate">
+      <property name="info"><inject bean="QueueTemplateInfo"/></property>
+   </bean>
+   <bean name="QueueTemplateInfo"
+      class="org.jboss.profileservice.management.templates.JmsDestinationTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.profileservice.management.templates.JmsDestinationTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.jms.server.destination.QueueServiceMO</parameter>
+         <parameter class="java.lang.String">QueueTemplate</parameter>
+         <parameter class="java.lang.String">A template for JMS queue *-service.xml deployments</parameter>
+      </constructor>
+      <property name="destinationType">QueueTemplate</property>
+   </bean>
+
+   <bean name="TopicTemplate" class="org.jboss.profileservice.management.templates.JmsDestinationTemplate">
+      <property name="info"><inject bean="TopicTemplateInfo"/></property>
+   </bean>
+   <bean name="TopicTemplateInfo"
+      class="org.jboss.profileservice.management.templates.JmsDestinationTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.profileservice.management.templates.JmsDestinationTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.jms.server.destination.TopicServiceMO</parameter>
+         <parameter class="java.lang.String">TopicTemplate</parameter>
+         <parameter class="java.lang.String">A template for JMS topic *-service.xml deployments</parameter>
+      </constructor>
+      <property name="destinationType">TopicTemplate</property>
+   </bean>
+
+</deployment>

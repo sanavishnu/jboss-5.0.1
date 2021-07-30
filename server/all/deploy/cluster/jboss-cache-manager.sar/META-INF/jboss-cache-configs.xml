@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry:cache-configs xmlns="urn:jboss:jbosscache-core:config:3.0" 
+                        xmlns:registry="urn:jboss:jbosscache-core:cache-repo:3.0">
+
+    <!-- 
+       JBoss Cache configurations using the standard JBC 3.x config format
+       can be added to this file, and will usable by the AS's CacheManager
+       if the "configResource" property in the jboss-cache-manager-jboss-beans.xml
+       file's "CacheConfigurationRegistry" bean is uncommented. (It is
+       commented out by default.)
+       However, use of the microcontainer config format used in this
+       sar's jboss-cache-manager-jboss-beans.xml file is recommended.
+    -->
+    
+    <!-- An example config; not intended for use; just to illustrate JBC 3's
+         config format and to comply with schema requirement for a cache-config
+         element. Removing this example is recommended if a real config is added.
+    --> 
+    <registry:cache-config name="example">
+
+       <locking isolationLevel="REPEATABLE_READ" lockAcquisitionTimeout="15000" nodeLockingScheme="pessimistic"/>
+       <serialization useRegionBasedMarshalling="true"/>
+       <startup regionsInactiveOnStartup="true"/>
+       <clustering clusterName="${jboss.partition.name:DefaultPartition}-example" mode="r">
+         <stateRetrieval fetchInMemoryState="true" timeout="60000"/>
+         <jgroupsConfig multiplexerStack="${jboss.default.jgroups.stack:udp}"/>
+         <sync replTimeout="175000"/>
+       </clustering>
+       <eviction wakeUpInterval="5000">
+          <default algorithmClass="org.jboss.cache.eviction.LRUAlgorithm">
+             <property name="maxNodes" value="5000" />
+             <property name="timeToLive" value="1000" />
+          </default>
+       </eviction>
+    </registry:cache-config>
+    
+    
+</registry:cache-configs>

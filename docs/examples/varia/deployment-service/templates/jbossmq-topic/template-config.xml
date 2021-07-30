@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example template configuration that produces a JMS-Topic
+  deployment descriptor.
+  
+  Documentation for the deployment service can be found at: 
+  http://www.jboss.org/wiki/Wiki.jsp?page=DeploymentService
+-->
+<template-config template="vm/jbossmq-topic.xml.vm" extension="-service.xml">
+
+  <property-list>
+    <!-- if type not specified, java.lang.String is assumed -->
+    <!-- a value must be supplied at runtime, or an exception will be thrown -->
+    <property name="TopicName"/>
+    
+    <!-- if a value is not supplied at runtime, the default will be used -->
+    <property name="DestinationManager" type="javax.management.ObjectName">
+      <default-value>jboss.mq:service=DestinationManager</default-value>
+    </property>
+    
+    <!-- mark a property with optional=true so that a value is not required -->
+    <!-- any specified default will be ignored in this case -->
+    <property name="SecurityManager" type="javax.management.ObjectName" optional="true">
+      <default-value>jboss.mq:service=SecurityManager</default-value>
+    </property>
+    
+    <!-- arrays and generally any valid java/user class is permitted -->
+    <property name="SecurityRoles" type="[Ljava.lang.String;" optional="true"/>
+
+    <property name="InMemory" type="java.lang.Boolean" optional="true"/>
+    
+    <property name="RedeliveryDelay" type="java.lang.Long" optional="true"/>
+       
+    <property name="JNDIName" type="java.lang.String" optional="true">
+      <description>The JNDI name under which the queue will be bound.</description>
+    </property>
+    
+    <property name="RedeliveryLimit" type="java.lang.Integer" optional="true"/>   
+    
+    <property name="ReceiversImpl" type="java.lang.Class" optional="true"/>
+    
+    <property name="MaxDepth" type="java.lang.Integer" optional="true">       
+      <description>The max depth of a message queue.</description>
+	  <default-value>99</default-value>
+    </property>
+    
+    <property name="MessageCounterHistoryDayLimit" type="java.lang.Integer" optional="true"/>
+
+  </property-list>
+  
+</template-config>

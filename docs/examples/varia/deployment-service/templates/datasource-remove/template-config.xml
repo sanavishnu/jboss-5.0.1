@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template configuration that produces an XSLT used to remove a
+  data source.
+  
+  $Id: template-config.xml 42575 2006-03-21 19:22:40Z clin $
+-->
+<template-config template="vm/datasource-remove-xslt.vm" extension="-ds.xml">
+
+   <property-list>
+      <property name="jndi-name" type="java.lang.String">
+            <description>The JNDI name under which the DataSource wrapper is bound.</description>
+      </property>
+   </property-list>
+  
+</template-config>

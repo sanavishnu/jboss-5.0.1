@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE server>
+<!-- $Id: cache-invalidation-service.xml 88907 2009-05-14 20:51:05Z bstansberry@jboss.com $ -->
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Cache Invalidation Service                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<server>
+
+  <mbean code="org.jboss.cache.invalidation.InvalidationManager" 
+         name="jboss.cache:service=InvalidationManager">
+  </mbean>
+
+
+<!--
+	Uncomment if you want to activate the cache invalidation mechanism accross
+	nodes using the JMS bridge 
+
+	PropagationMode can be : IN_OUT = 1, IN_ONLY = 2, OUT_ONLY = 3
+
+   You can also set the ProviderUrl attribute to another IP:port setting if you
+   must lookup your JMS information in other JMS trees i.e.
+
+      <attribute name="ProviderUrl">MyOtherNode:1099</attribute>
+
+-->
+<!--  
+  <mbean code="org.jboss.jms.server.destination.TopicService"
+    name="jboss.messaging.destination:service=Topic,name=JMSCacheInvalidationBridge"
+    xmbean-dd="xmdesc/Topic-xmbean.xml">
+     <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+      <depends>jboss.messaging:service=PostOffice</depends>
+  </mbean>
+
+  <mbean code="org.jboss.cache.invalidation.bridges.JMSCacheInvalidationBridge" 
+         name="jboss.cache:service=InvalidationBridge,type=JMS">
+     <depends>jboss.cache:service=InvalidationManager</depends>
+     <depends>jboss.messaging.destination:service=Topic,name=JMSCacheInvalidationBridge</depends>
+     <attribute name="InvalidationManager">jboss.cache:service=InvalidationManager</attribute>
+     <attribute name="ConnectionFactoryName">java:/ConnectionFactory</attribute>
+     <attribute name="TopicName">topic/JMSCacheInvalidationBridge</attribute>
+     <attribute name="PropagationMode">1</attribute> 
+  </mbean>
+-->
+     
+</server>

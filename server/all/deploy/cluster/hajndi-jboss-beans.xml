@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  HA-JNDI Service Configuration                                        -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   
+   <bean name="HAJNDI"
+         class="org.jboss.ha.jndi.HANamingService">    
+
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=HAJNDI", exposedInterface=org.jboss.ha.jndi.HANamingServiceMBean.class)</annotation>
+           
+      
+      <!-- The partition used for group RPCs to find locally bound objects on other nodes -->
+      <property name="HAPartition"><inject bean="HAPartition"/></property>
+      
+      <!-- Handler for the replicated tree -->
+      <property name="distributedTreeManager">
+         <bean class="org.jboss.ha.jndi.impl.jbc.JBossCacheDistributedTreeManager">
+            <property name="cacheHandler"><inject bean="HAPartitionCacheHandler"/></property>
+         </bean>
+      </property>
+      
+      <property name="localNamingInstance"><inject bean="jboss:service=NamingBeanImpl" property="namingInstance"/></property>
+      
+      <!-- The thread pool used to control the bootstrap and auto discovery lookups -->
+      <property name="lookupPool"><inject bean="jboss.system:service=ThreadPool"/></property>
+      
+      <!-- Bind address of bootstrap endpoint -->
+      <property name="bindAddress">
+         <!-- Get the interface from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>Port</parameter>
+            <parameter><null/></parameter>
+         </value-factory>
+      </property>
+      <!-- Port on which the HA-JNDI stub is made available -->
+      <property name="port">
+         <!-- Get the port from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getIntBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>Port</parameter>
+         </value-factory>
+      </property>
+      
+      <!-- Bind address of the HA-JNDI RMI endpoint -->
+      <property name="rmiBindAddress">
+         <!-- Get the port from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>RmiPort</parameter>
+            <parameter><null/></parameter>
+         </value-factory>
+      </property>
+      
+      <!-- RmiPort to be used by the HA-JNDI service once bound. 0 => auto. -->
+      <property name="rmiPort">
+         <!-- Get the port from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getIntBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>RmiPort</parameter>
+         </value-factory>
+      </property>
+      
+      <!-- Accept backlog of the bootstrap socket -->
+      <property name="backlog">50</property>
+
+      <!-- A flag to disable the auto discovery via multicast -->
+      <property name="discoveryDisabled">false</property>
+      <!-- Multicast Address and group port used for auto-discovery -->      
+      <property name="autoDiscoveryAddress">
+         <!-- Get the multicast address from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>AutoDiscovery</parameter>
+            <parameter><null/></parameter>
+         </value-factory>
+      </property>      
+      <property name="autoDiscoveryGroup">
+         <!-- Get the port from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getIntBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>AutoDiscovery</parameter>
+         </value-factory>
+      </property>
+      <!-- Interface on which to listen for auto-discovery bootstrap multicasts. 
+           If not specified and a BindAddress is specified, the BindAddress will be used. -->
+      <property name="autoDiscoveryBindAddress">
+         <!-- Get the multicast address from the ServiceBindingManager -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding">
+            <parameter>jboss:service=HAJNDI</parameter>
+            <parameter>AutoDiscoveryInterface</parameter>
+            <parameter><null/></parameter>
+         </value-factory>
+      </property>
+      
+      <!-- The TTL (time-to-live) for autodiscovery IP multicast packets -->
+      <property name="autoDiscoveryTTL">16</property>
+      
+      <!-- The load balancing policy for HA-JNDI -->
+      <property name="loadBalancePolicy">org.jboss.ha.framework.interfaces.RoundRobin</property>
+
+      <!-- Client socket factory to be used for client-server
+           RMI invocations during JNDI queries
+      <property name="clientSocketFactory">custom</property>
+      -->
+      <!-- Server socket factory to be used for client-server
+           RMI invocations during JNDI queries
+      <property name="serverSocketFactory">custom</property>
+      -->
+   </bean>
+
+</deployment>

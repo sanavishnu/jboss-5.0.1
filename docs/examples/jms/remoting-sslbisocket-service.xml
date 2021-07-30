@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     The deployment descriptor for the secure socket factory
+     service and secure connector.
+
+     $Id: remoting-sslbisocket-service.xml 3981 2008-03-28 18:00:41Z timfox $
+ -->
+
+<server>
+
+   <mbean code="org.jboss.remoting.transport.Connector"
+          name="jboss.messaging:service=Connector,transport=sslbisocket"
+          display-name="SSL Bisocket Transport Connector">
+      <attribute name="Configuration">
+         <config>
+            <invoker transport="sslbisocket">   
+            
+               <!-- There should be no reason to change these parameters - warning!
+                    Changing them may stop JBoss Messaging working correctly -->          
+               <attribute name="marshaller" isParam="true">org.jboss.jms.wireformat.JMSWireFormat</attribute>
+               <attribute name="unmarshaller" isParam="true">org.jboss.jms.wireformat.JMSWireFormat</attribute>
+               <attribute name="dataType" isParam="true">jms</attribute>
+               <attribute name="socket.check_connection" isParam="true">false</attribute>              
+               <attribute name="serverBindAddress">${jboss.bind.address}</attribute>
+               <attribute name="serverBindPort">4459</attribute>               
+               <attribute name="clientSocketClass" isParam="true">org.jboss.jms.client.remoting.ClientSocketWrapper</attribute>
+               <attribute name="serverSocketClass">org.jboss.jms.server.remoting.ServerSocketWrapper</attribute>
+               <attribute name="serverSocketFactory">jboss.messaging:service=ServerSocketFactory,type=SSL</attribute>
+               <attribute name="numberOfCallRetries" isParam="true">1</attribute>
+               <attribute name="pingFrequency" isParam="true">214748364</attribute>
+               <attribute name="pingWindowFactor" isParam="true">10</attribute>
+               <attribute name="onewayThreadPool">org.jboss.jms.server.remoting.DirectThreadPool</attribute>
+               <!-- End immutable parameters -->
+               
+               <attribute name="stopLeaseOnFailure" isParam="true">true</attribute>
+                              
+               <!-- Periodicity of client pings. Server window by default is twice this figure -->                               
+               <attribute name="clientLeasePeriod" isParam="true">10000</attribute>
+	       
+	       <attribute name="timeout" isParam="true">0</attribute>
+
+               <!-- Number of seconds to wait for a connection in the client pool to become free -->
+	       <attribute name="connectionWait" isParam="true">10</attribute>
+
+               <!-- Max Number of connections in client pool. This should be significantly higher than
+                    the max number of sessions/consumers you expect -->
+               <attribute name="JBM_clientMaxPoolSize" isParam="true">200</attribute> 
+               
+	       <!-- The maximum time to wait before timing out on trying to write a message to socket for delivery -->
+               <attribute name="callbackTimeout">10000</attribute> 
+                                                    
+               <!-- Use these parameters to specify values for binding and connecting control connections to 
+                    work with your firewall/NAT configuration
+               <attribute name="secondaryBindPort">xyz</attribute>                           
+               <attribute name="secondaryConnectPort">abc</attribute>               
+               -->
+               
+            </invoker>
+            <handlers>
+               <handler subsystem="JMS">org.jboss.jms.server.remoting.JMSServerInvocationHandler</handler>
+            </handlers>
+         </config>
+      </attribute>
+      <depends>jboss.messaging:service=ServerSocketFactory,type=SSL</depends>
+   </mbean>
+
+   <!-- This section is for custom (SSL) server socket factory  -->
+
+   <!--
+        The server socket factory mbean to be used as attribute to socket invoker (see
+        serverSocketFactory attribute above for where it is used). This service provides the exact
+        same API as the ServerSocketFactory, so can be set as an attribute of that type on any
+        MBean requiring an ServerSocketFactory.
+   -->
+   <mbean code="org.jboss.remoting.security.SSLServerSocketFactoryService"
+          name="jboss.messaging:service=ServerSocketFactory,type=SSL"
+          display-name="SSL Server Socket Factory">
+      <depends optional-attribute-name="SSLSocketBuilder"
+               proxy-type="attribute">jboss.messaging:service=SocketBuilder,type=SSL</depends>
+   </mbean>
+
+   <!--
+       This service is used to build the SSL Server socket factory. This will be where all the
+       store/trust information will be set. If do not need to make any custom configurations,
+       no extra attributes need to be set for the SSLSocketBuilder and just need to set the
+       javax.net.ssl.keyStore and javax.net.ssl.keyStorePassword system properties.
+
+       This can be done by just adding something like the following to the run script for JBoss
+       (this one is for run.bat):
+       set JAVA_OPTS=-Djavax.net.ssl.keyStore=.keystore -Djavax.net.ssl.keyStorePassword=opensource %JAVA_OPTS%
+
+       Otherwise, if want to customize the attributes for SSLSocketBuilder, will need to uncomment
+       them below.
+   -->
+   <mbean code="org.jboss.remoting.security.SSLSocketBuilder"
+          name="jboss.messaging:service=SocketBuilder,type=SSL"
+          display-name="SSL Server Socket Factory Builder">
+      <!--
+           IMPORTANT - If making ANY customizations, this MUST be set to false.
+           Otherwise, will used default settings and the following attributes will be ignored.
+      -->
+      <attribute name="UseSSLServerSocketFactory">false</attribute>
+      <!-- This is the url string to the key store to use -->
+      <attribute name="KeyStoreURL">${jboss.server.home.url}/deploy/messaging/messaging.keystore</attribute>
+      <!-- The password for the key store -->
+      <attribute name="KeyStorePassword">secureexample</attribute>
+      <!-- The password for the keys (will use KeystorePassword if this is not set explicitly. -->
+      <attribute name="KeyPassword">secureexample</attribute>
+      <!-- The protocol for the SSLContext. Default is TLS. -->
+      <attribute name="SecureSocketProtocol">TLS</attribute>
+      <!-- The algorithm for the key manager factory.  Default is SunX509. -->
+      <attribute name="KeyStoreAlgorithm">SunX509</attribute>
+      <!--
+           The type to be used for the key store.
+           Defaults to JKS. Some acceptable values are JKS (Java Keystore - Sun's keystore format),
+           JCEKS (Java Cryptography Extension keystore - More secure version of JKS), and
+           PKCS12 (Public-Key Cryptography Standards #12 keystore - RSA's Personal Information
+           Exchange Syntax Standard). These are not case sensitive.
+      -->
+      <attribute name="KeyStoreType">JKS</attribute>
+   </mbean>
+
+</server>

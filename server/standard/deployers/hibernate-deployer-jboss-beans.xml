@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Hibernate deployer beans.
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+<!--
+  <jbossxb-parser xmlns="urn:jboss:deployers:2.0"
+                  name="HibernateParser"
+                  class="org.jboss.hibernate.deployers.metadata.HibernateMetaData"
+                  registerWithJBossXB="true"
+                  suffix="-hibernate.xml"/>
+-->
+
+  <bean name="HibernateParser" class="org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer">
+    <constructor>
+      <parameter>org.jboss.hibernate.deployers.metadata.HibernateMetaData</parameter>
+    </constructor>
+    <property name="suffix">-hibernate.xml</property>
+    <property name="registerWithJBossXB">true</property>
+  </bean>
+
+  <bean name="HibernateDeployer" class="org.jboss.hibernate.deployers.HibernateDeployer"/>
+
+</deployment>

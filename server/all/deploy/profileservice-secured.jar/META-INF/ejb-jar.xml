@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+    version="3.0">
+    <display-name>Secured ManagementView</display-name>
+    <enterprise-beans>
+        <session>
+            <ejb-name>SecureProfileService</ejb-name>
+            <ejb-class>org.jboss.profileservice.ejb.SecureProfileServiceBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <resource-ref>
+                <res-ref-name>profileService</res-ref-name>
+                <res-type>org.jboss.profileservice.spi.ProfileService</res-type>
+                <mapped-name>ProfileService</mapped-name>
+                <injection-target>
+                    <injection-target-class>org.jboss.profileservice.ejb.SecureProfileServiceBean</injection-target-class>
+                    <injection-target-name>delegate</injection-target-name>
+                </injection-target>
+            </resource-ref>
+        </session>
+        <session>
+            <ejb-name>SecureManagementView</ejb-name>
+            <ejb-class>org.jboss.profileservice.ejb.SecureManagementView</ejb-class>
+            <session-type>Stateless</session-type>
+            <resource-ref>
+                <res-ref-name>profileService</res-ref-name>
+                <res-type>org.jboss.profileservice.spi.ProfileService</res-type>
+                <mapped-name>ProfileService</mapped-name>
+                <injection-target>
+                    <injection-target-class>org.jboss.profileservice.ejb.SecureManagementView</injection-target-class>
+                    <injection-target-name>profileService</injection-target-name>
+                </injection-target>
+            </resource-ref>
+        </session>
+        <session>
+            <ejb-name>SecureDeploymentManager</ejb-name>
+            <ejb-class>org.jboss.profileservice.ejb.SecureDeploymentManager</ejb-class>
+            <session-type>Stateless</session-type>
+            <resource-ref>
+                <res-ref-name>profileService</res-ref-name>
+                <res-type>org.jboss.profileservice.spi.ProfileService</res-type>
+                <mapped-name>ProfileService</mapped-name>
+                <injection-target>
+                    <injection-target-class>org.jboss.profileservice.ejb.SecureDeploymentManager</injection-target-class>
+                    <injection-target-name>profileService</injection-target-name>
+                </injection-target>
+            </resource-ref>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

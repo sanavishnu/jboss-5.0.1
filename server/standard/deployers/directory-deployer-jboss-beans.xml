@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Legacy directory structure - JBAS-5900.
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <!-- Disabled by default, due to performance impact  -->
+  <!--<bean name="DirectoryStructure" class="org.jboss.deployers.vfs.plugins.structure.dir.DirectoryStructure"/>-->
+
+</deployment>

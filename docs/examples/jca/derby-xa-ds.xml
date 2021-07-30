@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss DataSource Configuration                                       -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: derby-xa-ds.xml 77479 2008-08-26 10:33:09Z alex.loubyansky@jboss.com $ -->
+
+<datasources>
+   <xa-datasource>
+      <jndi-name>XADerbyDS</jndi-name>
+
+      <!-- uncomment to enable interleaving <interleaving/> -->
+
+      <isSameRM-override-value>false</isSameRM-override-value>
+      <xa-datasource-class>org.apache.derby.jdbc.EmbeddedXADataSource</xa-datasource-class>
+
+      <!-- path to the database. (${jboss.server.data.dir}${/}derby${/}default didn't work on win) -->
+      <xa-datasource-property name="DatabaseName">derby/default</xa-datasource-property>
+      <xa-datasource-property name="User">sa</xa-datasource-property>
+      <xa-datasource-property name="Password"></xa-datasource-property>
+      <xa-datasource-property name="CreateDatabase">create</xa-datasource-property>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>Derby</type-mapping>
+      </metadata>
+   </xa-datasource>
+
+<!--
+   An example used for HA XA tests
+
+   <ha-xa-datasource>
+      <jndi-name>XADerbyDS</jndi-name>
+      <interleaving/>
+      <isSameRM-override-value>false</isSameRM-override-value>
+
+      <xa-datasource-class>org.apache.derby.jdbc.EmbeddedXADataSource</xa-datasource-class>
+      <xa-datasource-property name="DatabaseName">derby/hatest1|derby/hatest2</xa-datasource-property>
+      <xa-datasource-property name="User">sa</xa-datasource-property>
+      <xa-datasource-property name="Password"></xa-datasource-property>
+      <xa-datasource-property name="CreateDatabase">create</xa-datasource-property>
+
+      <url-property>DatabaseName</url-property>
+      <url-delimeter>|</url-delimeter>
+
+      <check-valid-connection-sql>VALUES CURRENT TIMESTAMP</check-valid-connection-sql>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>Derby</type-mapping>
+      </metadata>
+   </ha-xa-datasource>
+-->
+
+</datasources>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: iiop-service.xml 78881 2008-09-26 01:57:31Z scott.stark@jboss.org $ -->
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss RMI/IIOP Configuration                                         -->
+<!--                                                                       -->
+<!--  IIOP over SSL is disabled by default. To enable it, uncomment        -->
+<!--  the JaasSecurityDomain MBean, as well as the SecurityDomain          -->
+<!--  attribute and the depends element of the CorbaORBService MBean.      -->
+<!--  You will also need to edit the jacorb.properties file in the conf    -->
+<!--  dir and set to "on" the property jacorb.security.support_ssl.        -->
+<!--                                                                       -->
+<!--  Transaction demarcation over IIOP is enabled by defaut. To disable   -->
+<!--  it, comment out the TxServerInterceptorInitializer in the            -->
+<!--  CorbaORBService MBean, as well as the CorbaTransactionService        -->
+<!--  MBean. You will also need to comment out (or set to false) the       -->
+<!--  attibute GlobalIdsEnabled of the TransactionManagerService MBean     -->
+<!--  (in file conf/jboss-service.xml).                                    --> 
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<server>
+
+  <!-- ==================================================================== -->
+  <!-- IIOP+SSL domain setup                                                -->
+  <!-- ==================================================================== -->
+
+  <!-- uncomment to use IIOP over SSL
+  <mbean code="org.jboss.security.plugins.JaasSecurityDomain"
+         name="jboss.security:service=JaasSecurityDomain,domain=IIOP+SSL">
+    <constructor>
+      <arg type="java.lang.String" value="IIOP+SSL"/>
+    </constructor> 
+    <attribute name="KeyStoreURL">iiop-over-ssl.keystore</attribute>
+    <attribute name="KeyStorePass">iiop-over-ssl</attribute>
+  </mbean>
+  -->
+
+  <!-- ==================================================================== -->
+  <!-- CORBA ORB service                                                    -->
+  <!-- The ORB is pluggable. This configuration uses JacORB.                -->
+  <!-- ==================================================================== -->
+
+  <mbean code="org.jboss.iiop.CorbaORBService"
+         name="jboss:service=CorbaORB">
+    <attribute name="ORBClass">org.jacorb.orb.ORB</attribute>
+    <attribute name="ORBSingletonClass">org.jboss.system.ORBSingleton</attribute>
+    <attribute name="ORBSingletonDelegate">org.jacorb.orb.ORBSingleton</attribute>
+    <attribute name="ORBPropertiesFileName">jacorb.properties</attribute>
+    <attribute name="OTSContextPropagationEnabled">true</attribute>
+    <attribute name="Port">
+       <!-- Get the port from the ServiceBindingManager -->
+      <value-factory bean="ServiceBindingManager" method="getIntBinding" 
+         parameter="jboss:service=CorbaORB"/>
+    </attribute>
+    <!-- uncomment the attribute below to interoperate with IONA's ASP 6.0
+    <attribute name="SendSASAcceptWithExceptionEnabled">false</attribute>
+    -->
+    <attribute name="PortableInterceptorInitializers">
+      <interceptor-initializers>
+        <!-- the two initializers below are required - do not remove them -->
+        <initializer>org.jboss.iiop.codebase.CodebaseInterceptorInitializer</initializer>
+        <initializer>org.jboss.iiop.csiv2.CSIv2Initializer</initializer>
+        <!-- comment out to generate IORs with no transaction policy info -->
+        <initializer>org.jboss.tm.iiop.TxIORInterceptorInitializer</initializer>
+        <!-- comment out to disable null transaction propagation over IIOP -->
+        <initializer>org.jboss.tm.iiop.TxServerClientInterceptorInitializer</initializer>
+        <!-- comment out to disable transaction demarcation over IIOP
+        	Note: for TX over IIOP support in 5.0, use JBossTS JTS instead.
+        -->
+        <initializer>org.jboss.tm.iiop.TxServerInterceptorInitializer</initializer>
+        <!-- comment out to disable the Security Attribute Service -->
+        <initializer>org.jboss.iiop.csiv2.SASInitializer</initializer>
+      </interceptor-initializers>
+    </attribute>
+    <!-- uncomment to use IIOP over SSL
+    <attribute name="SecurityDomain">java:/jaas/IIOP+SSL</attribute>
+    <depends>jboss.security:service=JaasSecurityDomain,domain=IIOP+SSL</depends>
+    -->
+  </mbean>
+
+  <!-- ==================================================================== -->
+  <!-- IIOP invoker                                                         -->
+  <!-- ==================================================================== -->
+
+  <mbean code="org.jboss.invocation.iiop.IIOPInvoker" 
+         name="jboss:service=invoker,type=iiop">
+    <depends>jboss:service=CorbaORB</depends>
+    <depends>jboss:service=Naming</depends>
+  </mbean>
+  
+  <!-- ==================================================================== -->
+  <!-- CORBA naming service                                                 -->
+  <!-- ==================================================================== -->
+
+  <mbean code="org.jboss.iiop.CorbaNamingService" 
+         name="jboss:service=CorbaNaming">
+    <depends>jboss:service=CorbaORB</depends>
+    <depends>jboss:service=Naming</depends>
+  </mbean>
+
+  <!-- ==================================================================== -->
+  <!-- CORBA transaction service                                            -->
+  <!-- ==================================================================== -->
+
+  <!-- comment out to disable transaction demarcation over IIOP
+  	Note: for TX over IIOP support in 5.0, use JBossTS JTS instead.
+  	(http://labs.jboss.com/portal/jbosstm)
+  <mbean code="org.jboss.tm.iiop.CorbaTransactionService" 
+         name="jboss:service=CorbaTransaction">
+    <depends>jboss:service=TransactionManager</depends>
+    <depends>jboss:service=CorbaORB</depends>
+    <depends>jboss:service=CorbaNaming</depends>
+  </mbean>
+  -->
+
+</server>

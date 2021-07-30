@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jaxrpc-config xmlns="urn:jboss:jaxrpc-config:2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:j2ee="http://java.sun.com/xml/ns/j2ee"
+  xsi:schemaLocation="urn:jboss:jaxrpc-config:2.0 schema/jaxrpc-config_2_0.xsd">
+  
+  <endpoint-config>
+    <config-name>Standard Endpoint</config-name>
+  </endpoint-config>
+  
+  <endpoint-config>
+    <config-name>Standard MTOM Endpoint</config-name>
+    <feature>http://org.jboss.ws/mtom</feature>
+  </endpoint-config>
+  
+  <endpoint-config>
+    <config-name>Standard WSAddressing Endpoint</config-name>
+    <pre-handler-chain>
+      <handler-chain-name>WSAddressing Handlers</handler-chain-name>
+      <handler>
+        <j2ee:handler-name>WSAddressing Handler</j2ee:handler-name>
+        <j2ee:handler-class>org.jboss.ws.extensions.addressing.jaxrpc.WSAddressingServerHandler</j2ee:handler-class>
+      </handler>
+    </pre-handler-chain>
+  </endpoint-config>
+  
+  <endpoint-config>
+    <config-name>Standard WSSecurity Endpoint</config-name>
+    <pre-handler-chain>
+      <handler-chain-name>WSSecurity Handlers</handler-chain-name>
+      <handler>
+        <j2ee:handler-name>WSSecurityHandlerInbound</j2ee:handler-name>
+        <j2ee:handler-class>org.jboss.ws.extensions.security.jaxrpc.WSSecurityHandlerInbound</j2ee:handler-class>
+      </handler>
+    </pre-handler-chain>
+  </endpoint-config>
+  
+</jaxrpc-config>

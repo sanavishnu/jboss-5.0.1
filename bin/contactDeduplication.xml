@@ -1,0 +1,111 @@
+
+<duke>
+  <param name="database-implementation" value="in-memory"/>
+
+  <object class="no.priv.garshol.duke.comparators.NumericComparator"
+          name="AreaComparator">
+    <param name="min-ratio" value="0.7"/>
+  </object>
+
+  <schema>
+    <threshold>0.89</threshold>
+
+<!--
+    <property type="id">
+      <name>ID</name>
+    </property>
+-->
+
+    <property>
+      <name>NAME</name>
+      <comparator>no.priv.garshol.duke.comparators.JaroWinkler</comparator>
+      <low>0.09</low>
+      <high>0.88</high>
+    </property>
+    <property>
+      <name>COUNTRY</name>
+      <comparator>no.priv.garshol.duke.comparators.Levenshtein</comparator>
+      <low>0.48</low>
+      <high>0.6</high>
+    </property>
+    <property>
+      <name>CITYZIP</name>
+      <comparator>no.priv.garshol.duke.comparators.Levenshtein</comparator>
+      <low>0.48</low>
+      <high>0.6</high>
+    </property>
+    <property>
+      <name>STREETHOUSENUMBER</name>
+      <comparator>no.priv.garshol.duke.comparators.Levenshtein</comparator>
+      <low>0.48</low>
+      <high>0.6</high>
+    </property>
+  </schema>
+
+    <jndi>
+        <param name="jndi-path" value="java:/elwisDS"/>
+        <param name="query" value="
+        select a.name1 as name, co.countryname as country, ci.cityname as city, a.street as street
+        from address a
+        left join country co on a.countryid=co.countryid
+        left join city ci on a.cityid=ci.cityid
+        where a.companyid=1 and a.addressid > 8000"/>
+
+        <column name="name" property="NAME"/>
+        <column name="country" property="COUNTRY"
+                cleaner="no.priv.garshol.duke.cleaners.LowerCaseNormalizeCleaner"/>
+        <column name="city" property="CITYZIP"/>
+        <column name="street" property="STREETHOUSENUMBER"/>
+    </jndi>
+
+
+<!--
+    <csv>
+      <param name="input-file" value="D:/miky/xmlUtil/src/resource/deduplication/dataDirkPageTest.csv"/>
+
+      &lt;!&ndash;<column name="id" property="ID"/>&ndash;&gt;
+      <column name="Name"
+              property="NAME"
+              cleaner="no.priv.garshol.duke.cleaners.LowerCaseNormalizeCleaner"/>
+      <column name="street"
+              property="STREET"
+              cleaner="no.priv.garshol.duke.cleaners.LowerCaseNormalizeCleaner"/>
+      <column name="zip code"
+              property="ZIP"/>
+      <column name="birthdate"
+              property="BIRTHDATE"/>
+      <column name="Email"
+              property="EMAIL"
+              cleaner="no.priv.garshol.duke.cleaners.LowerCaseNormalizeCleaner"/>
+    </csv>
+-->
+
+  <!-- it's possible to get the DBpedia directly from the SPARQL endpoint
+       of DBpedia, but that puts load on their servers, and so we don't
+       do that by default. if you wish, you can use this method instead. -->
+  <!--sparql>
+    <param name="endpoint" value="http://dbpedia.org/sparql"/>
+    <param name="triple-mode" value="false"/>
+    <param name="query" value='
+PREFIX dbprop: &lt;http://dbpedia.org/property/>
+PREFIX dbowl: &lt;http://dbpedia.org/ontology/>
+SELECT DISTINCT ?country ?name ?area ?capitalname
+WHERE
+{  ?country rdf:type dbpedia-owl:Country;
+     dbprop:commonName ?name ;
+     dbprop:areaKm ?area ;
+     dbowl:capital ?capital .
+   ?capital rdfs:label ?capitalname .
+   OPTIONAL {?country dbpprop:yearEnd ?yearEnd}
+   FILTER (!bound(?yearEnd))
+   FILTER (lang(?capitalname) = "en")
+}    '/>
+
+    <column name="country"
+            property="ID"/>
+    <column name="name"
+            cleaner="no.priv.garshol.duke.LowerCaseNormalizeCleaner"
+            property="NAME"/>
+  </sparql-->
+
+</duke>

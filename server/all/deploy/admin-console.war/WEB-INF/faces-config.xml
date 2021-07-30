@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+
+    <converter>
+        <converter-id>jboss.TextareaMapConverter</converter-id>
+        <converter-class>org.jboss.on.embedded.TextareaMapConverter</converter-class>
+    </converter>
+    <converter>
+        <converter-id>jboss.OperationDefinitionConverter</converter-id>
+        <converter-class>org.jboss.on.embedded.converter.OperationDefinitionConverter</converter-class>
+    </converter>
+
+    <validator>
+        <validator-id>regexValidator</validator-id>
+        <validator-class>org.rhq.core.gui.validator.RegexValidator</validator-class>
+        <attribute>
+            <attribute-name>regex</attribute-name>
+            <attribute-class>java.lang.String</attribute-class>
+        </attribute>
+    </validator>
+
+    <application>
+        <!-- initial viewhandler: -->
+        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+
+        <!-- Customize JSF validation messages -->
+        <message-bundle>messages</message-bundle>
+
+    </application>
+
+    <!-- Phase listener needed for all Seam applications -->
+    <!--lifecycle>
+        <phase-listener>org.jboss.seam.jsf.SeamPhaseListener</phase-listener>
+    </lifecycle-->
+
+    <component>
+        <component-type>org.jboss.on.Config</component-type>
+        <component-class>org.rhq.core.gui.configuration.ConfigUIComponent</component-class>
+    </component>
+
+    <render-kit>
+        <renderer>
+            <description>renderer for a Config component</description>
+            <component-family>rhq</component-family>
+            <renderer-type>org.jboss.on.Config</renderer-type>
+            <renderer-class>org.rhq.core.gui.configuration.ConfigRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+
+</faces-config>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template configuration that produces a local-tx-datasource
+  deployment descriptor.
+  
+  $Id: template-config.xml 28245 2005-02-02 19:00:22Z andd $
+-->
+<template-config template="vm/local-tx-datasource.vm" extension="-ds.xml">
+
+   <property-list>
+      <property name="jndi-name" type="java.lang.String">
+         <description>The JNDI name under which the DataSource wrapper will be bound. Note that this name is relative to the "java:/" prefix unless use-java-context is false.</description>
+      </property>
+      
+      <property name="use-java-context" type="java.lang.Boolean" optional="true">
+         <description>Setting this to false will bind the DataSource into global jndi.</description>
+         <default-value>true</default-value>         
+      </property>
+      
+      <property name="connection-url" type="java.lang.String">
+         <description>The JDBC driver connection URL string.</description>
+      </property>
+      
+      <property name="driver-class" type="java.lang.String">
+         <description>The fully qualifed name of the JDBC driver class.</description>
+      </property>
+      
+      <property name="transaction-isolation" type="java.lang.String" optional="true">
+         <description>The java.sql.Connection transaction isolation level to use. The possible values are
+            TRANSACTION_READ_UNCOMMITTED
+            TRANSACTION_READ_COMMITTED
+            TRANSACTION_REPEATABLE_READ
+            TRANSACTION_SERIALIZABLE
+            TRANSACTION_NONE
+         </description>
+      </property>
+      
+      <property name="connection-properties" type="java.util.Hashtable" optional="true">
+         <description>Allows you to pass in arbitrary connection properties (string name/value pairs) to the Driver.connect(url, props) method.</description>
+      </property>
+      
+      <property name="user-name" type="java.lang.String" optional="true">
+         <description>Specifies the default username used when creating a new connection.</description>
+      </property>
+      
+      <property name="password" type="java.lang.String" optional="true">
+         <description>Specifies the default password used when creating a new connection.</description>
+      </property>
+
+      <!-- The two properties that follow are related -->
+      <property name="security-config" type="java.lang.String" optional="true">
+         <description>
+            The value of this property should be one of:
+               APPLICATION-MANAGED-SECURITY - Indicates that app supplied parameters (such as from getConnection(user, pw)) are used to distinguish connections in the pool. 
+               SECURITY-DOMAIN - Indicates that the Subject (from the security domain) is used to distinguish connections in the pool. 
+               SECURITY-DOMAIN-AND-APPLICATION - Indicates that either app suplied parameters or the Subject are used to distinguish connections in the pool.
+         </description>
+      </property>
+
+      <property name="security-domain" type="java.lang.String" optional="true">
+         <description>When the security-config is either SECURITY-DOMAIN or SECURITY-DOMAIN-AND-APPLICATION this property should define the name of the JAAS security manager handling authentication, which correlates to the login-config.xml descriptor, application-policy/name attribute.</description>
+      </property>
+      
+      <property name="min-pool-size" type="java.lang.Integer" optional="true">
+         <description>The min-pool-size element indicates the minimum number of connections a pool should hold. These are not created until a Subject is known from a request for a connection.</description>
+         <default-value>0</default-value>
+      </property>
+
+      <property name="max-pool-size" type="java.lang.Integer" optional="true">
+         <description>The max-pool-size element indicates the maximum number of connections for a pool. No more than MaxSize connections will be created in each sub-pool.</description>
+         <default-value>20</default-value>
+      </property>
+
+      <property name="blocking-timeout-millis" type="java.lang.Integer" optional="true">
+         <description>The blocking-timeout-millis element indicates the maximum time in milliseconds to block while waiting for a connection before throwing an exception. Note that this blocks only while waiting for a permit for a connection, and will never throw an exception if creating a new connection takes an inordinately long time.</description>
+         <default-value>30000</default-value>
+      </property>
+      
+      <property name="idle-timeout-minutes" type="java.lang.Integer" optional="true">
+         <description>The idle-timeout-minutes elements indicates the maximum time in minutes a connection may be idle before being closed.  The actual maximum time depends also on the IdleRemover scan time, which is 1/2 the smallest idle-timeout-minutes of any pool.</description>
+      </property>
+      
+      <property name="no-tx-separate-pools" type="java.lang.Boolean" optional="true">
+         <description>Indicates whether to use separete pools for connection retrieved in a transaction and those retrieved outside a transaction.</description>
+         <default-value>false</default-value>
+      </property>
+
+      <property name="new-connection-sql" type="java.lang.String" optional="true">
+         <description>Specify an SQL statement to execute whenever a connection is added to the connection pool.</description>
+      </property>
+      
+      <property name="check-valid-connection-sql" type="java.lang.String" optional="true">
+         <description>Specify an SQL statement to check validity of a pool connection. This may be called when managed connection is taken from pool for use.</description>
+      </property>
+      
+      <property name="valid-connection-checker-class-name" type="java.lang.String" optional="true">
+         <description>An org.jboss.resource.adapter.jdbc.ValidConnectionChecker that provides an SQLException isValidConnection(Connection e) method to validate if a connection is valid. An exception means the connection is destroyed. This overrides the check-valid-connection-sql when present.</description>
+      </property>
+
+      <property name="exception-sorter-class-name" type="java.lang.String" optional="true">
+         <description>An org.jboss.resource.adapter.jdbc.ExceptionSorter that provides a boolean isExceptionFatal(SQLException e) method to validate if an exception should be broadcast to all javax.resource.spi.ConnectionEventListener as a connectionErrorOccurred message.</description>
+      </property>
+      
+      <property name="track-statements" type="java.lang.String" optional="true">
+         <description>Specifies whether to check for unclosed statements when a connection is returned to the pool, and result sets are closed when a statement is closed/return to the prepared statement cache. Valid values are:
+            FALSE - do not track statements and results
+            TRUE - track statements and result sets and warn when they are not closed
+            NOWARN - track statements but do no warn about them being unclosed (the default)
+         </description>
+         <default-value>NOWARN</default-value>
+      </property>
+      
+      <property name="prepared-statement-cache-size" type="java.lang.Integer" optional="true">
+         <description>The number of prepared statements per connection in an LRU cache.</description>
+      </property>
+      
+      <property name="dependencies" type="[Ljavax.management.ObjectName;" optional="true">
+         <description>ObjectNames of services the connection manager depends on.</description>
+      </property>
+      
+      <property name="type-mapping" type="java.lang.String" optional="true">
+         <description>Datasource/connection factory type-mapping.</description>
+      </property>
+      
+  </property-list>
+  
+</template-config>

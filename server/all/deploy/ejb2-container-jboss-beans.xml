@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- The provider for EJB2 UserTransactions -->
+   <bean name="EJB2UserTransactionprovider" class="org.jboss.ejb.EJB2UserTransactionProvider">
+      <constructor factoryClass="org.jboss.ejb.EJB2UserTransactionProvider" factoryMethod="getSingleton"/>
+   </bean>
+
+</deployment>

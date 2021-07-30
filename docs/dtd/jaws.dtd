@@ -1,0 +1,25 @@
+<!--
+This is the XML DTD for the JAWS deployment descriptor.
+-->
+
+<!ELEMENT jaws (datasource,type-mapping,enterprise-beans)>
+
+<!ELEMENT datasource (#PCDATA)>
+
+<!ELEMENT type-mapping (#PCDATA)>
+
+<!ELEMENT enterprise-beans (entity*)>
+
+<!ELEMENT entity (ejb-name,datasource?,cmp-field*,finder*)>
+
+<!ELEMENT ejb-name (#PCDATA)>
+
+<!ELEMENT datasource (#PCDATA)>
+
+<!ELEMENT finder (name,query,order?)>
+
+<!ELEMENT name (#PCDATA)>
+
+<!ELEMENT query (#PCDATA)>
+
+<!ELEMENT order (#PCDATA)>

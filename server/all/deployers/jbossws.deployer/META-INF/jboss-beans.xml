@@ -1,0 +1,177 @@
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">   <!-- An abstraction of server configuration aspects. -->  
+  <bean name="WSServerConfig" class="org.jboss.wsf.stack.jbws.NativeServerConfig">
+    <property name="mbeanServer"><inject bean="WSMBeanServerLocator" property="mbeanServer"/></property>
+
+    <!--
+      The WSDL, that is a required deployment artifact for an endpoint, has a <soap:address>
+      element which points to the location of the endpoint. JBoss supports rewriting of that SOAP address.
+
+      If the content of <soap:address> is a valid URL, JBossWS will not rewrite it unless 'modifySOAPAddress' is true.
+      If the content of <soap:address> is not a valid URL, JBossWS will rewrite it using the attribute values given below.
+
+      If 'webServiceHost' is not set, JBossWS uses requesters protocol host when rewriting the <soap:address>.
+    -->
+    <property name="webServiceHost">${jboss.bind.address}</property>
+    <property name="modifySOAPAddress">true</property>
+
+    <!--
+      Set these properties to explicitly define the ports that will be used for rewriting the SOAP address.
+      Otherwise the ports will be identified by querying the list of installed connectors. 
+      If multiple connectors are found the port of the first connector is used.
+      <property name="webServiceSecurePort">8443</property>
+      <property name="webServicePort">8080</property>
+    -->
+  </bean>
+
+  <!-- The registry for web service endpoints -->
+  <bean name="WSEndpointRegistry" class="org.jboss.wsf.framework.management.ManagedEndpointRegistry">
+    <property name="mbeanServer"><inject bean="WSMBeanServerLocator" property="mbeanServer"/></property>
+  </bean>
+  
+  <!-- A subscription manager for WS-Eventing -->
+  <bean name="WSSubscriptionManager" class="org.jboss.ws.extensions.eventing.mgmt.SubscriptionManager">
+    <property name="bindAddress">${jboss.bind.address}</property>
+  </bean>
+  
+  <!-- Installed Record Processors-->
+  <bean name="WSMemoryBufferRecorder" class="org.jboss.wsf.framework.management.recording.MemoryBufferRecorder">
+    <property name="recording">false</property>
+  </bean>
+  <bean name="WSLogRecorder" class="org.jboss.wsf.framework.management.recording.LogRecorder">
+    <property name="recording">false</property>
+  </bean>
+  
+  <!-- 
+    The stack specific deployment aspects
+  --> 
+  <bean name="WSNativeContextPropertiesDeploymentAspect" class="org.jboss.wsf.framework.deployment.ContextPropertiesDeploymentAspect">
+    <property name="provides">ContextProperties, StackDescriptor</property>
+    <property name="contextProperties">
+      <map keyClass="java.lang.String" valueClass="java.lang.String">
+        <entry><key>org.jboss.ws.webapp.ServletClass</key><value>org.jboss.wsf.stack.jbws.EndpointServlet</value></entry>
+      </map>
+    </property>
+  </bean>
+  
+  <bean name="WSNativeEagerInitializeDeploymentAspect" class="org.jboss.wsf.stack.jbws.EagerInitializeDeploymentAspect">
+    <property name="requires">UnifiedMetaDataModel</property>
+    <property name="provides">InitializedMetaDataModel</property>
+  </bean>
+  
+  <bean name="WSNativeEndpointHandlerDeploymentAspect" class="org.jboss.wsf.framework.deployment.EndpointHandlerDeploymentAspect">
+    <property name="requires">ContainerEndpointHandler, ContainerMetaData</property>
+    <property name="provides">StackEndpointHandler</property>             
+  </bean>
+  
+  <bean name="WSNativeEndpointRecordProcessorDeploymentAspect" class="org.jboss.wsf.framework.deployment.EndpointRecordProcessorDeploymentAspect">
+    <property name="mbeanServer"><inject bean="WSMBeanServerLocator" property="mbeanServer"/></property>
+    <property name="requires">RegisteredEndpoint</property>
+    <property name="provides">EndpointRecordProcessors</property>             
+    <property name="processors">
+      <list class="java.util.ArrayList" elementClass="org.jboss.wsf.spi.management.recording.RecordProcessor">
+        <inject bean="WSMemoryBufferRecorder"/>
+        <inject bean="WSLogRecorder"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean name="WSNativeEventingDeploymentAspect" class="org.jboss.wsf.stack.jbws.EventingDeploymentAspect">
+    <property name="requires">UnifiedMetaDataModel</property>
+  </bean>
+  
+  <bean name="WSNativePublishContractDeploymentAspect" class="org.jboss.wsf.stack.jbws.PublishContractDeploymentAspect">
+    <property name="requires">UnifiedMetaDataModel, JAXBIntros</property>
+    <property name="provides">PublishedContract</property>
+  </bean>
+  
+  <bean name="WSNativeServiceEndpointInvokerDeploymentAspect" class="org.jboss.wsf.stack.jbws.ServiceEndpointInvokerDeploymentAspect">
+    <property name="requires">UnifiedMetaDataModel</property>
+  </bean>
+  
+  <bean name="WSNativeRMDeploymentAspect" class="org.jboss.ws.extensions.wsrm.server.RMDeploymentAspect">
+    <property name="requires">StackEndpointHandler, UnifiedMetaDataModel</property>
+  </bean>
+  
+  <bean name="WSNativeUnifiedMetaDataDeploymentAspect" class="org.jboss.wsf.stack.jbws.UnifiedMetaDataDeploymentAspect">
+    <property name="requires">RuntimeLoader, ContainerMetaData, URLPattern, VFSRoot, JAXBIntros</property>
+    <property name="provides">UnifiedMetaDataModel</property>
+  </bean>
+
+  <bean name="WSJAXBIntroDeploymentAspect" class="org.jboss.wsf.stack.jbws.JAXBIntroDeploymentAspect">    
+    <property name="provides">JAXBIntros</property>
+  </bean>
+
+  <!-- Deployment aspect installers -->
+  <!-- Phase 1 -->
+  <bean name="WSNativeDeploymentAspectInstallerPreJSE" class="org.jboss.wsf.framework.deployment.DeploymentAspectInstaller">
+    <property name="manager"><inject bean="WSDeploymentAspectManagerPreJSE"/></property>
+    <property name="sortAspectsOnCreate">true</property>
+    <property name="aspects">
+      <set class="java.util.HashSet" elementClass="org.jboss.wsf.spi.deployment.DeploymentAspect">
+        <inject bean="WSNativeContextPropertiesDeploymentAspect"/>
+      </set>
+    </property>
+    <depends>WSDeploymentAspectInstallerPreJSE</depends>
+  </bean>
+  <!-- Phase 2 -->
+  <bean name="WSNativeDeploymentAspectInstallerPostJSE" class="org.jboss.wsf.framework.deployment.DeploymentAspectInstaller">
+    <property name="manager"><inject bean="WSDeploymentAspectManagerPostJSE"/></property>
+    <property name="sortAspectsOnCreate">true</property>
+    <property name="aspects">
+      <set class="java.util.HashSet" elementClass="org.jboss.wsf.spi.deployment.DeploymentAspect">        
+        <inject bean="WSNativeEndpointHandlerDeploymentAspect"/>
+        <inject bean="WSNativeEndpointRecordProcessorDeploymentAspect"/>
+        <inject bean="WSNativeEventingDeploymentAspect"/>
+        <inject bean="WSNativePublishContractDeploymentAspect"/>
+        <inject bean="WSNativeServiceEndpointInvokerDeploymentAspect"/>
+        <inject bean="WSNativeRMDeploymentAspect"/>
+        <inject bean="WSNativeUnifiedMetaDataDeploymentAspect"/>
+        <inject bean="WSNativeEagerInitializeDeploymentAspect"/>
+        <inject bean="WSJAXBIntroDeploymentAspect"/>
+      </set>
+    </property>
+    <depends>WSDeploymentAspectInstallerPostJSE</depends>
+  </bean>
+
+  <bean name="WSNativeDeploymentAspectInstallerEJB" class="org.jboss.wsf.framework.deployment.DeploymentAspectInstaller">
+    <property name="manager"><inject bean="WSDeploymentAspectManagerEJB"/></property>
+    <property name="sortAspectsOnCreate">true</property>
+    <property name="aspects">
+      <set class="java.util.HashSet" elementClass="org.jboss.wsf.spi.deployment.DeploymentAspect">
+        <inject bean="WSNativeContextPropertiesDeploymentAspect"/>
+        <inject bean="WSNativeEagerInitializeDeploymentAspect"/>
+        <inject bean="WSNativeEndpointHandlerDeploymentAspect"/>
+        <inject bean="WSNativeEndpointRecordProcessorDeploymentAspect"/>
+        <inject bean="WSNativeEventingDeploymentAspect"/>
+        <inject bean="WSNativePublishContractDeploymentAspect"/>
+        <inject bean="WSNativeServiceEndpointInvokerDeploymentAspect"/>
+        <inject bean="WSNativeRMDeploymentAspect"/>
+        <inject bean="WSNativeUnifiedMetaDataDeploymentAspect"/>
+        <inject bean="WSJAXBIntroDeploymentAspect"/>
+      </set>
+    </property>
+    <depends>WSDeploymentAspectInstallerEJB</depends>
+  </bean>
+
+  <bean name="WSNativeDeploymentAspectInstallerEndpointAPI" class="org.jboss.wsf.framework.deployment.DeploymentAspectInstaller">
+    <property name="manager"><inject bean="WSDeploymentAspectManagerEndpointAPI"/></property>
+    <property name="sortAspectsOnCreate">true</property>
+    <property name="aspects">
+      <set class="java.util.HashSet" elementClass="org.jboss.wsf.spi.deployment.DeploymentAspect">
+        <inject bean="WSNativeContextPropertiesDeploymentAspect"/>
+        <inject bean="WSNativeEagerInitializeDeploymentAspect"/>
+        <inject bean="WSNativeEndpointHandlerDeploymentAspect"/>
+        <inject bean="WSNativeEndpointRecordProcessorDeploymentAspect"/>
+        <inject bean="WSNativeEventingDeploymentAspect"/>
+        <inject bean="WSNativePublishContractDeploymentAspect"/>
+        <inject bean="WSNativeServiceEndpointInvokerDeploymentAspect"/>
+        <inject bean="WSNativeRMDeploymentAspect"/>
+        <inject bean="WSNativeUnifiedMetaDataDeploymentAspect"/>
+        <inject bean="WSJAXBIntroDeploymentAspect"/>
+      </set>
+    </property>
+    <depends>WSDeploymentAspectInstallerEndpointAPI</depends>
+  </bean>
+
+</deployment> 

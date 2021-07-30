@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE server>
+<!-- $Id: cluster-examples-service.xml 43871 2006-04-17 20:15:11Z bstansberry $ -->
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Clustering Example Services Configuration                            -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<server>
+
+  <!-- ==================================================================== -->
+  <!--    Singleton clustering service                                      -->
+  <!-- ==================================================================== -->
+
+
+   <!--
+    | This MBean is an example of a cluster Singleton.  Note that the
+      class referenced in the code attribute is on the classpath as part
+      of the jbossha.jar in server/.../lib.  If you don't want to place
+      your class(es) in server/.../lib, you should package them in a .sar
+      along with your version of this deployment descriptor renamed to
+      META-INF/jboss-service.xml.
+    - ->
+   <mbean code="org.jboss.ha.singleton.examples.HASingletonMBeanExample" 
+          name="jboss.examples:service=HASingletonMBeanExample">
+   </mbean>
+   <!- - -->
+   
+   <!--
+    | This is a singleton controller which works similarly to the 
+    | SchedulerProvider (when a MBean target is used)
+    |
+    | There are several optional attributes: 
+    |   TargetStartMethodArgument, which sets a string argument 
+    |     to be passed to TargetStartMethod. If not set, the start method should not take any arguments.
+    |   TargetStopMethodArgument, which sets a string argument 
+    |     to be passed to TargetStopMethod. If not set, the stop method should not take any arguments.
+    |
+    - ->
+   <mbean code="org.jboss.ha.singleton.HASingletonController" 
+          name="jboss.examples:service=HASingletonMBeanExample-HASingletonController">
+      <depends>jboss:service=${jboss.partition.name:DefaultPartition}</depends>   
+      <depends>jboss.examples:service=HASingletonMBeanExample</depends>
+      <attribute name="PartitionName">${jboss.partition.name:DefaultPartition}</attribute>
+      <attribute name="TargetName">jboss.examples:service=HASingletonMBeanExample</attribute>
+      <attribute name="TargetStartMethod">startSingleton</attribute>
+      <attribute name="TargetStopMethod">stopSingleton</attribute>
+      <attribute name="TargetStopMethodArgument">true</attribute>
+   </mbean>
+   <!- - -->
+      
+   <!-- ==================================================================== -->
+   <!-- Scheduler Service with HASingleton enabled ScheduleProviders         -->
+   <!-- ==================================================================== -->
+         
+   <!--
+    | This MBean is an example of an HA Schedule Target
+    | which is identical to a regular Schedule Target
+    | (the example class is the same, just the MBean has different names)
+    - ->
+   <mbean code="org.jboss.varia.scheduler.example.SchedulableMBeanExample" 
+          name="jboss.examples:service=HASchedulableMBeanExample">
+   </mbean>
+   <!- - -->
+   
+         
+   <!--
+    | The Schedule Manager has to be started whenever
+    | schedules are needed.
+    |
+    | Uncomment only if not started by 
+    | another service (e.g. schedule-manager-service.xml)
+    - ->
+   <mbean code="org.jboss.varia.scheduler.ScheduleManager"
+          name="jboss:service=ScheduleManager">
+      <attribute name="StartAtStartup">true</attribute>
+   </mbean>
+   <!- - -->
+   
+   <!--
+    | This is a single schedule Provider which works like the
+    | one in schedule-manager-service.xml
+    |
+    | The key difference is the explicit use of the HASingleton MBean attribute
+    | to make the provider a clustered singleton.
+    | When HASingleton is set to true the MBean will usually declare dependency 
+    | on a cluster partition. In this case it is the DefaultPartition.
+    | When not explicitly set the attribute defaults to true. 
+    |
+    | The same attribute can also be used for the other schedule providers as well:
+    | DBScheduleProvider and XMLScheduleProvider
+    | 
+    |
+    - ->
+   <mbean code="org.jboss.varia.scheduler.SingleScheduleProvider"
+          name="jboss:service=HASingleScheduleProvider">
+      <depends>jboss:service=${jboss.partition.name:DefaultPartition}</depends>   
+      <depends>jboss:service=ScheduleManager</depends>
+      <depends>jboss.examples:service=HASchedulableMBeanExample</depends>
+      <attribute name="HASingleton">true</attribute>
+      <attribute name="PartitionName">${jboss.partition.name:DefaultPartition}</attribute>
+      <attribute name="ScheduleManagerName">jboss:service=ScheduleManager</attribute>
+      <attribute name="TargetName">jboss.examples:service=HASingletonMBeanExample</attribute>
+      <attribute name="TargetMethod">hit( NOTIFICATION, DATE, REPETITIONS, SCHEDULER_NAME, java.lang.String )</attribute>
+      <attribute name="DateFormat"></attribute>
+      <attribute name="StartDate">NOW</attribute>
+      <attribute name="Period">10000</attribute>
+      <attribute name="Repetitions">10</attribute>
+   </mbean>
+   <!- - -->
+
+
+   <!-- ==================================================================== -->
+   <!-- Clustered Notification Broadcaster                                   -->
+   <!-- ==================================================================== -->
+         
+   <!--
+    | This MBean is an example showing how to extend a cluster notification broadcaster 
+    | Use the sendNotiication() operation to trigger new clustered notifications.
+    | Observe the status of each instance of this mbean in the participating cluster partition nodes.
+    - ->
+   <mbean code="org.jboss.ha.jmx.examples.HANotificationBroadcasterExample" 
+          name="jboss.examples:service=HANotificationBroadcasterExample">
+      <depends>jboss:service=${jboss.partition.name:DefaultPartition}</depends>            
+   </mbean>
+   <!- - -->
+   
+   <!--
+    | This MBean is an example that shows how to delegate notification services to a HANotificationBroadcaster.
+    | Use the sendNotiication() operation to trigger new clustered notifications.
+    | Observe the status of each instance of this mbean in the participating cluster partition nodes.
+    |
+    - ->
+   <mbean code="org.jboss.ha.jmx.examples.HANotificationBroadcasterClientExample" 
+          name="jboss.examples:service=HANotificationBroadcasterClientExample">
+      <depends>jboss.examples:service=HANotificationBroadcasterExample</depends>
+      <attribute name="HANotificationBroadcasterName">jboss.examples:service=HANotificationBroadcasterExample</attribute>
+   </mbean>
+   <!- - -->
+      
+
+</server>

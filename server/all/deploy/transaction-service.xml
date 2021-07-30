@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: transaction-service.xml 85945 2009-03-16 19:45:12Z dimitris@jboss.org $ -->
+
+<!-- ===================================================================== -->
+<!--  JBoss Server Configuration                                           -->
+<!-- ===================================================================== -->
+
+<server>
+
+   <!-- ==================================================================== -->
+   <!-- Transactions                                                         -->
+   <!-- ==================================================================== -->
+
+   <!--
+      | UserTransaction support. Will be replaced by the DTM once
+      | the DTM is made to play nice with JBossTS.
+   -->
+   <mbean code="org.jboss.tm.usertx.server.ClientUserTransactionService"
+      name="jboss:service=ClientUserTransaction"
+      xmbean-dd="resource:xmdesc/ClientUserTransaction-xmbean.xml">
+      <depends>
+         <mbean code="org.jboss.invocation.jrmp.server.JRMPProxyFactory"
+            name="jboss:service=proxyFactory,target=ClientUserTransactionFactory">
+            <attribute name="InvokerName">jboss:service=invoker,type=unified</attribute>
+            <attribute name="TargetName">jboss:service=ClientUserTransaction</attribute>
+            <attribute name="JndiName">UserTransactionSessionFactory</attribute>
+            <attribute name="ExportedInterface">org.jboss.tm.usertx.interfaces.UserTransactionSessionFactory</attribute>
+            <attribute name="ClientInterceptors">
+               <interceptors>
+                  <interceptor>org.jboss.proxy.ClientMethodInterceptor</interceptor>
+                  <interceptor>org.jboss.invocation.InvokerInterceptor</interceptor>
+               </interceptors>
+            </attribute>
+            <depends>jboss:service=invoker,type=unified</depends>
+         </mbean>
+      </depends>
+      <depends optional-attribute-name="TxProxyName">
+         <mbean code="org.jboss.invocation.jrmp.server.JRMPProxyFactory"
+            name="jboss:service=proxyFactory,target=ClientUserTransaction">
+            <attribute name="InvokerName">jboss:service=invoker,type=unified</attribute>
+            <attribute name="TargetName">jboss:service=ClientUserTransaction</attribute>
+            <attribute name="JndiName"></attribute>
+            <attribute name="ExportedInterface">org.jboss.tm.usertx.interfaces.UserTransactionSession</attribute>
+            <attribute name="ClientInterceptors">
+               <interceptors>
+                  <interceptor>org.jboss.proxy.ClientMethodInterceptor</interceptor>
+                  <interceptor>org.jboss.invocation.InvokerInterceptor</interceptor>
+               </interceptors>
+            </attribute>
+            <depends>jboss:service=invoker,type=unified</depends>
+         </mbean>
+      </depends>
+   </mbean>
+
+</server>

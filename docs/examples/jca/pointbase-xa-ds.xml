@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example of the pointbase 4.8 XA datasource configuration -->
+<!-- $Id: pointbase-xa-ds.xml 23720 2004-09-15 14:37:40Z loubyansky $ -->
+
+<datasources>
+   <xa-datasource>
+      <jndi-name>PointbaseXA</jndi-name>
+      <xa-datasource-class>com.pointbase.xa.xaDataSource</xa-datasource-class>
+      <xa-datasource-property name="ServerName">@pointbase.server@</xa-datasource-property>
+      <xa-datasource-property name="DatabaseName">9092</xa-datasource-property>
+      <user-name>@pointbase.user@</user-name>
+      <password>@pointbase.passwd@</password>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>PointBase</type-mapping>
+      </metadata>
+   </xa-datasource>
+
+</datasources>

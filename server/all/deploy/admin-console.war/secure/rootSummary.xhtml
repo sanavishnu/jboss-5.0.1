@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+<f:view>
+    <ui:composition template="/layout.xhtml">
+
+        <ui:define name="tabmenu">
+            <ui:include src="/include/tabMenu.xhtml">
+                <ui:param name="activeTab" value="summary"/>
+            </ui:include>
+        </ui:define>
+
+        <ui:define name="body">
+            <div class="tabmenubox">
+                <ui:include src="../include/displayGlobalMessages.xhtml"/>
+
+                <h1>#{messages['summary.root.title']}</h1>
+
+                <table border="0">
+
+                    <!--TODO: make this data live-->
+                    <tr>
+                        <td class="key">Version</td>
+                        <td>#{resourceAction.singleResourceByType.resource.version}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="key">Running Profile</td>
+                        <td>default (make this live)</td>
+                    </tr>
+
+                    <tr>
+                        <td class="key">Installation Path</td>
+                        <td>/opt/jboss/jboss-4.0.5.GA (make this live)</td>
+                    </tr>
+
+                    <tr>
+                        <td class="key">Host Platform</td>
+                        <td>jon04.qa.atl.jboss.com (make this live)</td>
+                    </tr>
+
+
+                </table>
+
+                <h1>Server</h1>
+
+                <ul class="links">
+                    <li><a href="#">Configure this server</a></li>
+                    <li><a href="#">Monitor this server</a></li>
+                    <li><a href="#">See how to shut down this server</a></li>
+                </ul>
+
+                <h1>Applications</h1>
+
+                <ul class="links">
+                    <li><a href="#">Deploy an application</a></li>
+                    <li><a href="#">View deployed applications</a></li>
+                </ul>
+
+            </div>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</body>
+</html>

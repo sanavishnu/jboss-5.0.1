@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Web Beans RI + JBossEJB
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="WBJBossEjb" class="org.jboss.webbeans.integration.util.JBossEjb"/>
+
+  <beanfactory name="JBossEjbServices" class="org.jboss.webbeans.integration.ejb.JBossEjbServices">
+     <property name="resolver"><inject bean="WBJBossEjb" property="resolver"/></property>
+     <property name="jbossEjb"><inject bean="WBJBossEjb" /></property>
+  </beanfactory>
+  
+  <beanfactory name="JBossJpaServices" class="org.jboss.webbeans.integration.persistence.JBossJpaServices">
+     <property name="persistenceUnitDependencyResolver"><inject bean="PersistenceUnitDependencyResolver" /></property>
+     <property name="jbossEjb"><inject bean="WBJBossEjb" /></property>
+  </beanfactory>
+  
+  <bean name="JBossResourceServices" class="org.jboss.webbeans.integration.resource.JBossResourceServices" />
+  
+  <bean name="JBossWebServices" class="org.jboss.webbeans.integration.ws.JBossWebServices" />
+  
+  <bean name="JBossJmsServices" class="org.jboss.webbeans.integration.messaging.JBossJmsServices" />
+  
+  <bean name="JBossTransactionServices" class="org.jboss.webbeans.integration.transaction.JBossTransactionServices">
+    <property name="transactionManager"><inject bean="RealTransactionManager" option="callback" /></property>     
+  </bean>
+  
+</deployment>

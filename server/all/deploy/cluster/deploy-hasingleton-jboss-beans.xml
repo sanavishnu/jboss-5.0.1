@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  This service ensures that exactly one node in the cluster            -->
+<!--  deploys the services under "deploy-hasingleton" 		         	   -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+   <!-- 
+    |
+    | Interface to the ProfileService that can be called by an HASingletonController.
+    | Creates ProfileService sub-profile from the given list of URIs and then
+    | activates/deactivates the profile when called by the HASingletonController.
+    |
+   -->
+   <bean name="HASingletonProfileManager" class="org.jboss.ha.singleton.HASingletonProfileManager">
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=HASingletonProfileManager,partition=${jboss.partition.name:DefaultPartition}", exposedInterface=org.jboss.ha.singleton.HASingletonProfileManagerMBean.class, registerDirectly=true)</annotation>
+         
+      <property name="profileService"><inject bean="ProfileService"/></property>
+      <property name="profileFactory"><inject bean="ProfileFactory"/></property>
+      
+      <!-- Build a profile from the contents of these URIs -->
+      <property name="URIList">
+         <list elementClass="java.net.URI">
+            <value>${jboss.server.home.url}deploy-hasingleton</value>
+         </list>
+      </property>
+   </bean>
+ 
+   <!--
+    |
+    | Tracks who the HASingleton master is and notifies the HASingletonProfileManager
+    | when it becomes the master or is no longer the master.
+    |
+   -->
+   <bean name="HASingletonDeployer" 
+   		 class="org.jboss.ha.singleton.HASingletonController">  
+      
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.ha:service=HASingletonDeployer", exposedInterface=org.jboss.ha.singleton.HASingletonControllerMBean.class, registerDirectly=true)</annotation>       
+      
+      <depends>HAPartition</depends>
+      <!-- Have the BarrierController that listens for our JMX 
+           notifications start first. -->
+      <depends>HASingletonDeployerBarrierController</depends>
+      
+      <property name="HAPartition"><inject bean="HAPartition"/></property>
+      <property name="target"><inject bean="HASingletonProfileManager"/></property>
+      <property name="targetStartMethod">activateProfile</property>
+      <property name="targetStopMethod">releaseProfile</property>
+      
+      <!-- whether to register thread context classloader for the RPC handler, default is false -->
+      <!--<property name="registerThreadContextClassLoader">false</property>--> 
+      
+      <!-- Whether the singleton should be restarted (i.e. invoke the TargetStopMethod and then the
+           TargetStartMethod) if a cluster merge occurs while this node is the singleton master.
+           A cluster merge means there may have been more than one singleton master during the period
+           when communication between some or all of the nodes in the cluster was disrupted; hence the
+           surviving master may not be aware of state changes made by another master. Restarting the
+           singleton gives it a signal that it should refresh its internal state from any external
+           store.
+           By default this is set to true.
+      -->
+      <property name="restartOnMerge">true</property>  
+      
+   </bean>
+
+   <!--
+    | A BarrierController that controls the lifecycle of a Barrier mbean
+    | based on JMX notifications issued by the HASingletonController above.
+    |
+    | Services deployed normally inside ./deploy that want to be
+    | started/stopped whenever the content of ./deploy-hasingleton/ gets
+    | deployed/undeployed, or else, whenever the current node becomes the
+    | master, need only specify a dependency on the Barrier:
+    |
+    |    <depends>jboss.ha:service=HASingletonDeployer,type=Barrier</depends>
+    |
+    | With this setup the Barrier and all services that depend on it
+    | will be started *after* the content of deploy-hasingleton is deployed.
+    | To change this, just use the following enabled notification types:
+    |
+    |    <enable type="org.jboss.ha.singleton.starting"/>
+    |    <enable type="org.jboss.ha.singleton.stopped"/>
+   -->
+   <bean class="org.jboss.system.BarrierController"
+          name="HASingletonDeployerBarrierController">
+    
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.ha:service=HASingletonDeployer,type=BarrierControllerMBean", exposedInterface=org.jboss.system.BarrierControllerMBean.class, registerDirectly=true)</annotation> 
+            
+      <!-- Dependent services will depend on this mbean -->
+      <property name="barrierObjectName">jboss.ha:service=HASingletonDeployer,type=Barrier</property>
+    
+      <!-- Subscribe for notifications after startup since we start
+           before the HASingletonDeployer. -->
+      <property name="dynamicSubscriptions">true</property>    
+      <!-- The notification subscription handback that starts the barrier -->
+      <property name="startBarrierHandback">start</property>
+      <!-- The notification subscription handback that stops the barrier -->
+      <property name="stopBarrierHandback">stop</property>
+    
+      <!-- The notifications to subscribe for, along with their handbacks -->
+      <property name="subscriptions">
+         <list>
+            <!--value-->
+               <bean name="HASingletonDeployerStartSubscription" class="org.jboss.system.ListenerServiceMBeanSupport$SubscriptionInfo">
+                     <constructor>
+                        <parameter>jboss.ha:service=HASingletonDeployer</parameter>
+                        <parameter>start</parameter>
+                        <parameter>
+                        	<bean name="HASingletonDeployerStartSubscriptionNotificationFilter" class="javax.management.NotificationFilterSupport">
+                        		<install method="enableType">
+                        			<parameter>org.jboss.ha.singleton.started</parameter>
+                        		</install>
+                        	</bean>
+                        </parameter>
+                     </constructor>
+               </bean>
+            <!--/value>
+            <value-->
+               <bean name="HASingletonDeployerStopSubscription" class="org.jboss.system.ListenerServiceMBeanSupport$SubscriptionInfo">
+                     <constructor>
+                        <parameter>jboss.ha:service=HASingletonDeployer</parameter>
+                        <parameter>stop</parameter>
+                        <parameter>
+                        	<bean  name="HASingletonDeployerStopSubscriptionNotificationFilter" class="javax.management.NotificationFilterSupport">
+                        		<install method="enableType">
+                        			<parameter>org.jboss.ha.singleton.stopping</parameter>
+                        		</install>
+                        	</bean>
+                        </parameter>
+                     </constructor>
+               </bean>
+            <!--/value-->        
+         </list>
+      </property>
+   </bean>
+   
+</deployment>

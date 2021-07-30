@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    EJB 2.x Deployer
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- ejb-jar.xml parsing deployer -->
+   <bean name="Ejb2ParsingDeployer" class="org.jboss.deployment.EjbParsingDeployer">
+      <!--
+      <property name="useSchemaValidation">false</property>
+      -->      
+      <property name="relativeOrder">3000</property>
+   </bean>
+   <bean name="JBossEjb2ParsingDeployer" class="org.jboss.deployment.JBossEjbParsingDeployer">
+      <property name="relativeOrder">3001</property>
+      <property name="useSchemaValidation">false</property>
+      <property name="ignoreMissingStandardJBossXml">false</property>
+      <!-- Can be used to override the default location of the standardjboss.xml -->
+      <property name="standardJBossXmlPath">${jboss.server.config.url}/standardjboss.xml</property>
+   </bean>
+
+   <bean name="EjbClassLoaderDeployer" class="org.jboss.deployment.EjbClassLoaderDeployer"/>
+
+    <bean name="EJB2xDeployer" class="org.jboss.ejb.deployers.EjbDeployer">
+       <install bean="ManagedDeploymentCreator" method="addVersionedAttachmentType">
+          <parameter>
+             <value>org.jboss.metadata.ejb.jboss.JBossMetaData</value>
+          </parameter>
+          <parameter>
+             <value>ejb2x</value>
+          </parameter>
+          <parameter>
+             <value>[1-2].*</value>
+          </parameter>
+          <parameter>
+             <value>getEjbVersion</value>
+          </parameter>
+       </install>
+       <uninstall bean="ManagedDeploymentCreator" method="removeVersionedAttachmentType">
+          <parameter>
+             <value>org.jboss.metadata.ejb.jboss.JBossMetaData</value>
+          </parameter>
+          <parameter>
+             <value>ejb2x</value>
+          </parameter>          
+       </uninstall>
+       <!-- The EJBDeployer needs the JTA transaction manager service -->
+       <property name="transactionManagerServiceName">jboss:service=TransactionManager</property>
+       <!-- The dynamic class loading simple web server -->
+       <property name="webServiceName">jboss:service=WebService</property>
+       <!-- The CachedConnectionManager service used by the CachedConnectionInterceptor -->
+       <property name="cachedConnectionManagerName">jboss.jca:service=CachedConnectionManager</property>
+       <!-- The ejb timer service -->
+       <property name="timerServiceName">jboss.ejb:service=EJBTimerService</property>
+       <!-- A flag indicating if the ejb components should have in VM call
+          optimization disabled.
+       -->
+       <property name="callByValue">false</property>
+        
+       <!-- Specify an unauthenticated identity -->
+       <property name="unauthenticatedIdentity">anonymous</property>
+       
+       <!-- Specify a PolicyRegistration Bean -->
+       <property name="policyRegistrationName">JBossSecurityPolicyRegistration</property>
+       
+       <!-- Specify a SecurityManagement Wrapper -->
+       <property name="securityManagementName">JNDIBasedSecurityManagement</property>
+       
+       <!-- Specify a SecurityContext FQN class name -->
+       <property name="securityContextClassName">org.jboss.security.plugins.JBossSecurityContext</property>
+
+       <!-- Specify a SecurityDomain as fallback -->
+       <property name="defaultSecurityDomain">jboss-ejb-policy</property>
+
+       <!-- A flag indicating if the deployer should validate the ejb-jar.xml/jboss.xml descriptors and components -->
+       <property name="verifyDeployments">true</property>
+
+       <!-- A flag indicating if the verifier should be verbose about its operation -->
+       <property name="verifierVerbose">true</property>
+
+       <!-- Setting this to 'true' will cause all deployments
+       to fail when the Verifier detected a problem with the contained
+       Beans. If false, warnings/errors will be logged but the deployment
+       will not fail.
+       -->
+       <property name="strictVerifier">true</property>
+
+    </bean>
+
+   <bean name="MergedJBossMetaDataDeployer" class="org.jboss.ejb.deployers.MergedJBossMetaDataDeployer">
+   </bean>
+   <bean name="StandardJBossMetaDataDeployer" class="org.jboss.ejb.deployers.StandardJBossMetaDataDeployer">
+   </bean>
+
+   <!-- Deployer for automatically creating message driven destinations -->
+   <bean name="CreateDestinationDeployer" class="org.jboss.ejb.deployers.CreateDestinationDeployer">
+      <incallback method="addCreateDestination"/>
+      <uncallback method="removeCreateDestination"/>
+   </bean>
+
+   <!-- Destination creator for JBoss Messaging -->
+   <bean name="JBossMessageDestinationCreator" class="org.jboss.ejb.deployers.CreateDestination">
+      <!-- We match any jms mdb that is going to be deployed using our rar -->
+      <property name="matcher">
+         <bean class="org.jboss.ejb.deployers.SimpleCreateDestinationMatcher">
+            <property name="default">true</property>
+            <property name="messageListener">javax.jms.MessageListener</property>
+            <property name="rarName">jms-ra.rar</property>
+         </bean>
+      </property>
+      <!-- Create a destination with JBoss Messaging -->
+      <property name="factory">
+         <bean class="org.jboss.jms.server.destination.JBossMessagingCreateDestinationFactory">
+            <property name="serverPeerName">jboss.messaging:service=ServerPeer</property>
+            <property name="postOfficeName">jboss.messaging:service=PostOffice</property>
+         </bean>
+      </property>
+   </bean>
+</deployment>

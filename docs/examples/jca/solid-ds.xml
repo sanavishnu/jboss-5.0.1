@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: solid-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!-- DataSource configuration for solid using 3.0 driver                  -->
+<!-- Thanks to Casey Haakenson                                            -->
+<!-- ==================================================================== -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>SolidDS</jndi-name>
+    <!--NOTE: Solid wants the username/password in the URL, it will 
+            ignore the specific arguments.-->
+    <connection-url>jdbc:solid://yourdbhost:1964/yourdbusername/yourdbpassword</connection-url>
+    <driver-class>solid.jdbc.SolidDriver</driver-class>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>SOLID</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+
+</datasources>

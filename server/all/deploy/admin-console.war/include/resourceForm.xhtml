@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+        >
+<head>
+    <title></title>
+</head>
+<body>
+<h:form>
+    <ui:composition>
+        <!-- TODO: ICE - this was an <ice:panelGroup> because an <h:panelGroup> renders a <span>, but we need a <div>
+  in order to achieve the correct look/feel-->
+        <h:panelGroup styleClass="alignright">
+            <h:outputText value="* #{messages['resource.view.requiredFields']}"/>
+        </h:panelGroup>
+        <h:panelGroup>
+            <br/>
+            <h:outputLabel value="#{messages['resource.template']}"/>
+            <br/>
+            <h:inputText value="#{configurationBean['resourceTypeName']}" disabled="true"/>
+        </h:panelGroup>
+        <hr/>
+
+        <!-- facet start -->
+        <f:facet name="beforeInvalidField">
+            <!-- TODO:ccrouch use a better image -->
+            <h:graphicImage value="images/swizzle_blue_open.gif"/>
+        </f:facet>
+
+        <!-- in order to get the aroundInvalidField to apply its style to
+the label and description, we have to wrap everything in UIDecorate (s:decorate)
+therefore anything that comes "afterInvalidField" will be right at
+the end and beyond where we want to display stuff -->
+        <!--<f:facet name="afterInvalidField">-->
+        <!--<h:graphicImage value="images/swizzle_blue_open.gif"/>    -->
+        <!--</f:facet>               -->
+
+        <!-- this only gets applied to the span rather than the parent td or tr
+so it doesn't render as we would like, it just changes the background
+of the text fields themselves, which looks odd -->
+        <!--<s:span styleClass="errorbkg"/>-->
+        <f:facet name="aroundInvalidField">
+            <s:span style="color:red"/>
+        </f:facet>
+        <!-- facet end -->
+
+        <!-- panel start -->
+        <h:panelGroup layout="block" binding="#{dynamicPanelGridTest}"/>
+        <!-- panel end -->
+
+    </ui:composition>
+</h:form>
+</body>
+</html>

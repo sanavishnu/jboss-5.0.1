@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  $Id: jboss-ds_5_0.xsd 87129 2009-04-10 14:04:57Z ispringer $
+-->
+<!-- The datasources element is the root of the jdbc datasource configuration -->
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.jboss.com/xml/ns/javaee"
+            xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+            xmlns:jboss="http://www.jboss.com/xml/ns/javaee"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified" 
+            attributeFormDefault="unqualified"
+            version="5.0">
+  <xsd:import namespace="http://java.sun.com/xml/ns/javaee" schemaLocation="javaee_5.xsd"/>
+  <xsd:include schemaLocation="jboss-common_5_1.xsd"/>
+
+  <xsd:group name="connectionPoolGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  connection pool group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="min-pool-size"
+         type="jboss:min-pool-sizeType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="max-pool-size"
+         type="jboss:max-pool-sizeType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="blocking-timeout-millis"
+         type="jboss:blocking-timeout-millisType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="background-validation"
+         type="jboss:background-validationType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="background-validation-millis"
+         type="jboss:background-validation-millisType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="idle-timeout-minutes"
+         type="jboss:idle-timeout-minutesType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="allocation-retry"
+         type="jboss:allocation-retryType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="allocation-retry-wait-millis"
+         type="jboss:allocation-retry-wait-millisType"
+         minOccurs="0"
+         maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:group>
+  
+  <xsd:group name="datasourceGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  dataSource group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="new-connection-sql"
+         type="jboss:new-connection-sqlType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="check-valid-connection-sql"
+         type="jboss:check-valid-connection-sqlType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="valid-connection-checker-class-name"
+         type="jboss:valid-connection-checker-class-nameType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="exception-sorter-class-name"
+         type="jboss:exception-sorter-class-nameType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="stale-connection-checker-class-name"
+         type="jboss:stale-connection-checker-class-nameType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="track-statements"
+         type="jboss:track-statementsType"
+         minOccurs="0"
+         maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:group>
+  
+  <xsd:group name="urlGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  URL group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="url-delimiter"
+         type="jboss:url-delimiterType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="url-selector-strategy-class-name"
+         type="jboss:url-selector-strategy-class-nameType"
+         minOccurs="0"
+         maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:group>  
+  <xsd:group name="userGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  user password group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="user-name"
+         type="jboss:user-nameType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="password"
+         type="jboss:passwordType"
+         minOccurs="0"
+         maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:group>    
+  <xsd:group name="additionGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  addition group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="prepared-statement-cache-size"
+         type="jboss:prepared-statement-cache-sizeType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="share-prepared-statements"
+         type="jboss:share-prepared-statementsType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="set-tx-query-timeout"
+         type="jboss:set-tx-query-timeoutType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="query-timeout"
+         type="jboss:query-timeoutType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="use-try-lock"
+         type="jboss:use-try-lockType"
+         minOccurs="0"
+         maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:group>  
+  
+  <xsd:group name="connectionFactoryGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  connection factory group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="rar-name"
+         type="jboss:rar-nameType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="connection-definition"
+         type="jboss:connection-definitionType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="config-property"
+         type="jboss:config-propertyType"
+         minOccurs="0"
+         maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:group>
+  
+  <xsd:group name="optionGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+  option group 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="metadata"
+         type="jboss:metadataType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="type-mapping"
+         type="jboss:type-mappingType"
+         minOccurs="0"
+         maxOccurs="1"/>
+      <xsd:element name="depends"
+         type="jboss:dependsType"
+         minOccurs="0"
+         maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:group>  
+
+  <xsd:group name="securityGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+   Security type
+      </xsd:documentation>
+    </xsd:annotation>
+      <xsd:choice>
+         <xsd:element name="application-managed-security"
+                 type="javaee:emptyType" minOccurs="0">
+         </xsd:element>
+         <xsd:element name="security-domain"
+                 type="jboss:security-domainType" minOccurs="0"/>
+         <xsd:element name="security-domain-and-application"
+                 type="jboss:security-domain-and-applicationType" minOccurs="0"/>       
+      </xsd:choice>
+  </xsd:group>
+  
+ 
+  <!--
+    The tx-connection-factory element is used to configure generic resource
+    adapters supporting transactions
+  -->
+  <xsd:complexType name="tx-connection-factory">
+    <xsd:sequence>
+      <xsd:element name="jndi-name"
+       type="jboss:jndi-nameType"/>
+      <xsd:choice>
+       <xsd:element name="local-transaction"
+               type="javaee:emptyType"/>
+       <xsd:element name="xa-transaction"
+               type="javaee:emptyType"/>                 
+      </xsd:choice>
+      <xsd:element name="track-connection-by-tx"
+       type="javaee:emptyType" minOccurs="0" maxOccurs="1"/>        
+
+      <xsd:group ref="jboss:connectionFactoryGroup"/>
+      <xsd:group ref="jboss:securityGroup"/>
+      <xsd:group ref="jboss:connectionPoolGroup"/>
+
+      <xsd:element name="no-tx-separate-pools"
+       type="javaee:emptyType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="prefill"
+       type="jboss:prefillType" minOccurs="0" maxOccurs="1"/>  
+
+      <xsd:element name="xa-resource-timeout"
+       type="jboss:xa-resource-timeoutType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:group ref="jboss:optionGroup"/>        
+    </xsd:sequence>
+  </xsd:complexType>
+
+  
+  <!--
+    The no-tx-connection-factory element is used to configure generic resource
+    adapters that do not support transactions
+  -->
+  <xsd:complexType name="no-tx-connection-factory">
+    <xsd:sequence>
+      <xsd:element name="jndi-name"
+       type="jboss:jndi-nameType"/>
+      <xsd:group ref="jboss:connectionFactoryGroup"/>
+      <xsd:group ref="jboss:securityGroup"/>
+      <xsd:group ref="jboss:connectionPoolGroup"/>
+    <xsd:element name="prefill"
+     type="jboss:prefillType" minOccurs="0" maxOccurs="1"/>      
+      <xsd:group ref="jboss:optionGroup"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Specify a jca-jdbc non-XADatasource (local) wrapper, using no transactions -->
+  <xsd:complexType name="no-tx-datasource">
+    <xsd:sequence>
+      <xsd:element name="jndi-name"
+       type="jboss:jndi-nameType"/>
+      <xsd:element name="use-java-context"
+       type="jboss:use-java-contextType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="connection-url"
+       type="jboss:connection-urlType"/>
+      <xsd:group ref="jboss:urlGroup"/>
+      
+      <xsd:element name="driver-class"
+       type="jboss:driver-classType"/>  
+      <xsd:element name="connection-property"
+       type="jboss:connection-propertyType" minOccurs="0" maxOccurs="unbounded"/>        
+      <xsd:group ref="jboss:userGroup"/>
+      <xsd:group ref="jboss:securityGroup"/>
+      <xsd:group ref="jboss:connectionPoolGroup"/>
+
+      <xsd:element name="validate-on-match"
+       type="jboss:validate-on-matchType" minOccurs="0" maxOccurs="1"/>
+      <xsd:group ref="jboss:datasourceGroup"/>
+      <xsd:element name="prefill"
+       type="jboss:prefillType" minOccurs="0" maxOccurs="1"/>
+      <xsd:group ref="jboss:additionGroup"/>
+
+      <xsd:group ref="jboss:optionGroup"/>    
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--
+    Specify a jca-jdbc non-XADatasource (local) wrapper, using local
+    transactions
+  -->
+  <xsd:complexType name="local-tx-datasource">
+    <xsd:sequence>
+      <xsd:element name="jndi-name"
+       type="jboss:jndi-nameType"/>
+      <xsd:element name="use-java-context"
+       type="jboss:use-java-contextType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="connection-url"
+       type="jboss:connection-urlType"/>
+      <xsd:group ref="jboss:urlGroup"/>
+      
+      <xsd:element name="driver-class"
+       type="jboss:driver-classType"/>  
+      <xsd:element name="transaction-isolation"
+       type="jboss:transaction-isolationType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="connection-property"
+       type="jboss:connection-propertyType" minOccurs="0" maxOccurs="unbounded"/>        
+      <xsd:group ref="jboss:userGroup"/>
+      <xsd:group ref="jboss:securityGroup"/>
+      <xsd:group ref="jboss:connectionPoolGroup"/>
+
+      <xsd:element name="validate-on-match"
+       type="jboss:validate-on-matchType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="no-tx-separate-pools"
+       type="javaee:emptyType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:group ref="jboss:datasourceGroup"/>
+      <xsd:element name="prefill"
+       type="jboss:prefillType" minOccurs="0" maxOccurs="1"/>
+      <xsd:group ref="jboss:additionGroup"/>
+
+      <xsd:group ref="jboss:optionGroup"/>    
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Specify a jca-jdbc XADatasource wrapper -->
+  <xsd:complexType name="xa-datasource">
+    <xsd:sequence>
+      <xsd:element name="jndi-name"
+       type="jboss:jndi-nameType"/>
+      <xsd:element name="use-java-context"
+       type="jboss:use-java-contextType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="track-connection-by-tx"
+       type="javaee:emptyType" minOccurs="0" maxOccurs="1"/>        
+      <xsd:element name="interleaving"
+       type="javaee:emptyType" minOccurs="0" maxOccurs="1"/>        
+      <xsd:element name="xa-datasource-class"
+       type="jboss:xa-datasource-classType"/>  
+      <xsd:element name="xa-datasource-property"
+       type="jboss:xa-datasource-propertyType" minOccurs="0" maxOccurs="unbounded"/>   
+
+      <xsd:element name="url-property"
+       type="jboss:url-propertyType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:group ref="jboss:urlGroup"/>
+      
+      <xsd:element name="isSameRM-override-value"
+       type="jboss:isSameRM-override-valueType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="transaction-isolation"
+       type="jboss:transaction-isolationType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:group ref="jboss:userGroup"/>
+
+      <xsd:group ref="jboss:securityGroup"/>
+      <xsd:group ref="jboss:connectionPoolGroup"/>
+
+      <xsd:element name="validate-on-match"
+       type="jboss:validate-on-matchType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="no-tx-separate-pools"
+       type="javaee:emptyType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:element name="xa-resource-timeout"
+       type="jboss:xa-resource-timeoutType" minOccurs="0" maxOccurs="1"/>  
+      <xsd:group ref="jboss:datasourceGroup"/>
+      <xsd:element name="prefill"
+       type="jboss:prefillType" minOccurs="0" maxOccurs="1"/>
+      <xsd:group ref="jboss:additionGroup"/>
+
+      <xsd:group ref="jboss:optionGroup"/>
+
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="datasources">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="loader-repository"
+         type="jboss:loader-repositoryType" minOccurs="0" maxOccurs="1"/>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	       <xsd:element name="local-tx-datasource" type="jboss:local-tx-datasource"/>
+          <xsd:element name="xa-datasource" type="jboss:xa-datasource"/>
+          <xsd:element name="no-tx-datasource" type="jboss:no-tx-datasource"/>
+        </xsd:choice>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- The connection-factories element is the root of the generic jca adaptor section -->
+  <xsd:element name="connection-factories">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="loader-repository"
+         type="jboss:loader-repositoryType" minOccurs="0" maxOccurs="1"/>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="tx-connection-factory" type="jboss:tx-connection-factory"/>
+          <xsd:element name="no-tx-connection-factory" type="jboss:no-tx-connection-factory"/>
+        </xsd:choice>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>    
+
+  <!--
+    The JNDI name under which the DataSource wrapper will be bound. Note that
+    this name is relative to the "java:/" prefix unless use-java-context is false.
+    Ex:
+    <jndi-name>DefaultDS</jndi-name>
+  -->
+   <xsd:complexType name="jndi-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Setting this to false will bind the DataSource into global jndi
+    Ex:
+    <use-java-context>false</use-java-context>
+  -->
+   <xsd:complexType name="use-java-contextType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The JDBC driver connection URL string
+    Ex:
+    <connection-url>jdbc:hsqldb:hsql://localhost:1701</connection-url>
+  -->
+   <xsd:complexType name="connection-urlType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The fully qualifed name of the JDBC driver class
+    Ex:
+    <driver-class>org.hsqldb.jdbcDriver</driver-class>
+  -->
+   <xsd:complexType name="driver-classType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Set java.sql.Connection transaction isolation level to use.
+    The constants defined in the interface Connection are the possible transaction
+    isolation levels and include:
+       TRANSACTION_READ_UNCOMMITTED
+       TRANSACTION_READ_COMMITTED
+       TRANSACTION_REPEATABLE_READ
+       TRANSACTION_SERIALIZABLE
+       TRANSACTION_NONE
+    
+       Ex:
+       <transaction-isolation>TRANSACTION_SERIALIZABLE</transaction-isoation>
+  -->
+  <xsd:complexType name="transaction-isolationType">
+    <xsd:simpleContent>
+      <xsd:restriction base="javaee:string">
+		   <xsd:enumeration value="TRANSACTION_READ_UNCOMMITTED"/>
+		   <xsd:enumeration value="TRANSACTION_READ_COMMITTED"/>
+		   <xsd:enumeration value="TRANSACTION_REPEATABLE_READ"/>
+         <xsd:enumeration value="TRANSACTION_SERIALIZABLE"/>
+         <xsd:enumeration value="TRANSACTION_NONE"/>
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!--
+    Specify the default username used when creating a new connection.
+    Ex:
+    <user-name>sa</user-name>
+  -->
+   <xsd:complexType name="user-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Specify the default password used when creating a new connection.
+    Ex:
+    <password>sa-pass</password>
+  -->
+   <xsd:complexType name="passwordType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Indicates that app supplied parameters (such as from getConnection(user, pw))
+    are used to distinguish connections in the pool.
+       Ex:
+       <application-managed-security/>
+  -->
+
+  <!--
+    Indicates Subject (from security domain) are used to distinguish connections in the pool. 
+    The content of the security-domain is the name of the JAAS security manager that will handle
+    authentication. This name correlates to the JAAS login-config.xml descriptor
+    application-policy/name attribute.
+    
+       Ex:
+       <security-domain>HsqlDbRealm</security-domain>
+
+   <xsd:complexType name="security-domainType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+  -->
+  
+  <!--
+    Indicates that either app supplied parameters (such as from
+    getConnection(user, pw)) or Subject (from security domain) are used to
+    distinguish connections in the pool. The content of the
+    security-domain is the name of the JAAS security manager that will handle
+    authentication. This name correlates to the JAAS login-config.xml descriptor
+    application-policy/name attribute.
+    
+       Ex:
+       <security-domain-and-application>HsqlDbRealm</security-domain-and-application>
+  -->
+   <xsd:complexType name="security-domain-and-applicationType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Whether to use separete pools for connection retrieved in a transaction
+         and those retieved outside a transaction
+    e.g.
+         <no-tx-separate-pools/>
+  -->
+
+  <!--
+    The min-pool-size element indicates the minimum number of connections a
+    pool should hold. These are not created until a Subject is known from a
+    request for a connection. This default to 0.
+    
+       Ex:
+       <min-pool-size>1</min-pool-size>
+  -->
+   <xsd:complexType name="min-pool-sizeType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The max-pool-size element indicates the maximum number of connections for a
+    pool. No more than MaxSize connections will be created in each sub-pool. This
+    defaults to 20.
+  -->
+   <xsd:complexType name="max-pool-sizeType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The blocking-timeout-millis element indicates the maximum time in
+    milliseconds to block while waiting for a connection before throwing an
+    exception. Note that this blocks only while waiting for a permit for a
+    connection, and will never throw an exception if creating a new connection
+    takes an inordinately long time. The default is 30000 (30 seconds).
+  -->
+   <xsd:complexType name="blocking-timeout-millisType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The idle-timeout-minutes element indicates the maximum time in
+    minutes a connection may be idle before being closed.  The actual maximum time
+    depends also on the IdleRemover scan time, which is 1/2 the smallest
+    idle-timeout-minutes of any pool.
+  -->
+   <xsd:complexType name="idle-timeout-minutesType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The allocation retry element indicates the number of times that allocating
+    a connection should be tried before throwing an exception. The default is 0.
+  -->
+   <xsd:complexType name="allocation-retryType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The allocation retry wait millis element indicates the time in
+    milliseconds to wait between retrying to allocate a connection. 
+    The default is 5000 (5 seconds).
+  -->
+   <xsd:complexType name="allocation-retry-wait-millisType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The validate-on-match element indicates whether or not connection level validation should be done when a connection factory attempts to
+    match a managed connection for a given set. This is typically exclusive to the use of background validation
+  -->
+   <xsd:complexType name="validate-on-matchType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+     An element to specify that connections should be validated on a background thread versus being validated
+    prior to use
+  -->
+   <xsd:complexType name="background-validationType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The background-validation-millis element specifies the amount of time, in milliseconds, that background validation
+    will run.
+  -->
+  <xsd:complexType name="background-validation-millisType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    An element to specify that all intermediate end(suspend) and
+    start(resume) calls.  Also, all work on one tx will go through one
+    connection.
+    A side effect of this (currently at least) is that a connection will only
+    be usable by one tx until the tx commits.
+       Ex:
+       <track-connection-by-tx/>
+    DEPRECATED: this element is now deprecated (it is assumed to present by default, also see <interleaving/>)
+  -->
+
+  <!--
+    An element to enable interleaving for XA connection factories
+    Ex:
+    <interleaving/>
+  -->
+
+
+  <!--
+    The fully qualifed name of the javax.sql.XADataSource implementation class.
+    Ex:
+    <xa-datasource-class>com.informix.jdbcx.IfxXADataSource</xa-datasource-class>
+  -->
+   <xsd:complexType name="xa-datasource-classType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Specify a property to assign to the XADataSource implementation class.
+    Each property is identified by the name attribute and the property value is
+    given by the xa-datasource-property element content. The property is mapped
+    onto the XADataSource implementation by looking for a JavaBeans style
+    getter method for the property name. If found, the value of the property is
+    set using the JavaBeans setter with the element text translated to the true
+    property type using the java.beans.PropertyEditor for the type.
+    
+       Ex:
+        <xa-datasource-property name="IfxWAITTIME">10</xa-datasource-property>
+        <xa-datasource-property name="IfxIFXHOST">myhost.mydomain.com</xa-datasource-property>
+        <xa-datasource-property name="PortNumber">1557</xa-datasource-property>
+        <xa-datasource-property name="DatabaseName">mydb</xa-datasource-property>
+        <xa-datasource-property name="ServerName">myserver</xa-datasource-property>
+  -->
+    <xsd:complexType name="xa-datasource-propertyType" mixed="true">
+      <xsd:attribute name="name" use="required"/>
+    </xsd:complexType>
+
+  <!--
+    The xa-datasource-property name attribute specifies the name of the
+    XADataSource attribute the xa-datasource-property element content provides
+    the value of.
+  -->
+  <!--
+    The isSameRM-override-value element allows one to unconditionally set
+    whether the javax.transaction.xa.XAResource.isSameRM(XAResource) returns
+    true or false.
+    
+    Ex:
+    <isSameRM-override-value>true</isSameRM-override-value>
+  -->
+   <xsd:complexType name="isSameRM-override-valueType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The connection-property element allows you to pass in arbitrary connection
+    properties to the Driver.connect(url, props) method. Each connection-property
+    specifies a string name/value pair with the property name coming from the
+    name attribute and the value coming from the element content.
+    
+       Ex:
+       <connection-property name="char.encoding">UTF-8</connection-property>
+  -->
+    <xsd:complexType name="connection-propertyType" mixed="true">
+      <xsd:attribute name="name" use="required"/>
+    </xsd:complexType>
+
+  <!--
+    The connection-property name attribute gives the name of the connection
+    property.
+  -->
+  <!--
+    Specify an SQL statement to execute whenever a connection is added to
+    the connection pool.
+  -->
+   <xsd:complexType name="new-connection-sqlType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Specify an SQL statement to check validity of a pool connection. This
+    may be called when managed connection is taken from pool for use.
+  -->
+   <xsd:complexType name="check-valid-connection-sqlType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    An org.jboss.resource.adapter.jdbc.ValidConnectionChecker that provides
+    a SQLException isValidConnection(Connection e) method to validate is a connection
+    is valid. An exception means the connection is destroyed.
+    This overrides the check-valid-connection-sql when present.
+    
+    Ex:
+    <exception-sorter-class-name>
+       org.jboss.resource.adapter.jdbc.vendor.OracleValidConnectionChecker
+    </exception-sorter-class-name>
+  -->
+   <xsd:complexType name="valid-connection-checker-class-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    An org.jboss.resource.adapter.jdbc.ExceptionSorter that provides
+    a boolean isExceptionFatal(SQLException e) method to validate is an exception
+    should be broadcast to all javax.resource.spi.ConnectionEventListener as
+    a connectionErrorOccurred message.
+    
+    Ex:
+    <exception-sorter-class-name>
+       org.jboss.resource.adapter.jdbc.vendor.OracleExceptionSorter
+    </exception-sorter-class-name>
+    <exception-sorter-class-name>
+       org.jboss.resource.adapter.jdbc.vendor.SybaseExceptionSorter
+    </exception-sorter-class-name>
+  -->
+   <xsd:complexType name="exception-sorter-class-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    An org.jboss.resource.adapter.jdbc.StaleConnectionChecker that provides
+    a boolean isStaleConnection(SQLException e) method which if it it returns
+    true will wrap the exception in an
+    org.jboss.resource.adapter.jdbc.StaleConnectionException
+    which is a subclass of SQLException.
+    
+    Ex:
+    <stale-connection-checker-class-name>
+       org.jboss.resource.adapter.jdbc.vendor.OracleStaleConnectionChecker
+    </stale-connection-checker-class-name>
+  -->
+   <xsd:complexType name="stale-connection-checker-class-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Whether to check for unclosed statements when a
+    connection is returned to the pool and result sets are
+    closed when a statement is closed/return to the prepared
+    statement cache.
+    valid values are:
+    false - do not track statements and results
+    true - track statements and result sets and warn when they are not closed
+    nowarn - track statements but do no warn about them being unclosed (the default)
+    e.g.
+    <track-statements>nowarn</track-statements>
+  -->
+   <xsd:complexType name="track-statementsType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Whether to attempt to prefill the connection pool. Empty element denotes a false value.
+    e.g.
+     <prefill>true</prefill>
+  -->
+   <xsd:complexType name="prefillType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Whether fail a connection allocation on the first connection if it is invalid (true)
+      or keep trying until the pool is exhausted of all potential connections (false)
+    
+      default false.
+    e.g.
+     <use-fast-fail>true</use-fast-fail>
+  -->
+   <xsd:complexType name="use-fast-failType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!-- The number of prepared statements per connection in an LRU cache -->
+   <xsd:complexType name="prepared-statement-cache-sizeType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    whether to share prepare statements, i.e. whether asking for same
+    statement twice without closing uses the same underlying prepared statement.
+    
+    The default is false.
+    e.g.
+    <share-prepared-statements/>
+  -->
+   <xsd:complexType name="share-prepared-statementsType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    whether to set the query timeout based on the time remaining until transaction timeout,
+    any configured query timeout will be used if there is no transaction.
+    
+    The default is false.
+    e.g.
+    <set-tx-query-timeout/>
+  -->
+   <xsd:complexType name="set-tx-query-timeoutType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:true-falseType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Any configured query timeout in seconds
+    
+    The default is no timeout
+    e.g. 5 minutes
+    <query-timeout>300</query-timeout>
+  -->
+   <xsd:complexType name="query-timeoutType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Any configured timeout for internal locks on the resource adapter objects in milli-seconds
+    restriction
+    The default is a 60 second timeout
+    e.g. 5 minutes
+    <use-try-lock>300000</use-try-lock>
+  -->
+  <xsd:complexType name="use-try-lockType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The rar deployment to associate with the connection manager mbean.
+    e.g. jms-ra.rar or myapplication.ear#my.rar for nested rars
+  -->
+   <xsd:complexType name="rar-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The connection definition inside the rar deployment uniquely identified by the
+    connection factory interface, e.g. javax.sql.DataSource
+  -->
+   <xsd:complexType name="connection-definitionType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    Passed to XAResource.setTransactionTimeout()
+    
+    Default is zero which does not invoke the setter
+    e.g. 5 minutes
+    <xa-resource-timeout>300</xa-resource-timeout>
+  -->
+   <xsd:complexType name="xa-resource-timeoutType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:xsdIntegerType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!--
+    The xa-transaction element is used to mark that the tx-connection-factory
+    supports XA transactions.
+  -->
+
+  <!--
+    The local-transaction element is used to mark that the tx-connection-factory
+    supports local transactions.
+  -->
+
+  <!-- The config-property specifies a mannaged connection factory property. -->
+  <xsd:complexType name="config-propertyType">
+    <xsd:simpleContent>
+      <xsd:extension base="javaee:string">
+      <xsd:attribute name="name" type="xsd:string" use="required"/>
+      <xsd:attribute name="type" type="xsd:string" use="required"/>
+    </xsd:extension>
+  </xsd:simpleContent>
+
+  </xsd:complexType>
+
+  <!--
+    The config-property name attribute gives the name of the connection
+    factory property.
+  -->
+  <!--
+    The config-property type attribute gives the name of the connection
+    factory property.
+  -->
+  <!-- The type mapping from conf/standardjboss.xml -->
+   <xsd:complexType name="type-mappingType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!-- For backwards compatibility use type-mapping -->
+  <xsd:complexType name="metadataType">
+    <xsd:sequence>
+      <xsd:element name="type-mapping"
+         type="jboss:type-mappingType"
+         minOccurs="0"
+         maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+
+  <!-- Specifies the delimiter for URLs in connection-url for HA datasources -->
+   <xsd:complexType name="url-delimiterType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!-- A class that implements org.jboss.resource.adapter.jdbc.URLSelectorStrategy -->
+   <xsd:complexType name="url-selector-strategy-class-nameType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:fully-qualified-classType"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+  <!-- For HA XA datasources, specifies the name of an xa-datasource-property that contains a list of URLs -->
+   <xsd:complexType name="url-propertyType">
+      <xsd:simpleContent>
+         <xsd:restriction base="javaee:string"/>
+      </xsd:simpleContent>
+   </xsd:complexType>
+</xsd:schema>

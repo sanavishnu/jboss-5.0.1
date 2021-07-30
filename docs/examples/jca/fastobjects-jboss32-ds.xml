@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	this file contains the configuration for using
+	the FastObjects t7 resource adapter with JBoss 3.2.1,
+	note, that the MBean name for JaasSecurityManager differs between JBoss 3.0.0 and 3.0.4
+	
+	make sure, that the FastObjects native libraries can be loaded (Windows:
+	runtime/bin of your FastObjects-Installation must be contained in PATH)
+	and that jdo.jar is copied into the default\lib-directory.
+	
+	Place this file and the RAR-file into the default\deploy directory.
+
+-->
+
+<connection-factories>
+
+
+
+  <tx-connection-factory>
+    <jndi-name>t7Connector</jndi-name>
+
+    <local-transaction/>
+    <adapter-display-name>t7-jdo</adapter-display-name>
+
+    <config-property name="ConnectionURL" type="java.lang.String">FastObjects://localhost/myBase</config-property>
+    <config-property name="TransactionDemarcation" type="java.lang.String">ContainerManaged</config-property>
+    <config-property name="VerboseMode" type="java.lang.String">0</config-property>
+
+    <min-pool-size>5</min-pool-size>
+    <max-pool-size>50</max-pool-size>
+    <blocking-timeout-millis>5000</blocking-timeout-millis>
+    <idle-timeout-minutes>15</idle-timeout-minutes>
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+
+
+  </tx-connection-factory>
+</connection-factories>
+

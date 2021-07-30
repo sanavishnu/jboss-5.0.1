@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:remove>
+    <!-- Set the content type to "text/html" to ensure "application/xhtml+xml", which would put Firefox and
+  other Gecko-based browsers into XML mode (which requires pages to be well-formed XML), is not used.
+  We also specify the charset/encoding here, since we cannot specify it via the xml prolog, since
+  including an xml prolog causes IE6 to go into the undesirable "quirks mode".
+  (see https://jira.jboss.org/jira/browse/EMBJOPR-19) -->
+</ui:remove>
+<f:view contentType="text/html; charset=UTF-8">
+    <head>
+        <base href="#{baseUrl}"/>
+        <title>
+            <ui:insert name="title">#{messages['default.windowTitle']}</ui:insert>
+        </title>
+
+        <link href="css/console-style.css" rel="stylesheet" type="text/css"/>
+        <link href="css/form-style.css" rel="stylesheet" type="text/css"/>
+
+        <link rel="icon" type="image/png" href="images/favicon.png"/>
+        <link rel="apple-touch-icon" href="images/favicon.png"/>
+
+        <script type="text/javascript" src="js/embedded.js"></script>
+
+        <!--[if lt IE 7]>
+        <style type="text/css" media="screen">
+        /* let the IE expressions commence */
+        /* old ghost in the box for IEs 5.01 + 5.5 */
+        body
+            {
+            overflow-y: hidden;
+            margin: 0;
+            padding: 0;
+            }
+        #content
+            {
+            height: expression( document.body.clientHeight - (parseInt(document.body.currentStyle.fontSize) * 1.3333333 * (8 + 5) ) + 'px') ;
+            overflow: auto;
+            }
+        /* backslashes feed the new ghost in the box to IE6 */
+        h\tml
+            {
+            overflow: hidden;
+            }
+        h\tml body
+            {
+            height: 100%;
+            overflow: auto;
+            }
+        h\tml #content
+            {
+            height: 100%;
+            overflow: visible;
+            }
+        #pageheader, #footer
+            {
+            width: expression(document.body.clientWidth + 'px');
+            }
+        #sidebar-left
+            {
+            height: expression(document.body.clientHeight - (parseInt(document.body.currentStyle.fontSize) * 1.3333333 * (8 + 5)) + 'px');
+            }
+        </style>
+        <![endif]-->
+
+    </head>
+    <body>
+    <div id="content">
+        <!--TODO: add if statement to determine if this warning should be displayed-->
+        <!--  Restart of server indicator  -->
+        <!--<div id="RestartWarning">-->
+        <!--<h:graphicImage value="images/icoServerRestartWarning.gif"/>-->
+        <!--<span>Restart of server is required</span>-->
+        <!--( <a href="#">hide</a>  |  <a href="#">Learn more</a> )-->
+        <!--</div>-->
+        <!--breadcrumb-->
+        <div id="bread">
+            <ui:repeat var="node" value="#{navigationAction.getBreadCrumbs()}">
+                <ul>
+                    <li>
+                        <h:outputText value=" : "/>
+                        <s:link view="/secure/summary.xhtml" propagation="end">
+                            <f:param name="path" value="#{node.path}"/>
+                            #{node.name} </s:link>
+                    </li>
+                </ul>
+            </ui:repeat>
+        </div>
+        <!-- page titling  -->
+        <h1>
+            <ui:insert name="pagetitle"/>
+        </h1>
+        <!--tab menu is optional-->
+        <ui:insert name="tabmenu"></ui:insert>
+        <ui:insert name="body">body goes here</ui:insert>
+    </div>
+    <ui:include src="include/resourceNavigation.xhtml"/>
+    <ui:include src="include/header.xhtml"/>
+    <ui:include src="include/footer.xhtml"/>
+    </body>
+</f:view>
+</html>

@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  $Id: jboss-client_4_2.dtd 58121 2006-11-04 19:57:58Z thomas.diesler@jboss.com $
+
+  <!DOCTYPE jboss-web PUBLIC
+    "-//JBoss//DTD Web Service Reference 4.2//EN"
+    "http://www.jboss.org/j2ee/dtd/service-ref_4_2.dtd">
+-->
+
+<!--
+  WebServiceRef customization
+-->
+
+<!--
+  Runtime settings for a web service reference. In the simplest case,
+  there is no runtime information required for a service ref.  Runtime info
+  is only needed in the following cases :
+
+  * to define the port that should be used to resolve a container-managed port
+  * to define default Stub property settings for Stub objects
+  * to define the URL of a final WSDL document to be used
+
+  Example:
+
+  <service-ref>
+   <service-ref-name>OrganizationService</service-ref-name>
+   <wsdl-override>file:/wsdlRepository/organization-service.wsdl</wsdl-override>
+  </service-ref>
+
+  <service-ref>
+   <service-ref-name>OrganizationService</service-ref-name>
+   <config-name>Secure Client Config</config-name>
+   <config-file>META-INF/jbossws-client-config.xml</config-file>
+   <handler-chain>META-INF/jbossws-client-handlers.xml</handler-chain>
+  </service-ref>
+
+  <service-ref>
+   <service-ref-name>SecureService</service-ref-name>
+   <service-impl-class>org.jboss.tests.ws.jaxws.webserviceref.SecureEndpointService</service-impl-class>
+   <service-qname>{http://org.jboss.ws/wsref}SecureEndpointService</service-qname>
+    <port-component-ref>
+     <service-endpoint-interface>org.jboss.tests.ws.jaxws.webserviceref.SecureEndpoint</service-endpoint-interface>
+     <port-qname>{http://org.jboss.ws/wsref}SecureEndpointPort</port-qname>
+     <stub-property>
+      <name>javax.xml.ws.security.auth.username</name>
+      <value>kermit</value>
+     </stub-property>
+     <stub-property>
+      <name>javax.xml.ws.security.auth.password</name>
+      <value>thefrog</value>
+     </stub-property>
+   </port-component-ref>
+  </service-ref>
+-->
+<!ELEMENT service-ref (service-ref-name, service-impl-class?, service-qname?, config-name?, config-file?, handler-chain?, port-component-ref*, wsdl-override?)>
+
+<!--
+  The service-ref-name element gives the ENC relative name.
+  Overrides @WebServiceRef.name
+-->
+<!ELEMENT service-ref-name (#PCDATA)>
+
+<!--
+  Name of the JAXWS service implementation class.
+  Overrides @WebServiceRef.value
+-->
+<!ELEMENT service-impl-class (#PCDATA)>
+
+<!--
+  The service-qname element declares the specific WSDL service element.
+  Specify the qualified service name in the form defined by QName.valueOf()
+
+  Example:
+     <service-qname>{http://somensURI}SomeService</service-qname>
+-->
+<!ELEMENT service-qname (#PCDATA)>
+
+<!--
+  The optional handler-chain element is a URL or resource name to a handler chain configuration.
+  See: @HandlerChain.file
+-->
+<!ELEMENT handler-chain (#PCDATA)>
+
+<!--
+  Information for a port within a service-ref.
+
+  Either service-endpoint-interface or wsdl-port or both
+  (service-endpoint-interface and wsdl-port) should be specified.
+
+  If both are specified, wsdl-port represents the
+  port the container should choose for container-managed port selection.
+
+  The same wsdl-port value must not appear in
+  more than one port-component-ref entry within the same service-ref.
+
+  If a particular service-endpoint-interface is using container-managed port
+  selection, it must not appear in more than one port-component-ref entry
+  within the same service-ref.
+-->
+<!ELEMENT port-component-ref (service-endpoint-interface?, port-qname?, config-name?, config-file?, stub-property*, call-property*)>
+
+<!--
+  Fully qualified name of service endpoint interface
+-->
+<!ELEMENT service-endpoint-interface (#PCDATA)>
+
+<!--
+  Port used in port-component-ref.
+  Specify the qualified port name in the form defined by QName.valueOf()
+
+  Example:
+     <port-qname>{http://somensURI}SomeService</port-qname>
+-->
+<!ELEMENT port-qname (#PCDATA)>
+
+<!--
+  The optional config-name element gives the client configuration name that must be present in
+  the configuration given by element config-file. Ports that match this port info will be
+  configured with this config name.
+
+  The default is: Standard Client
+-->
+<!ELEMENT config-name (#PCDATA)>
+
+<!--
+  The optional config-file element is a URL or resource name for the client configuration.
+  Ports that match this port info will be configured with this config file.
+
+  The default is: META-INF/standard-jbossws-client-config.xml
+-->
+<!ELEMENT config-file (#PCDATA)>
+
+<!--
+  Property values that should be set on a stub before it's returned to
+  to the web service client.  The property names can be any properties supported
+  by the StubExt or Stub implementation.
+
+  See javadoc for org.jboss.ws.core.StubExt, javax.xml.rpc.Stub
+-->
+<!ELEMENT stub-property (prop-name, prop-value)>
+
+<!--
+  This text nodes holds a name string.
+-->
+<!ELEMENT prop-name (#PCDATA)>
+
+<!--
+  This text nodes holds a value string.
+-->
+<!ELEMENT prop-value (#PCDATA)>
+
+<!-- Arbitrary jaxrpc property values that should be set on a Call object
+before it's returned to the web service client. The valid properties can be any
+properties supported by the jaxrpc Call implementation.
+-->
+<!ELEMENT call-property ( prop-name, prop-value )>
+
+<!--
+  The wsdl-override element the actual wsdl docuement the web service client
+  uses to connect to the remote service.
+
+  Overrides @WebServiceRef.wsdlLocation
+-->
+<!ELEMENT wsdl-override (#PCDATA)>

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    ProfileService beans that extend the bootstrap configuration.
+    This includes:
+    Remote access to ProfileService interfaces
+    ManagementView plugin + DeploymentTemplates
+    ...
+    $Id: profileservice-jboss-beans.xml 88782 2009-05-13 07:43:19Z jason.greene@jboss.com $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+    <!-- profileservice secureview application-policy definition -->
+    <application-policy xmlns="urn:jboss:security-beans:1.0" name="profileservice">
+        <authentication>
+            <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
+                <module-option name="unauthenticatedIdentity">nouser</module-option>
+                <module-option name="usersProperties">profileservice-users.properties</module-option>
+                <module-option name="rolesProperties">profileservice-roles.properties</module-option>
+            </login-module>
+        </authentication>
+    </application-policy>
+
+    <bean name="ConnectorMBean">
+        <constructor factoryClass="org.jboss.mx.util.MBeanTyper" factoryMethod="typeMBean">
+            <parameter><inject bean="JMXKernel" property="mbeanServer"/></parameter>
+            <parameter>jboss.remoting:service=Connector,transport=socket</parameter>
+            <parameter>org.jboss.remoting.transport.ConnectorMBean</parameter>
+        </constructor>
+        <depends>jboss.remoting:service=Connector,transport=socket</depends>
+    </bean>
+
+    <!--
+        Add a ProfileService handler to the remoting socket connector
+    -->
+    <bean name="ProfileServiceInvocationHandler"
+        class="org.jboss.profileservice.remoting.ProfileServiceInvocationHandler">
+        <install bean="ConnectorMBean" method="addInvocationHandler">
+            <parameter class="java.lang.String">ProfileService</parameter>
+            <parameter class="org.jboss.remoting.ServerInvocationHandler"><this/></parameter>
+        </install>
+        <uninstall bean="ConnectorMBean" method="removeInvocationHandler">
+            <parameter>ProfileService</parameter>
+        </uninstall>
+        <property name="managementViewProxy"><inject bean="ProfileServiceProxyFactory" property="managementViewProxy"/></property>
+        <property name="deployMgrProxy"><inject bean="ProfileServiceProxyFactory" property="deployMgrProxy"/></property>
+        <property name="securityDomain">profileservice</property>
+        <property name="securityManagement"><inject bean="JNDIBasedSecurityManagement"/></property>
+    </bean>
+    
+    <!--
+        Add a DeploymentManger handler to the remoting socket connector
+    -->
+    <bean name="DeploymentInvocationHandler"
+        class="org.jboss.profileservice.management.upload.remoting.DeployHandler">
+        <install bean="ConnectorMBean" method="addInvocationHandler">
+            <parameter class="java.lang.String">DeploymentManager</parameter>
+            <parameter class="org.jboss.remoting.ServerInvocationHandler"><this/></parameter>
+        </install>
+        <uninstall bean="ConnectorMBean" method="removeInvocationHandler">
+            <parameter>DeploymentManager</parameter>
+        </uninstall>
+        <property name="deployer"><inject bean="ProfileServiceDeployer"/></property>
+        <property name="profileService"><inject bean="ProfileService"/></property>
+        <property name="profileRepository"><inject bean="ProfileRepositoryFactory" /></property>
+        <depends>TransientDeploymentsProfileManager</depends>
+    </bean>
+
+    <bean name="TransientDeploymentsProfileManager"
+        class="org.jboss.profileservice.management.upload.AbstractTransientProfileManager">
+        <property name="profileService"><inject bean="ProfileService"/></property>
+    </bean>
+
+    <bean name="RuntimeComponentDispatcher" class="org.jboss.profileservice.management.KernelBusRuntimeComponentDispatcher">
+       <constructor>
+          <parameter class="org.jboss.kernel.Kernel"><inject bean="jboss.kernel:service=Kernel"/></parameter>
+       </constructor>
+    </bean>
+    
+    <bean name="MBeanRuntimeComponentDispatcher" class="org.jboss.profileservice.management.MBeanRuntimeComponentDispatcher">
+       <constructor>
+           <parameter name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></parameter>
+       </constructor>
+    </bean>
+
+    <bean name="ManagedOperationProxyFactory" class="org.jboss.profileservice.management.ManagedOperationProxyFactory">
+    	<property name="locator"><inject bean="ConnectorMBean" property="invokerLocator"/></property>
+        <property name="dispatcher"><inject bean="RuntimeComponentDispatcher"/></property>
+        <property name="dispatchName">kernel-dispatcher</property>
+    </bean>
+    
+    <bean name="MBeanManagedOperationProxyFactory" class="org.jboss.profileservice.management.ManagedOperationProxyFactory">
+    	<property name="locator"><inject bean="ConnectorMBean" property="invokerLocator"/></property>
+        <property name="dispatcher"><inject bean="MBeanRuntimeComponentDispatcher"/></property>
+        <property name="dispatchName">mbean-dispatcher</property>
+    </bean>
+
+    <!-- The default applications profile key -->
+    <bean name="ApplicationsProfileKey" class="org.jboss.profileservice.spi.ProfileKey">
+		<constructor><parameter><inject bean="BootstrapProfileFactory" property="applicationsName" /></parameter></constructor>
+	</bean>
+	
+    <!--
+        The ManagementView plugin
+    -->
+    <bean name="ManagementView" class="org.jboss.profileservice.management.ManagementViewImpl">
+        <install bean="ProfileService" method="setViewManager">
+            <parameter>
+                <this/>
+            </parameter>
+        </install>
+        <uninstall bean="ProfileService" method="setViewManager">
+            <parameter>
+                <null/>
+            </parameter>
+        </uninstall>
+        <property name="mainDeployer"><inject bean="MainDeployer"/></property>
+        <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+        <property name="profileService"><inject bean="ProfileService"/></property>
+       	<property name="attachmentStore"><inject bean="AttachmentStore" /></property>
+       	<property name="deploymentManager"><inject bean="DeploymentManager"/></property>
+        <property name="defaultProfileKey"><inject bean="ApplicationsProfileKey"/></property>
+        <property name="dispatcher"><inject bean="RuntimeComponentDispatcher"/></property>
+        <property name="proxyFactory"><inject bean="ManagedOperationProxyFactory"/></property>
+        <property name="mbeanProxyFactory"><inject bean="MBeanManagedOperationProxyFactory"/></property>
+        <property name="bootstrapManagedDeployments"><inject bean="ProfileServiceBootstrap" property="bootstrapMDs"/></property>
+        <!-- Accept any implementor of DeploymentTemplate -->
+        <incallback method="addTemplate"/>
+        <uncallback method="removeTemplate"/>
+        <!-- Accept any implementor of ManagedDeployment -->
+        <incallback method="addManagedMBeanDeployments"/>
+        <uncallback method="removeManagedMBeanDeployments"/>
+    </bean>
+
+    <!--
+        The DeploymentManager plugin
+    -->
+    <bean name="DeploymentManager"
+        class="org.jboss.profileservice.management.upload.DeploymentManagerImpl">
+        <install bean="ProfileService" method="setDeploymentManager">
+            <parameter>
+                <this/>
+            </parameter>
+        </install>
+        <uninstall bean="ProfileService" method="setDeploymentManager">
+            <parameter>
+                <null/>
+            </parameter>
+        </uninstall>
+        <property name="defaultProfileKey"><inject bean="ApplicationsProfileKey"/></property>
+        <property name="profileRepository"><inject bean="ProfileRepositoryFactory"/></property>
+        <property name="locator"><inject bean="ConnectorMBean" property="invokerLocator"/></property>
+        <property name="remotingSubsystem">DeploymentManager</property>
+    </bean>
+
+    <!-- To remove the unsecure proxy binding, change the jndiName property to
+        a local binding like java:ProfileService and update the
+        deploy/profileservice-secured.jar ejb-jar.xml profileService
+        resource-ref/mapped-name.
+    -->
+    <bean name="ProfileServiceProxyFactory" class="org.jboss.profileservice.remoting.ProxyFactory">
+        <property name="dispatchName">ProfileService</property>
+        <property name="jndiName">ProfileService</property>
+        <property name="locator"><inject bean="ConnectorMBean" property="invokerLocator"/></property>
+        <property name="profileService"><inject bean="ProfileService"/></property>
+        <property name="viewManager"><inject bean="ManagementView"/></property>
+        <property name="deploymentManager"><inject bean="DeploymentManager"/></property>
+        <depends>ConnectorMBean</depends>
+    </bean>
+    <bean name="PlatformMBeanKernelRegistryPlugin" class="org.jboss.profileservice.management.PlatformMBeanKernelRegistryPlugin">
+        <property name="serviceController"><inject bean="JMXKernel" property="serviceController"/></property>
+    </bean>
+    <!-- Handle OpenType composite conversion to MetaType -->
+    <bean name="CompositeDataMetaValueBuilder"
+        class="org.jboss.managed.plugins.jmx.CompositeDataMetaValueBuilder">
+        <install bean="MetaValueFactory" method="setBuilder">
+            <parameter>
+                <value>javax.management.openmbean.CompositeDataSupport</value>
+            </parameter>
+            <parameter>
+                <this/>
+            </parameter>
+        </install>
+        <uninstall bean="MetaValueFactory" method="setBuilder">
+            <parameter>
+                <value>javax.management.openmbean.CompositeDataSupport</value>
+            </parameter>
+            <parameter>
+                <null/>
+            </parameter>
+        </uninstall>
+        <property name="metaValueFactory"><inject bean="MetaValueFactory"/></property>
+    </bean>
+
+    <!-- A MBeanDeploymentNameBuilder that just uses the name key as the name -->
+    <bean name="NameKeyMBeanDeploymentNameBuilder"
+        class="org.jboss.profileservice.management.mbean.SimpleMBeanDeploymentNameBuilder">
+        <property name="keyName">name</property>
+    </bean>
+    <bean name="HostMBeanDeploymentNameBuilder"
+        class="org.jboss.profileservice.management.mbean.SimpleMBeanDeploymentNameBuilder">
+        <property name="keyName">host</property>
+    </bean>
+    <!-- A MBeanDeploymentNameBuilder that combines the host,path keys as the name -->
+    <bean name="WarManagerMBeanDeploymentNameBuilder"
+        class="org.jboss.profileservice.management.mbean.ComplexMBeanDeploymentNameBuilder">
+        <property name="prefix">//</property>
+        <property name="keyNames">
+            <list elementClass="java.lang.String">
+                <value>host</value>
+                <value>path</value>
+            </list>
+        </property>
+    </bean>
+    <!-- A deployment for the following mbean patterns:
+        jboss.web:host=localhost,path=/jmx-console,type=Manager
+        jboss.web:J2EEApplication=none,J2EEServer=none,j2eeType=WebModule,name=*
+        +- all servlets attribute names
+    -->
+    <bean name="WarManagedDeploymentFactory"
+        class="org.jboss.profileservice.management.ProxyManagedDeploymentFactory">
+        <property name="factoryName">War</property>
+
+        <property name="defaultViewUse">STATISTIC</property>
+        <property name="rootMOPatterns">
+            <set elementClass="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                <!-- Manager -->
+                <bean class="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                    <property name="compType">MBean</property>
+                    <property name="compSubtype">WebApplicationManager</property>
+                    <property name="pattern">jboss.web:host=localhost,type=Manager,*</property>
+                    <property name="nameBuilder">
+                        <inject bean="WarManagerMBeanDeploymentNameBuilder"/>
+                    </property>
+                </bean>
+                <!-- WebModule -->
+                <bean class="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                    <property name="compType">MBean</property>
+                    <property name="compSubtype">WebApplication</property>
+                    <property name="pattern">jboss.web:J2EEApplication=none,J2EEServer=none,j2eeType=WebModule,*</property>
+                    <property name="nameBuilder">
+                        <inject bean="NameKeyMBeanDeploymentNameBuilder"/>
+                    </property>
+                    <property name="componentInfo">
+                        <map keyClass="java.lang.String" valueClass="java.lang.String">
+                            <!-- Process the servlets components -->
+                            <entry>
+                                <key>servlets</key>
+                                <value>MBean:Servlet</value>
+                            </entry>
+                        </map>
+                    </property>
+                </bean>
+            </set>
+        </property>
+    </bean>
+    <!-- jboss.web:host=*,type=Host -->
+    <bean name="WebHostsManagedDeploymentFactory"
+        class="org.jboss.profileservice.management.ProxyManagedDeploymentFactory">
+        <property name="factoryName">WebHost</property>
+        
+        <property name="defaultViewUse">STATISTIC</property>
+        <property name="rootMOPatterns">
+            <set elementClass="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                <!-- Manager -->
+                <bean class="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                    <property name="compType">MBean</property>
+                    <property name="compSubtype">WebHost</property>
+                    <property name="pattern">jboss.web:type=Host,*</property>
+                    <property name="nameBuilder">
+                        <inject bean="HostMBeanDeploymentNameBuilder"/>
+                    </property>
+                </bean>
+            </set>
+        </property>
+    </bean>
+    <!-- jboss.web:name=*,type=GlobalRequestProcessor/ThreadPool -->
+    <bean name="ConnectorManagedDeploymentFactory"
+        class="org.jboss.profileservice.management.ProxyManagedDeploymentFactory">
+        <property name="factoryName">Connector</property>
+        
+        <property name="defaultViewUse">STATISTIC</property>
+        <property name="rootMOPatterns">
+            <set elementClass="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                <!-- Manager -->
+                <bean class="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                    <property name="compType">MBean</property>
+                    <property name="compSubtype">WebRequestProcessor</property>
+                    <property name="pattern">jboss.web:type=GlobalRequestProcessor,*</property>
+                    <property name="nameBuilder">
+                        <inject bean="NameKeyMBeanDeploymentNameBuilder"/>
+                    </property>
+                </bean>
+                <bean class="org.jboss.profileservice.management.ProxyDeploymentInfo">
+                    <property name="compType">MBean</property>
+                    <property name="compSubtype">WebThreadPool</property>
+                    <property name="pattern">jboss.web:type=ThreadPool,*</property>
+                    <property name="nameBuilder">
+                        <inject bean="NameKeyMBeanDeploymentNameBuilder"/>
+                    </property>
+                </bean>
+            </set>
+        </property>
+    </bean>
+</deployment>

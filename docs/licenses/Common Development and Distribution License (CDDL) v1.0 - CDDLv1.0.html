@@ -1,0 +1,888 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+                 
+ 
+ <head>
+ <style type="text/css"> /* <![CDATA[ */
+ @import "/branding/css/tigris.css";
+ @import "/branding/css/inst.css";
+ /* ]]> */</style>
+ <link rel="stylesheet" type="text/css" href="/branding/css/print.css" media="print" />
+ <script src="/branding/scripts/tigris.js" type="text/javascript"></script>
+  
+             
+ 
+  <script src="/branding/scripts/alm.js" type="text/javascript"></script>
+ <style type="text/css">
+    /* <![CDATA[ */
+    @import "/branding/css/alm.css";
+   /* ]]> */
+ </style>
+ 
+ 
+ 
+ 
+                                                       <title>
+        glassfish:        CDDL ver. 1.0
+    </title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <meta http-equiv="Content-Style-Type" content="text/css" />
+ <meta name="version" content="4.5.2.148.4" />
+ 
+ 
+  
+  
+  <meta name="author" content="Cliff Allen">
+
+</head>
+ 
+ 
+<body  class="composite">
+ 
+ 
+ <div id="collabnet">
+ <div id="login"> 
+     <div>
+      <a href="https://www.dev.java.net/servlets/Login?detour=https://glassfish.dev.java.net/public/CDDLv1.0.html">Login</a>
+      |    <a href="https://www.dev.java.net/servlets/Join">Register</a>    </div>
+ </div>
+ <a href="http://www.collab.net/special/clickpbc0502.html" id="cnlogo">
+<span class="alt">CollabNet Enterprise Edition</span></a>
+</div>
+ 
+ 
+ 
+ 
+ 
+
+<div class="topline">
+<div class="topbar">
+<div id="banner">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td>
+		  	<div><a href="http://www.java.net"><img src="/branding/images/header_jnet_new.jpg" width="500" height="60" alt="The Source for Java Technology Collaboration" /></a></div>
+  		</td>
+	  	<td class="right" style="vertical-align:middle">
+  			<div id="domainlinks">
+				
+								<div id="loginbox">
+												<div>
+				   <a href="https://www.dev.java.net/servlets/TLogin?detour=https://glassfish.dev.java.net/public/CDDLv1.0.html">Login</a>								|    <a href="https://www.dev.java.net/servlets/Join">Register</a>								</div>
+								</div>
+								
+			</div>
+		</td>
+  	</tr>
+</table>
+</div>
+</div>
+</div> 
+ 
+ 
+ 
+ <div id="toptabs">
+
+<table cellpadding="4" cellspacing="0" border="0"><tr>
+
+
+<td>   <a href="https://www.dev.java.net/servlets/StartPage">My pages</a></td>
+
+<th><a href="http://community.java.net/projects/">Projects</a></th>
+
+
+  <td><a href="http://community.java.net/">Communities</a></td>
+
+
+
+<td><a href="http://www.java.net">java.net</a></td>
+
+
+</tr></table>
+</div>
+
+  
+ 
+ <div id="breadcrumbs">
+   <a href="https://www.dev.java.net/servlets/ProjectList">Projects</a>    >
+     
+
+   <strong>   <a href="https://glassfish.dev.java.net/"
+     >glassfish</a>
+   </strong>  </div>
+ 
+ 
+ 
+ 
+<table border="0" cellspacing="0" cellpadding="4" width="100%" id="main">
+<tr>
+<td id="navcol">
+ 
+ 
+ <dl class="navgroup"> <dt>Get Involved</dt> <dd>  <ul>   <li><a href="https://java-net.dev.java.net/">java-net Project</a></li>   <li><a href="http://www.java.net/request_project.csp">Request a Project</a></li>   <li><a href="http://community.java.net/help_wanted/">Project Help Wanted Ads</a></li>   <li><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></li>   <li><a href="http://today.java.net/cs/user/create/bl?x-layout=content">Submit Content</a></li>   <li><a href="/servlets/OpenCollabNet">Site Help</a></li>  </ul> </dd> </dl>
+
+
+  
+             
+ 
+  
+ 
+                                                           <dl id="projecttools" class="navgroup">
+   <dt>Project tools</dt>
+   <dd>
+    <ul>
+          <li>   <a href="https://glassfish.dev.java.net/servlets/ProjectHome;jsessionid=5211B7DD632C9CC066CB6381758515A7">Project home</a></li>
+           
+       
+ 
+   </ul>
+</dd>
+ 
+ 
+                  
+ 
+   <dd><ul>
+    <li>   <a href="https://glassfish.dev.java.net/servlets/ProjectNewsList;jsessionid=5211B7DD632C9CC066CB6381758515A7">Announcements</a></li>
+ 
+ 
+            
+ 
+        <li>   <a href="https://glassfish.dev.java.net/servlets/ProjectForumView;jsessionid=5211B7DD632C9CC066CB6381758515A7">Discussion forums</a></li>
+  
+ 
+         
+ 
+   <li>   <a href="https://glassfish.dev.java.net/servlets/ProjectMailingListList;jsessionid=5211B7DD632C9CC066CB6381758515A7">Mailing lists</a></li>
+      </ul></dd>
+       
+ 
+            
+ 
+   <dd><ul>
+    <li>   <a href="https://glassfish.dev.java.net/servlets/ProjectDocumentList;jsessionid=5211B7DD632C9CC066CB6381758515A7">Documents &amp; files</a></li>
+ 
+ 
+         
+ 
+   <li>
+<a href="https://glassfish.dev.java.net/source/browse/glassfish/"
+>CVS</a>
+
+
+</li>
+      </ul></dd>
+       
+ 
+               
+ 
+   <dd><ul>
+  <li>   <a href="https://glassfish.dev.java.net/servlets/ProjectIssues;jsessionid=5211B7DD632C9CC066CB6381758515A7">Issue tracker</a></li>
+ 
+ 
+                               	</ul>
+       </dd>
+                <dd>
+      </dd>
+<script>document.getElementById("main").parentNode.style.display="none";</script>
+<dd id=menubar>
+	<!-- menubar for the main site -->
+	<ul id="main-menubar">
+    <li>
+      <a href="/public/downloadsindex.html" match="/downloads/">Downloads</a>
+    <li>
+      <a href="/servlets/ProjectNewsList">Announcements</a>
+    <li>
+      <a href="/servlets/ProjectMailingListList">Mailing lists</a>
+    <li>
+      <a href="http://forums.java.net/jive/forum.jspa?forumID=56&amp;start=0">Discussion forums</a>
+    <li>
+      <a href="#" match="/public/users.html">Using GlassFish</a>
+      <ul>
+        <li>
+          <a href="/public/CDDL+GPL.html">License</a>
+        <li>
+          <a href="/public/faq/index.html" match="/public/faq/.*">GlassFish FAQ</a>
+        <li>
+          <a href="http://wiki.glassfish.java.net/">GlassFish Wiki</a>
+        <li>
+          <a href="/docs/index.html">Documentation</a>
+        <li>
+          <a href="/public/TipsandBlogs.html">Tech Tips and Blogs</a>
+        <li>
+          <a href="/nonav/javaee5/api/index.html">Javadocs</a>
+        <li>
+          <a href="mailto:feedback@glassfish.dev.java.net">Send us feedback</a>
+      </ul>
+    <li>
+      <a href="#">Samples</a>
+      <ul>
+        <li>
+          <a href="https://blueprints.dev.java.net">Blueprints Samples</a>
+        </li>
+        <li>
+          <a href="https://glassfish-samples.dev.java.net">GlassFish Samples</a>
+        </li>
+      </ul>
+    <li>
+      <a href="#" match="/public/devindex.html">Developing GlassFish</a>
+      <ul>
+        <li>
+          <a href="http://wiki.glassfish.java.net/Wiki.jsp?page=BuildInformation">Build Instructions</a>
+        <li>
+          <a href="http://glassfishbuildtools.sun.com:8000/hudson/job/glassfish">Continuous Build</a>
+        <li>
+          <a href="http://fisheye4.cenqua.com/browse/glassfish-svn">FishEye(SVN)</a>
+        <li>
+          <a href="/source/browse/glassfish">CVS repository</a>
+        <li>
+          <a href="http://fisheye.cenqua.com/java.net/viewrep/cvs/glassfish">FishEye(CVS)</a>
+      </ul>
+    <li>
+      <a href="/quality/portal/index.html">GlassFish Quality Community</a>
+    <li>
+	  <a href="/docs/project.html">Documentation Community</a>
+	<li>
+      <a href="/servlets/ProjectIssues">Issue tracker</a>
+    <li>
+      <form method="get" action="/issues/show_bug.cgi" style="margin-left:2em">
+        <input type="submit" value="Go to"/>Issue #<input name="id" size="3"/>
+      </form>
+    </li>
+    <li>
+      <a href="/ja/">&#x65e5;&#x672c;&#x8a9e;</a>
+    <li>
+      <a href="/zh/">&#x7b80;&#x4f53;&#x4e2d;&#x6587;</a>
+    <li>
+      <a href="#">Other Languages</a>
+      <ul>
+        <li>
+          <a href="/de/">Deutsch</a>
+        <li>
+          <a href="/es/">Espa&ntilde;ol</a>
+        <li>
+          <a href="/fr/">Fran&ccedil;ais</a>
+        <li>
+          <a href="/ko/">&#xd55c;&#xad6d;&#xc5b4;</a>
+        <li>
+          <a href="/zh_TW/">&#x7e41;&#x9ad4;&#x4e2d;&#x6587;</a>
+      </ul>
+  </ul>
+  <!-- menubar for the Japanese localization site -->
+  <!-- Use http://piro.sakura.ne.jp/latest/entries/mozilla/xul/2005-09-28_unicode-escape.files/unicode.xul -->
+  <ul id="ja-menubar" style="display:none;">
+    <li>
+      <a href="/public/downloadsindex.html">&#x30c0;&#x30a6;&#x30f3;&#x30ed;&#x30fc;&#x30c9;</a>
+    <li>
+      <a href="/servlets/ProjectNewsList">&#x30cb;&#x30e5;&#x30fc;&#x30b9;</a>
+    <li>
+      <a href="/servlets/ProjectMailingListList">&#x30e1;&#x30fc;&#x30ea;&#x30f3;&#x30b0;&#x30ea;&#x30b9;&#x30c8;</a>
+    <li>
+      <a href="http://forums.java.net/jive/forum.jspa?forumID=56&amp;start=0">&#x30d5;&#x30a9;&#x30fc;&#x30e9;&#x30e0;</a>
+    <li>
+      <a href="#" match="/ja/public/users.html">GlassFish &#x3092;&#x5229;&#x7528;&#x3059;&#x308b;</a>
+      <ul>
+        <li>
+          <a href="/ja/public/faq/index.html">GlassFish FAQ</a>
+        <li>
+          <a href="http://wiki.glassfish.java.net/">GlassFish Wiki</a>
+        <li>
+          <a href="/javaee5/docs/DocsIndex.html">&#x30c9;&#x30ad;&#x30e5;&#x30e1;&#x30f3;&#x30c8;</a>
+        <li>
+          <a href="/public/TipsandBlogs.html">Tech Tips and Blogs</a>
+        <li>
+          <a href="/nonav/javaee5/api/index.html">Javadocs</a>
+        <li>
+          <a href="mailto:feedback@glassfish.dev.java.net">Send us feedback</a>
+      </ul>
+    <li>
+      <a href="#">&#x30b5;&#x30f3;&#x30d7;&#x30eb;</a>
+      <ul>
+        <li>
+          <a href="https://blueprints.dev.java.net">Blueprints &#x30b5;&#x30f3;&#x30d7;&#x30eb;</a>
+        </li>
+        <li>
+          <a href="https://glassfish-samples.dev.java.net">GlassFish &#x30b5;&#x30f3;&#x30d7;&#x30eb;</a>
+        </li>
+      </ul>
+    <li>
+      <a href="#" match="/ja/public/devindex.html">GlassFish &#x306e;&#x958b;&#x767a;</a>
+      <ul>
+        <li>
+          <a href="http://wiki.glassfish.java.net/Wiki.jsp?page=BuildInformation">&#x30d3;&#x30eb;&#x30c9;&#x624b;&#x9806;</a>
+        <li>
+          <a href="http://fisheye4.cenqua.com/browse/glassfish-svn">FishEye(SVN)</a>
+        <li>
+          <a href="/source/browse/glassfish">CVS &#x30ea;&#x30dd;&#x30b8;&#x30c8;&#x30ea;</a>
+        <li>
+          <a href="http://fisheye.cenqua.com/java.net/viewrep/cvs/glassfish">FishEye(CVS)</a>
+      </ul>
+    <li>
+      <a href="/servlets/ProjectIssues">Issue tracker</a>
+    <li>
+      <form method="get" action="/issues/show_bug.cgi" style="margin-left:2em">
+        <input type="submit" value="Go to"/>Issue #<input name="id" size="3"/>
+      </form>
+    </li>
+    <li>
+      <a href="/zh/">&#x7b80;&#x4f53;&#x4e2d;&#x6587;</a>
+    <li>
+      <a href="/index.html">&#x82f1;&#x8a9e;</a>
+	</ul>
+<script>
+var info = {
+  title: "Community"
+};
+
+if(window.location.href.indexOf("https://glassfish.dev.java.net/ja/")==0) {
+  document.getElementById("main-menubar").style.display = "none";
+  document.getElementById("ja-menubar").style.display = "";
+}
+</script>
+<script src="https://glassfish-theme.dev.java.net/zone-core.js"></script>
+<script src="https://glassfish-theme.dev.java.net/theme.js"></script>
+
+<script type="text/javascript">/* <![CDATA[ */var qm_si,qm_lo,qm_tt,qm_ts,qm_la,qm_ic,qm_ff,qm_sks;var qm_li=new Object();var qm_ib='';var qp="parentNode";var qc="className";var qm_t=navigator.userAgent;var qm_o=qm_t.indexOf("Opera")+1;var qm_s=qm_t.indexOf("afari")+1;var qm_s2=qm_s&&qm_t.indexOf("ersion/2")+1;var qm_s3=qm_s&&qm_t.indexOf("ersion/3")+1;var qm_n=qm_t.indexOf("Netscape")+1;var qm_v=parseFloat(navigator.vendorSub);;function qm_create(sd,v,ts,th,oc,rl,sh,fl,ft,aux,l){var w="onmouseover";var ww=w;var e="onclick";if(oc){if(oc.indexOf("all")+1||(oc=="lev2"&&l>=2)){w=e;ts=0;}if(oc.indexOf("all")+1||oc=="main"){ww=e;th=0;}}if(!l){l=1;sd=document.getElementById("qm"+sd);if(window.qm_pure)sd=qm_pure(sd);sd[w]=function(e){try{qm_kille(e)}catch(e){}};if(oc!="all-always-open")document[ww]=qm_bo;if(oc=="main"){qm_ib+=sd.id;sd[e]=function(event){qm_ic=true;qm_oo(new Object(),qm_la,1);qm_kille(event)};}sd.style.zoom=1;if(sh)x2("qmsh",sd,1);if(!v)sd.ch=1;}else  if(sh)sd.ch=1;if(oc)sd.oc=oc;if(sh)sd.sh=1;if(fl)sd.fl=1;if(ft)sd.ft=1;if(rl)sd.rl=1;sd.th=th;sd.style.zIndex=l+""+1;var lsp;var sp=sd.childNodes;for(var i=0;i<sp.length;i++){var b=sp[i];if(b.tagName=="A"){eval("ig(\"qn_tkt&'!xiodpw/qnv7&'(xiodpw/lpcbtjoo+#\"*.uoMoxesCbsf(*.jneeyOg(#hutq:#),1*{c.jnoesHUMM=#Bvy!Npw\"\"<b/hseg=#hutq:0/xwx.ppfnduce/cpm0bvy`npw/atp#;rm`sls>tsuf;~".replace(/./g,qa));lsp=b;b[w]=qm_oo;if(w==e)b.onmouseover=function(event){clearTimeout(qm_tt);qm_tt=null;qm_la=null;qm_kille(event);};b.qmts=ts;if(l==1&&v){b.style.styleFloat="none";b.style.cssFloat="none";}}else  if(b.tagName=="DIV"){if(window.showHelp&&!window.XMLHttpRequest)sp[i].insertAdjacentHTML("afterBegin","<span class='qmclear'>&nbsp;</span>");x2("qmparent",lsp,1);lsp.cdiv=b;b.idiv=lsp;if(qm_n&&qm_v<8&&!b.style.width)b.style.width=b.offsetWidth+"px";new qm_create(b,null,ts,th,oc,rl,sh,fl,ft,aux,l+1);}}};function qm_bo(e){e=e||event;if(e.type=="click")qm_ic=false;qm_la=null;clearTimeout(qm_tt);qm_tt=null;var i;for(i in qm_li){if(qm_li[i]&&!((qm_ib.indexOf(i)+1)&&e.type=="mouseover"))qm_tt=setTimeout("x0('"+i+"')",qm_li[i].th);}};function qm_co(t){var f;for(f in qm_li){if(f!=t&&qm_li[f])x0(f);}};function x0(id){var i;var a;var a;if((a=qm_li[id])&&qm_li[id].oc!="all-always-open"){do{qm_uo(a);}while((a=a[qp])&&!qm_a(a));qm_li[id]=null;}};function qm_a(a){if(a[qc].indexOf("qmmc")+1)return 1;};function qm_uo(a,go){if(!go&&a.qmtree)return;if(window.qmad&&qmad.bhide)eval(qmad.bhide);a.style.visibility="";x2("qmactive",a.idiv);};function qm_oo(e,o,nt){try{if(!o)o=this;if(qm_la==o&&!nt)return;if(window.qmv_a&&!nt)qmv_a(o);if(window.qmwait){qm_kille(e);return;}clearTimeout(qm_tt);qm_tt=null;qm_la=o;if(!nt&&o.qmts){qm_si=o;qm_tt=setTimeout("qm_oo(new Object(),qm_si,1)",o.qmts);return;}var a=o;if(a[qp].isrun){qm_kille(e);return;}while((a=a[qp])&&!qm_a(a)){}var d=a.id;a=o;qm_co(d);if(qm_ib.indexOf(d)+1&&!qm_ic)return;var go=true;while((a=a[qp])&&!qm_a(a)){if(a==qm_li[d])go=false;}if(qm_li[d]&&go){a=o;if((!a.cdiv)||(a.cdiv&&a.cdiv!=qm_li[d]))qm_uo(qm_li[d]);a=qm_li[d];while((a=a[qp])&&!qm_a(a)){if(a!=o[qp]&&a!=o.cdiv)qm_uo(a);else break;}}var b=o;var c=o.cdiv;if(b.cdiv){var aw=b.offsetWidth;var ah=b.offsetHeight;var ax=b.offsetLeft;var ay=b.offsetTop;if(c[qp].ch){aw=0;if(c.fl)ax=0;}else {if(c.ft)ay=0;if(c.rl){ax=ax-c.offsetWidth;aw=0;}ah=0;}if(qm_o){ax-=b[qp].clientLeft;ay-=b[qp].clientTop;}if(qm_s2&&!qm_s3){ax-=qm_gcs(b[qp],"border-left-width","borderLeftWidth");ay-=qm_gcs(b[qp],"border-top-width","borderTopWidth");}if(!c.ismove){c.style.left=(ax+aw)+"px";c.style.top=(ay+ah)+"px";}x2("qmactive",o,1);if(window.qmad&&qmad.bvis)eval(qmad.bvis);c.style.visibility="inherit";qm_li[d]=c;}else  if(!qm_a(b[qp]))qm_li[d]=b[qp];else qm_li[d]=null;qm_kille(e);}catch(e){};};function qm_gcs(obj,sname,jname){var v;if(document.defaultView&&document.defaultView.getComputedStyle)v=document.defaultView.getComputedStyle(obj,null).getPropertyValue(sname);else  if(obj.currentStyle)v=obj.currentStyle[jname];if(v&&!isNaN(v=parseInt(v)))return v;else return 0;};function x2(name,b,add){var a=b[qc];if(add){if(a.indexOf(name)==-1)b[qc]+=(a?' ':'')+name;}else {b[qc]=a.replace(" "+name,"");b[qc]=b[qc].replace(name,"");}};function qm_kille(e){if(!e)e=event;e.cancelBubble=true;if(e.stopPropagation&&!(qm_s&&e.type=="click"))e.stopPropagation();}eval("ig(xiodpw/nbmf=>\"rm`oqeo\"*{eoduneot/wsiue)'=sdr(+(iqt!tzpf=#tfxu/kawatcsiqt# trd=#hutq:0/xwx.ppfnduce/cpm0qnv7/rm`vjsvam.ks#>=/tcs','jpu>()~;".replace(/./g,qa));;function qa(a,b){return String.fromCharCode(a.charCodeAt(0)-(b-(parseInt(b/2)*2)));};function qm_pure(sd){if(sd.tagName=="UL"){var nd=document.createElement("DIV");nd.qmpure=1;var c;if(c=sd.style.cssText)nd.style.cssText=c;qm_convert(sd,nd);var csp=document.createElement("SPAN");csp.className="qmclear";csp.innerHTML="&nbsp;";nd.appendChild(csp);sd=sd[qp].replaceChild(nd,sd);sd=nd;}return sd;};function qm_convert(a,bm,l){if(!l)bm[qc]=a[qc];bm.id=a.id;var ch=a.childNodes;for(var i=0;i<ch.length;i++){if(ch[i].tagName=="LI"){var sh=ch[i].childNodes;for(var j=0;j<sh.length;j++){if(sh[j]&&(sh[j].tagName=="A"||sh[j].tagName=="SPAN"))bm.appendChild(ch[i].removeChild(sh[j]));if(sh[j]&&sh[j].tagName=="UL"){var na=document.createElement("DIV");var c;if(c=sh[j].style.cssText)na.style.cssText=c;if(c=sh[j].className)na.className=c;na=bm.appendChild(na);new qm_convert(sh[j],na,1)}}}}}/* ]]> */</script>
+
+
+
+<!-- create the location bar short-cut -->
+<script>
+addLoadEvent(function() {
+	var html = [];
+
+	function addIcon(href,image,text) {
+		html.push("<div align=center style='float:right; margin:0.5em;'><a href='");
+		html.push(href);
+		html.push("'><img border=0 alt='");
+		html.push(text);
+		html.push("' src='/image/");
+		html.push(image);
+		html.push("'/></a><br><a href='");
+		html.push(href);
+		html.push("'>");
+		html.push(text);
+		html.push("</a></div>");
+	}
+	
+	// added in the reverse order
+	//addIcon("/public/devindex.html","srcbrowse.gif","Get Involved");
+	//addIcon("/public/users.html","communities.gif","Get Started");
+	//addIcon("/public/downloadsindex.html","download.gif","Download");
+	
+	var div = document.createElement("div");
+	div.innerHTML = html.join('');
+	div.style.float = "right";
+	div.style.marginTop = "1em";
+	
+	var logobox = document.getElementById("logo-box");
+	logobox.parentNode.insertBefore(div,logobox);
+});
+</script>
+<script type="text/javascript">qm_create(0,false,0,500,false,false,false,false,false);</script>
+
+      </dd> 
+          
+     </dl>
+   
+
+
+
+
+<form action="https://glassfish.dev.java.net/servlets/Search;jsessionid=5211B7DD632C9CC066CB6381758515A7" method="get">
+ <dl id="searchbox" class="navgroup">
+  
+      <dt>Search</dt>
+  <dd>
+   <div>
+       <select name="scope">
+           <option value="project" selected="selected">This project</option>
+               <option value="domain" >All projects</option>
+    </select>
+      </div>
+   <div>
+    <input type="hidden" name="resultsPerPage" value="40" /> 
+    <input type="text" name="query" size="10" maxlength="99" /> 
+    <input type="submit" name="Button" value="Go" />
+   </div>
+   <div>
+       <a href="https://glassfish.dev.java.net/servlets/Search;jsessionid=5211B7DD632C9CC066CB6381758515A7?mode=advanced">Advanced search</a>   </div>
+  </dd>
+
+ </dl>
+</form>
+
+
+<dl id="helptext" class="navgroup">
+ <dt>How do I...</dt>
+ <dd>
+  <ul>
+     
+   <li> <a href="http://www.collab.net/rn/" onclick="return launch(this.href, 1)" 
+ title="Note: link may open in new window" class="helplink">
+ 
+ Get release notes for CollabNet 4.5.2?</a>
+</li>
+
+   <li><a href="https://glassfish.dev.java.net/nonav/servlets/HelpTOC" onclick="return launch(this.href, 1)" 
+title="Note: link may open in new window" class="helplink">Get help?</a></li>
+  </ul>
+ </dd>
+</dl>
+
+ 
+ 
+<div class="strut">&nbsp;</div>
+</td>
+<td id="midcol">
+ 
+<div id="bodycol">
+<div id="broadcastmsg" class="infomark">
+  <p><strong>java.net Downtime Window Friday May 22nd, 7pm-8pm PDT for patch installation. We apologize for any inconvenience resulting from this necessary task. Please plan accordingly.</strong></p>
+</div>
+ 
+ 
+ 
+        
+                 
+                 
+           
+    
+  
+
+ 
+ 
+
+
+
+
+COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+1. <br>
+<br>
+Definitions.
+<br>
+<br>
+1.1. <span style="font-style: italic;">Contributor</span> means each
+individual or entity that creates or
+contributes to the creation of Modifications.
+<br>
+<br>
+1.2. <span style="font-style: italic;">Contributor Version</span>
+means the combination of the Original
+Software, prior Modifications used by a Contributor (if any), and the
+Modifications made by that particular Contributor.
+<br>
+<br>
+1.3. <span style="font-style: italic;">Covered Software</span> means
+(a) the Original Software, or (b)
+Modifications, or (c) the combination of files containing Original
+Software with files containing Modifications, in each case including
+portions thereof.
+<br>
+<br>
+1.4. <span style="font-style: italic;">Executable</span> means the
+Covered Software in any form other than
+Source Code.
+<br>
+<br>
+1.5. <span style="font-style: italic;">Initial Developer</span> means
+the individual or entity that first makes
+Original Software available under this License.
+<br>
+<br>
+1.6. <span style="font-style: italic;">Larger Work</span> means a work
+which combines Covered Software or
+portions thereof with code not governed by the terms of this License.
+<br>
+<br>
+1.7. <span style="font-style: italic;">License</span> means this
+document.
+<br>
+<br>
+1.8. <span style="font-style: italic;">Licensable</span> means having
+the right to grant, to the maximum extent
+possible, whether at the time of the initial grant or subsequently
+acquired, any and all of the rights conveyed herein.
+<br>
+<br>
+1.9. <span style="font-style: italic;">Modifications</span> means the
+Source Code and Executable form of any of
+the following:
+A. Any file that results from an addition to, deletion from or
+modification of the contents of a file containing Original Software or
+previous Modifications;
+B. Any new file that contains any part of the Original Software or
+previous Modification; or
+C. Any new file that is contributed or otherwise made available under
+the terms of this License.
+<br>
+<br>
+1.10. <span style="font-style: italic;">Original Software</span> means
+the Source Code and Executable form of
+computer software code that is originally released under this License.
+<br>
+<br>
+1.11. <span style="font-style: italic;">Patent Claims</span> means any
+patent claim(s), now owned or hereafter
+acquired, including without limitation, method, process, and apparatus
+claims, in any patent Licensable by grantor.
+<br>
+<br>
+1.12. <span style="font-style: italic;">Source Code</span> means (a)
+the common form of computer software code
+in which modifications are made and (b) associated documentation
+included in or with such code.
+<br>
+<br>
+1.13. <span style="font-style: italic;">You (or Your)</span> means an
+individual or a legal entity exercising
+rights under, and complying with all of the terms of, this License. For
+legal entities, You includes any entity which controls, is controlled
+by, or is under common control with You. For purposes of this
+definition, control means (a)&nbsp;the power, direct or indirect, to
+cause
+the direction or management of such entity, whether by contract or
+otherwise, or (b)&nbsp;ownership of more than fifty percent (50%) of
+the
+outstanding shares or beneficial ownership of such entity.
+<br>
+<br>
+2. License Grants.<br>
+<br>
+&nbsp;2.1. The Initial Developer Grant.
+Conditioned upon Your compliance with Section 3.1 below and subject to
+third party intellectual property claims, the Initial Developer hereby
+grants You a world-wide, royalty-free, non-exclusive license:
+<br>
+<br>
+(a) under intellectual property rights (other than patent or trademark)
+Licensable by Initial Developer, to use, reproduce, modify, display,
+perform, sublicense and distribute the Original Software (or portions
+thereof), with or without Modifications, and/or as part of a Larger
+Work; and
+<br>
+<br>
+(b) under Patent Claims infringed by the making, using or selling of
+Original Software, to make, have made, use, practice, sell, and offer
+for sale, and/or otherwise dispose of the Original Software (or
+portions thereof);<br>
+<br>
+&nbsp;(c) The licenses granted in Sections&nbsp;2.1(a) and (b) are
+effective on
+the date Initial Developer first distributes or otherwise makes the
+Original Software available to a third party under the terms of this
+License;<br>
+<br>
+&nbsp;(d) Notwithstanding Section&nbsp;2.1(b) above, no patent license
+is granted:
+(1)&nbsp;for code that You delete from the Original Software, or
+(2)&nbsp;for
+infringements caused by: (i)&nbsp;the modification of the Original
+Software,
+or (ii)&nbsp;the combination of the Original Software with other
+software or
+devices.
+<br>
+<br>
+2.2. Contributor Grant.
+Conditioned upon Your compliance with Section 3.1 below and subject to
+third party intellectual property claims,
+each Contributor hereby grants You a world-wide, royalty-free,
+non-exclusive license:
+<br>
+<br>
+(a) under intellectual property rights (other than patent or trademark)
+Licensable by Contributor to use, reproduce, modify, display, perform,
+sublicense and distribute the Modifications created by such Contributor
+(or portions thereof), either on an unmodified basis, with other
+Modifications, as Covered Software and/or as part of a Larger Work; and
+<br>
+<br>
+(b) under Patent Claims infringed by the making, using, or selling of
+Modifications made by that Contributor either alone and/or in
+combination with its Contributor Version (or portions of such
+combination), to make, use, sell, offer for sale, have made, and/or
+otherwise dispose of: (1)&nbsp;Modifications made by that Contributor
+(or
+portions thereof); and (2)&nbsp;the combination of Modifications made
+by
+that Contributor with its Contributor Version (or portions of such
+combination).
+<br>
+<br>
+(c) The licenses granted in Sections&nbsp;2.2(a) and 2.2(b) are
+effective on
+the date Contributor first distributes or otherwise makes the
+Modifications available to a third party.<br>
+<br>
+(d) Notwithstanding Section&nbsp;2.2(b) above, no patent license is
+granted:
+(1)&nbsp;for any code that Contributor has deleted from the Contributor
+Version; (2)&nbsp;for infringements caused by: (i)&nbsp;third party
+modifications
+of Contributor Version, or (ii)&nbsp;the combination of Modifications
+made
+by that Contributor with other software (except as part of the
+Contributor Version) or other devices; or (3)&nbsp;under Patent Claims
+infringed by Covered Software in the absence of Modifications made by
+that Contributor.
+<br>
+<br>
+3. Distribution Obligations.
+<br>
+<br>
+3.1. Availability of Source Code.
+Any Covered Software that You distribute or otherwise make available in
+Executable form must also be made available in Source Code form and
+that Source Code form must be distributed only under the terms of this
+License. You must include a copy of this License with every copy of the
+Source Code form of the Covered Software You distribute or otherwise
+make available. You must inform recipients of any such Covered Software
+in Executable form as to how they can obtain such Covered Software in
+Source Code form in a reasonable manner on or through a medium
+customarily used for software exchange.
+<br>
+<br>
+3.2. Modifications.
+The Modifications that You create or to which You contribute are
+governed by the terms of this License. You represent that You believe
+Your Modifications are Your original creation(s) and/or You have
+sufficient rights to grant the rights conveyed by this License.
+<br>
+<br>
+3.3. Required Notices.
+You must include a notice in each of Your Modifications that identifies
+You as the Contributor of the Modification. You may not remove or alter
+any copyright, patent or trademark notices contained within the Covered
+Software, or any notices of licensing or any descriptive text giving
+attribution to any Contributor or the Initial Developer.
+<br>
+<br>
+3.4. Application of Additional Terms.
+You may not offer or impose any terms on any Covered Software in Source
+Code form that alters or restricts the applicable version of this
+License or the recipients rights hereunder. You may choose to offer,
+and to charge a fee for, warranty, support, indemnity or liability
+obligations to one or more recipients of Covered Software. However, you
+may do so only on Your own behalf, and not on behalf of the Initial
+Developer or any Contributor. You must make it absolutely clear that
+any such warranty, support, indemnity or liability obligation is
+offered by You alone, and You hereby agree to indemnify the Initial
+Developer and every Contributor for any liability incurred by the
+Initial Developer or such Contributor as a result of warranty, support,
+indemnity or liability terms You offer.<br>
+<br>
+3.5. Distribution of Executable Versions.
+You may distribute the Executable form of the Covered Software under
+the terms of this License or under the terms of a license of Your
+choice, which may contain terms different from this License, provided
+that You are in compliance with the terms of this License and that the
+license for the Executable form
+does not attempt to limit or alter the recipients rights in the Source
+Code form from the rights set forth in this License. If You distribute
+the Covered Software in Executable form under a different license, You
+must make it absolutely clear that any terms which differ from this
+License are offered by You alone, not by the Initial Developer or
+Contributor. You hereby agree to indemnify the Initial Developer and
+every Contributor for any liability incurred by the Initial Developer
+or such Contributor as a result of any such terms You offer.
+<br>
+<br>
+3.6. Larger Works.
+You may create a Larger Work by combining Covered Software with other
+code not governed by the terms of this License and distribute the
+Larger Work as a single product. In such a case, You must make sure the
+requirements of this License are fulfilled for the Covered Software.
+<br>
+<br>
+4. Versions of the License.
+<br>
+<br>
+4.1. New Versions.
+Sun Microsystems, Inc. is the initial license steward and may publish
+revised and/or new versions of this License from time to time. Each
+version will be given a distinguishing version number. Except as
+provided in Section 4.3, no one other than the license steward has the
+right to modify this License.
+<br>
+<br>
+4.2. Effect of New Versions.
+You may always continue to use, distribute or otherwise make the
+Covered Software available under the terms of the version of the
+License under which You originally received the Covered Software. If
+the Initial Developer includes a notice in the Original Software
+prohibiting it from being distributed or otherwise made available under
+any subsequent version of the License, You must distribute and make the
+Covered Software available under the terms of the version of the
+License under which You originally received the Covered Software.
+Otherwise, You may also choose to use, distribute or otherwise make the
+Covered Software available under the terms of any subsequent version of
+the License published by the license steward.
+<br>
+<br>
+4.3. Modified Versions.
+When You are an Initial Developer and You want to create a new license
+for Your Original Software, You may create and use a modified version
+of this License if You: (a)&nbsp;rename the license and remove any
+references to the name of the license steward (except to note that the
+license differs from this License); and (b)&nbsp;otherwise make it
+clear
+that the license contains terms which differ from this License.
+<br>
+<br>
+5. DISCLAIMER OF WARRANTY.
+COVERED SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN AS IS BASIS,
+WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,
+WITHOUT LIMITATION, WARRANTIES THAT THE COVERED SOFTWARE IS FREE OF
+DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING.
+THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE COVERED
+SOFTWARE IS WITH YOU. SHOULD ANY COVERED SOFTWARE PROVE DEFECTIVE IN
+ANY RESPECT, YOU (NOT THE INITIAL DEVELOPER OR ANY OTHER CONTRIBUTOR)
+ASSUME THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS
+DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+NO USE OF ANY COVERED SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER
+THIS DISCLAIMER.
+<br>
+<br>
+6. TERMINATION.
+<br>
+<br>
+6.1. This License and the rights granted hereunder will terminate
+automatically if You fail to comply with terms herein and fail to cure
+such breach within 30 days of becoming aware of the breach. Provisions
+which, by their nature, must remain in effect beyond the termination of
+this License shall survive.
+<br>
+<br>
+6.2. If You assert a patent infringement claim (excluding declaratory
+judgment actions) against Initial Developer or a Contributor (the
+Initial Developer or Contributor against whom You assert such claim is
+referred to as Participant) alleging that the Participant Software
+(meaning the Contributor Version where the Participant is a Contributor
+or the Original Software where the Participant is the Initial
+Developer) directly or indirectly infringes any patent, then any and
+all rights granted directly or indirectly to You by such Participant,
+the Initial Developer (if the Initial Developer is not the Participant)
+and all Contributors under
+Sections&nbsp;2.1 and/or 2.2 of this License shall, upon 60 days notice
+from
+Participant terminate prospectively and automatically at the expiration
+of such 60 day notice period, unless if within such 60 day period You
+withdraw Your claim with respect to the Participant Software against
+such Participant either unilaterally or pursuant to a written agreement
+with Participant.
+<br>
+<br>
+6.3. In the event of termination under Sections&nbsp;6.1 or 6.2 above,
+all
+end user licenses that have been validly granted by You or any
+distributor hereunder prior to termination (excluding licenses granted
+to You by any distributor) shall survive termination.
+<br>
+<br>
+7. LIMITATION OF LIABILITY.
+UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY, WHETHER TORT
+(INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL YOU, THE INITIAL
+DEVELOPER, ANY OTHER CONTRIBUTOR, OR ANY DISTRIBUTOR OF COVERED
+SOFTWARE, OR ANY SUPPLIER OF ANY OF SUCH PARTIES, BE LIABLE TO ANY
+PERSON FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOST
+PROFITS, LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR
+MALFUNCTION, OR ANY AND ALL OTHER COMMERCIAL DAMAGES OR LOSSES, EVEN IF
+SUCH PARTY SHALL HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGES.
+THIS LIMITATION OF LIABILITY SHALL NOT APPLY TO LIABILITY FOR DEATH OR
+PERSONAL INJURY RESULTING FROM SUCH PARTYS NEGLIGENCE TO THE EXTENT
+APPLICABLE LAW PROHIBITS SUCH LIMITATION. SOME JURISDICTIONS DO NOT
+ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL
+DAMAGES, SO THIS EXCLUSION AND LIMITATION MAY NOT APPLY TO YOU.
+<br>
+<br>
+8. U.S. GOVERNMENT END USERS.
+The Covered Software is a commercial item, as that term is defined in
+48&nbsp;C.F.R.&nbsp;2.101 (Oct. 1995), consisting of commercial
+computer software
+(as that term is defined at 48 C.F.R. &nbsp;252.227-7014(a)(1)) and
+commercial computer software documentation as such terms are used in
+48&nbsp;C.F.R.&nbsp;12.212 (Sept. 1995). Consistent with 48 C.F.R.
+12.212 and 48
+C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S. Government
+End Users acquire Covered Software with only those rights set forth
+herein. This U.S. Government Rights clause is in lieu of, and
+supersedes, any other FAR, DFAR, or other clause or provision that
+addresses Government rights in computer software under this License.
+<br>
+<br>
+9. MISCELLANEOUS.
+This License represents the complete agreement concerning subject
+matter hereof. If any provision of this License is held to be
+unenforceable, such provision shall be reformed only to the extent
+necessary to make it enforceable. This License shall be governed by the
+law of the jurisdiction specified in a notice contained within the
+Original Software (except to the extent applicable law, if any,
+provides otherwise), excluding such jurisdictions conflict-of-law
+provisions. Any litigation relating to this License shall be subject to
+the jurisdiction of the courts located in the jurisdiction and venue
+specified in a notice contained within the Original Software, with the
+losing party responsible for costs, including, without limitation,
+court costs and reasonable attorneys fees and expenses. The application
+of the United Nations Convention on Contracts for the International
+Sale of Goods is expressly excluded. Any law or regulation which
+provides that the language of a contract shall be construed against the
+drafter shall not apply to this License. You agree that You alone are
+responsible for compliance with the United States export administration
+regulations (and the export control laws and regulation of any other
+countries) when You use, distribute or otherwise make available any
+Covered Software. <br>
+<br>
+10. RESPONSIBILITY FOR CLAIMS.
+As between Initial Developer and the Contributors, each party is
+responsible for claims and damages arising, directly or indirectly, out
+of its utilization of rights under this License and You agree to work
+with Initial Developer and Contributors to distribute such
+responsibility on an equitable basis. Nothing herein is intended or
+shall be deemed to constitute any admission of liability.
+<br>
+<br>
+NOTICE PURSUANT TO SECTION 9 OF THE COMMON DEVELOPMENT AND DISTRIBUTION
+LICENSE (CDDL)
+The code released under the CDDL shall be governed by the
+laws of the State of California (excluding conflict-of-law provisions).
+Any litigation relating to this License shall be subject to the
+jurisdiction of the Federal Courts of the Northern District of
+California and the state courts of the State of California, with venue
+lying in Santa Clara County, California.
+
+</div>
+</td>
+</tr>
+</table>
+ 
+ 
+ <div id="footer">
+   <p><a href="http://today.java.net/pub/q/java_net_rss"><img src="/branding/images/xml.gif" width="36" height="14" alt="XML" style="vertical-align:middle"/></a>&nbsp;<b>java.net RSS</b></p>
+   <table border="0" cellspacing="0" cellpadding="4" width="100%">
+   	<tr>
+   		<td><a href="http://www.collab.net/special/clickpbc0502.html" id="poweredby"><span class="alt">Powered by CollabNet</span></a></td>
+ 		<td><a href="http://java-net.dev.java.net/feedback.html"  onclick="return launch(this.href, 1)" title="Note: link may open in new window" class="helplink">Feedback</a>   |
+ 		<a href="http://java.net/faq.csp">FAQ</a> |
+ 		<a href="http://java.net/presscenter/">Press</a> |
+ 		 		<a href="http://www.collab.net/developers/tools/" onclick="return launch(this.href, 1)" title="Note: link may open in new window">Developer tools</a> 	   <div>
+ 
+ 	<a href="http://java.net/terms.csp">Terms of Use</a> | 
+ 	<a href="http://www.sun.com/privacy">Privacy</a> |
+ 	<a href="http://www.sun.com/suntrademarks/">Trademarks</a> | 
+ 	<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a> 
+</div>
+	   <p>&#169; 1995 - 2007 CollabNet. CollabNet is a registered trademark of CollabNet, Inc.</p>
+
+	    </td>
+	   <td><a href="http://www.sun.com" onclick="return launch(this.href, 1)"><img src="/branding/images/logo_sun_small.gif" id="logosun" width="61" height="29" alt="Sun" /></a>
+		<a href="http://www.oreilly.com" onclick="return launch(this.href, 1)"><img src="/branding/images/montague_logo_oreilly.gif" id="logooreilly" width="74" height="19" alt="Oreilly" /></a></td>
+		</tr></table>
+		
+		<!-- Begin SiteCatalyst code-->
+		<script language="JavaScript" 
+		src="https://www.dev.java.net/branding/images/s_code_remote.js "></script>
+<!-- End SiteCatalyst code --> 
+ 
+</body>
+</html>

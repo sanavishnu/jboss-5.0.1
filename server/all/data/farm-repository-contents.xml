@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<repository-content domain="default" server="default" name="farm">
+    <repository-root name="farm">
+        <content relative-path="cluster-examples-service.xml" directory="false" removed="false" originator="127.0.0.1:1099" timestamp="2009-05-22T16:36:52.000-0400"/>
+    </repository-root>
+</repository-content>

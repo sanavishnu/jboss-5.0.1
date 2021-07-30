@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:s="http://jboss.com/products/seam/taglib"
+        xmlns:rich="http://richfaces.org/rich"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:onc="http://jboss.org/on/component">
+
+
+<body>
+<f:view>
+<ui:composition template="/layout.xhtml">
+
+<ui:define name="pagetitle">#{currentResource.name}</ui:define>
+
+<ui:define name="tabmenu">
+    <ui:include src="/include/tabMenu.xhtml">
+        <ui:param name="activeTab" value="operation"/>
+    </ui:include>
+</ui:define>
+
+<ui:define name="body">
+    <div class="tabmenubox">
+        <ui:include src="../include/displayGlobalMessages.xhtml"/>
+
+        <h:outputText value="#{messages['control.resourceInstance.error.noOperations']}"
+                      rendered="#{empty operations}"/>
+
+        <h:form id="operationsForm"
+                rendered="#{!empty operations}">
+            <div class="instructionalText">
+                #{messages['control.resourceInstance.select']}
+            </div>
+
+            <div class="controlTriggerPanel">
+                <rich:dataTable
+                        styleClass="internalTable"
+                        width="100%"
+                        id="dataTable"
+                        rowClasses=""
+                        var="operation"
+                        value="#{operations}">
+
+                    <rich:columnGroup styleClass="#{operationAction.getOperationRowStyleClass(operation)}">
+                        <rich:column styleClass="buttonColumn">
+
+                            <f:facet name="footer"><h:outputText>footer1</h:outputText></f:facet>
+                            <s:button value="#{operation.displayName}"
+                                      action="#{operationAction.invokeOperation()}"
+                                      styleClass="buttonmed" style="margin-right:40px;">
+                                <f:param name="selectedOperationName" value="#{operation.name}"/>
+                            </s:button>
+                        </rich:column>
+                        <rich:column styleClass="descripColumn">
+                            <f:facet name="header"><h:outputText>header2</h:outputText></f:facet>
+                            <f:facet name="footer"><h:outputText>footer2</h:outputText></f:facet>
+                            <h:outputText value="#{operation.description}"/>
+                        </rich:column>
+                    </rich:columnGroup>
+                </rich:dataTable>
+            </div>
+        </h:form>
+
+        <rich:panel id="historiesPanel" rendered="#{!empty operationHistories}" style="margin-top: 12px;">
+
+            <f:facet name="header">
+                #{messages['control.resourceInstance.operationHistory']}
+            </f:facet>
+
+            <h:outputText value="#{messages['control.resourceInstance.error.noPrevious']}"
+                          rendered="#{empty operationHistories}"/>
+
+            <h:form id="historiesForm" rendered="#{!empty operationHistories}">
+                <a4j:poll id="poller" reRender="poller, historiesForm, historyDetailsPanel" interval="10000"
+                          limitToList="true"/>
+
+                <rich:dataTable
+                        styleClass="properties-table"
+                        id="dataTable"
+                        rows="#{tableManager.numRows}"
+                        rowClasses="DarkRow"
+                        var="operationHistory"
+                        value="#{operationHistories}">
+
+                    <f:facet name="header">
+                        <rich:columnGroup>
+                            <rich:column styleClass="properties-table-header-cell">
+                                <h:outputText
+                                        value="#{messages['control.resourceInstance.previous.executedAt']}"/>
+                            </rich:column>
+                            <rich:column styleClass="properties-table-header-cell">
+                                <h:outputText
+                                        value="#{messages['control.resourceInstance.previous.operation']}"/>
+                            </rich:column>
+                            <rich:column styleClass="properties-table-header-cell">
+                                <h:outputText value="#{messages['control.resourceInstance.previous.status']}"/>
+                            </rich:column>
+                            <rich:column styleClass="properties-table-header-cell">
+                                <h:outputText value="Actions"/>
+                            </rich:column>
+                        </rich:columnGroup>
+                    </f:facet>
+
+                    <rich:columnGroup
+                            styleClass="#{operationAction.getHistoriesTableRowStyleClass(operationHistory)}">
+
+                        <rich:column styleClass="operationTimeColumn">
+                            <h:outputText value="#{operationHistory.createdTime}">
+                                <s:convertDateTime type="both" pattern="MMMMM d, yyyy '-' h:mm a"/>
+                            </h:outputText>
+                        </rich:column>
+
+                        <rich:column styleClass="operationNameColumn">
+                            <h:outputText value="#{operationHistory.operationDefinition.displayName}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="operationStatusColumn">
+                            <h:panelGroup>
+                                <h:outputText value="#{messages['control.resourceInstance.previous.success']}"
+                                              rendered="#{operationHistory.status eq 'SUCCESS'}"
+                                              styleClass="operationSuccess"/>
+                                <h:outputText
+                                        value="#{messages['control.resourceInstance.previous.inProgress']}"
+                                        rendered="#{operationHistory.status eq 'INPROGRESS'}"
+                                        styleClass="operationInProgress"/>
+                                <h:outputText value="#{messages['control.resourceInstance.previous.failure']}"
+                                              rendered="#{operationHistory.status eq 'FAILURE'}"
+                                              styleClass="operationFailure"/>
+                                <h:outputLabel value=" "/>
+                            </h:panelGroup>
+                        </rich:column>
+
+                        <rich:column styleClass="actionsColumn">
+                            <a4j:commandButton value="Show Details Below..."
+                                               action="#{operationAction.selectOperationHistory(operationHistory.id)}"
+                                               reRender="historiesPanel, historyDetailsPanel"
+                                               styleClass="buttonsmall"/>
+                        </rich:column>
+
+                    </rich:columnGroup>
+                </rich:dataTable>
+
+                <ui:include src="../include/resourceDataScroller.xhtml">
+                    <ui:param name="paginationDataModel" value="#{operationHistories}"/>
+                    <ui:param name="paginationDataTableName" value="dataTable"/>
+                </ui:include>
+
+            </h:form>
+        </rich:panel>
+
+        <rich:panel id="historyDetailsPanel" rendered="#{!empty operationHistories}" style="margin-top: 12px;">
+
+            <f:facet name="header">
+                <h:outputText value="Selected Operation History Item"/>
+            </f:facet>
+
+            <h:panelGroup layout="block" rendered="#{empty selectedHistory}"
+                          style="margin-top: 6px; margin-bottom: 6px">
+                No operation history is selected. Please select one above.
+            </h:panelGroup>
+
+            <!-- TODO: Enclose params and results in separate forms, so that drilling down on a list of maps is possible. -->
+
+            <h:panelGroup layout="block" rendered="#{!empty selectedHistory}"
+                          style="margin-top: 6px; margin-bottom: 6px">
+                <!-- Parameters -->
+                <h3>#{messages['control.resourceInstance.previous.parameters']}</h3>
+                <h:panelGroup rendered="#{selectedHistory.parameters ne null}">
+                    <onc:config
+                            configurationDefinition="#{selectedHistory.operationDefinition.parametersConfigurationDefinition}"
+                            configuration="#{selectedHistory.parameters}"
+                            readOnly="true"
+                            nullConfigurationDefinitionMessage="null config def!"
+                            nullConfigurationMessage="null config!"
+                            nullConfigurationStyle="InfoBlock"/>
+                </h:panelGroup>
+                <h:panelGroup id="noParameters"
+                              rendered="#{selectedHistory.parameters eq null or empty selectedHistory.parameters.map}">
+                    <i>This operation does not take any parameters.</i>
+                </h:panelGroup>
+
+                <!-- Results -->
+                <h:panelGroup layout="block"
+                              rendered="#{selectedHistory.status eq 'INPROGRESS' or selectedHistory.status eq 'SUCCESS'}">
+                    <h3>#{messages['control.resourceInstance.previous.results']}</h3>
+                    <h:panelGroup layout="block"
+                                  rendered="#{selectedHistory.status eq 'INPROGRESS'}">
+                        <i>The operation has not completed yet.</i>
+                    </h:panelGroup>
+                    <h:panelGroup id="operationResults" layout="block"
+                                  rendered="#{selectedHistory.status eq 'SUCCESS' and selectedHistory.results ne null and selectedHistory.operationDefinition.resultsConfigurationDefinition ne null}">
+                        <onc:config
+                                configurationDefinition="#{selectedHistory.operationDefinition.resultsConfigurationDefinition}"
+                                configuration="#{selectedHistory.results}"
+                                readOnly="true"
+                                nullConfigurationDefinitionMessage="null config def!"
+                                nullConfigurationMessage="null config!"
+                                nullConfigurationStyle="InfoBlock"/>
+                    </h:panelGroup>
+                    <h:panelGroup id="noResults" layout="block"
+                                  rendered="#{selectedHistory.status eq 'SUCCESS' and (selectedHistory.results eq null or empty selectedHistory.results.map)}">
+                        <i>The operation did not return any results.</i>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <!-- Error -->
+                <h:panelGroup id="errorMessage" layout="block"
+                              rendered="#{selectedHistory.status eq 'FAILURE'}">
+                    <h3>#{messages['control.resourceInstance.previous.error']}</h3>
+                    <h:inputTextarea value="#{selectedHistory.errorMessage}" readonly="true"
+                                     rendered="#{selectedHistory.errorMessage ne null}"
+                                     style="width: 100%;" rows="7"/>
+                    <h:panelGroup layout="block" rendered="#{selectedHistory.errorMessage eq null}">
+                        <i>The operation failed for an unknown reason.</i>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </rich:panel>
+
+    </div>
+</ui:define>
+
+</ui:composition>
+</f:view>
+</body>
+</html>

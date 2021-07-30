@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Port of the old jsr77 JBoss impl to MC pojos / deployers
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="LocalJBossServerDomain" class="org.jboss.management.j2ee.deployers.LocalJBossServerDomain">
+    <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.management.local:j2eeType=J2EEDomain,name=Manager", exposedInterface=org.jboss.management.j2ee.deployers.LocalJBossServerDomainMBean.class, registerDirectly=true)</annotation>
+    <property name="JNDIService">jboss:service=Naming</property>
+    <property name="JTAService">jboss:service=TransactionManager</property>
+    <property name="userTransactionService">jboss:service=DistributedTransactionManager</property>
+    <property name="mailService">jboss:service=Mail</property>
+    <property name="RMI_IIOPService">jboss:service=CorbaORB</property>
+    <!--<property name="jndiBindingService"></property>-->
+  </bean>
+
+  <bean name="EarModuleJSR77Deployer" class="org.jboss.management.j2ee.deployers.EarModuleJSR77Deployer"/>
+  <bean name="EjbModuleJSR77Deployer" class="org.jboss.management.j2ee.deployers.EjbModuleJSR77Deployer"/>
+  <bean name="JCAResourceJSR77Deployer" class="org.jboss.management.j2ee.deployers.JCAResourceJSR77Deployer"/>
+  <bean name="JMSResourceJSR77Deployer" class="org.jboss.management.j2ee.deployers.JMSResourceJSR77Deployer"/>
+  <bean name="RarModuleJSR77Deployer" class="org.jboss.management.j2ee.deployers.RarModuleJSR77Deployer"/>
+  <bean name="ServiceModuleJSR77Deployer" class="org.jboss.management.j2ee.deployers.ServiceModuleJSR77Deployer"/>
+  <bean name="WebModuleJSR77Deployer" class="org.jboss.management.j2ee.deployers.WebModuleJSR77Deployer"/>
+
+</deployment>

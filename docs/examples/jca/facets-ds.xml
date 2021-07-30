@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!-- ====================================================================
+       Facets service description for JBoss 3.0
+       
+       This file and the lib/facetsAdapter.rar archive should be copied to
+       the "deploy" directory of your JBoss server.
+       
+       Configurable sections are
+            <config-property> elements
+            ManagedConnectionPool attributes
+            <authentication> element
+       ==================================================================== -->
+
+<connection-factories>
+
+  <tx-connection-factory>
+
+    <jndi-name>Facets</jndi-name>
+
+    <xa-transaction/>
+    <!-- uncomment to enable interleaving <interleaving/> -->
+
+    <attribute name="JndiName">Facets</attribute>
+
+    <adapter-display-name>GemStone_Facets</adapter-display-name>
+
+    <!--
+    <config-property name="DefaultUser" type="java.lang.String">so-and-so</config-property>
+    -->
+
+    <!--
+    <config-property name="DefaultPassword" type="java.lang.String">secret</config-property>
+    -->
+
+    <!--
+    <config-property name="SessionConfigFile" type="java.lang.String"></config-property>
+    -->
+
+    <config-property name="Verbose" type="java.lang.String"></config-property>
+
+    <config-property name="Debug" type="java.lang.String"></config-property>
+
+  </tx-connection-factory>
+
+</connection-factories>

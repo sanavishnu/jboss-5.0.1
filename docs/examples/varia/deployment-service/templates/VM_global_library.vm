@@ -1,0 +1,32 @@
+## ---------------------------------------------------------
+## Velocity macros to be shared by all DeploymentService
+## velocity templates.
+##
+## $Id: VM_global_library.vm 28076 2005-01-28 12:33:23Z andd $
+## ---------------------------------------------------------
+
+## --------------------------------------------------------
+## ifDefReplace
+## 
+## If $substr is contained in $string then produce $replace
+##
+## $string and $substr must be Strings
+## --------------------------------------------------------
+#macro(ifDefReplace $string $substr $replace)
+#if($string.indexOf($substr) >= 0)
+$replace#end
+#end
+
+## --------------------------------------------------------
+## firstToken
+##
+## If $delim appears in $string, produce all characters
+## up to $delim, else, produce $string
+##
+## $string and $delim must be Strings
+## --------------------------------------------------------
+#macro(firstToken $string $delim)
+#if($string.indexOf($delim))
+$string.substring(0, $string.indexOf($delim))#else
+$string#end
+#end

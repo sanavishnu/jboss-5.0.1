@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+
+
+<body>
+<f:view>
+    <ui:composition template="/layout.xhtml">
+
+        <ui:define name="pagetitle">#{resource.resource.name}</ui:define>
+
+        <ui:define name="tabmenu">
+            <ui:include src="/include/tabMenu.xhtml">
+                <ui:param name="activeTab" value="summary"/>
+            </ui:include>
+        </ui:define>
+
+        <ui:define name="body">
+            <div class="tabmenubox">
+                <ui:include src="../include/displayGlobalMessages.xhtml"/>
+
+                <h2>#{messages['summary.resourceInstance.configuration']}</h2>
+                <table border="0">
+                    <tr>
+                        <td><span
+                                style="padding-right:3px;"><strong>#{messages['summary.resourceInstance.configuration.name']}</strong></span>#{resource.resource.name}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span
+                                style="padding-right:3px;"><strong>#{messages['summary.resourceInstance.configuration.version']}</strong></span><h:outputText
+                                rendered="#{not empty resource.resource.version}">#{resource.resource.version}</h:outputText>
+                            <h:outputText rendered="#{empty resource.resource.version}">--</h:outputText></td>
+                    </tr>
+                    <tr>
+                        <td><span
+                                style="padding-right:3px;"><strong>#{messages['summary.resourceInstance.configuration.description']}</strong></span><h:outputText
+                                rendered="#{not empty resource.resource.description}">#{resource.resource.description}</h:outputText>
+                            <h:outputText rendered="#{empty resource.resource.description}">--</h:outputText></td>
+                    </tr>
+                </table>
+
+                <h:panelGroup rendered="#{not empty summaryTraitDisplayList}">
+                    <h2>#{messages['summary.resourceInstance.traits']}</h2>
+
+                    <h:dataTable value="#{summaryTraitDisplayList}"
+                                 var="trait"
+                                 columnClasses="standard-traitscolumn">
+                        <h:column>
+                            <strong>#{ summaryMeasurementDefinitionMap[trait.measurementData.name].displayName}:</strong>
+                            #{trait.measurementValueAndUnits}
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{not empty summaryMeasurementDisplayList}">
+                    <h2>#{messages['summary.resourceInstance.metrics']}</h2>
+
+                    <rich:dataTable id="dataTable"
+                                    value="#{summaryMeasurementDisplayList}"
+                                    rendered="#{not empty summaryMeasurementDisplayList}"
+                                    var="md"
+                                    rowClasses="oddRow,evenRow"
+                                    columnClasses="rich-table-cell, rich-table-cell, rich-table-cell-action">
+                        <f:facet name="header">
+                            <rich:columnGroup>
+                                <rich:column>#{messages['metrics.resourceInstance.name']}</rich:column>
+                                <rich:column>#{messages['metrics.resourceInstance.value']}</rich:column>
+                                <rich:column>#{messages['metrics.resourceInstance.description']}</rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                        <rich:column>#{summaryMeasurementDefinitionMap[md.measurementData.name].displayName}</rich:column>
+                        <rich:column id="measurementValue">#{md.measurementValueAndUnits}</rich:column>
+                        <rich:column>#{summaryMeasurementDefinitionMap[md.measurementData.name].description}</rich:column>
+                    </rich:dataTable>
+                </h:panelGroup>
+            </div>
+        </ui:define>
+
+    </ui:composition>
+</f:view>
+</body>
+</html>

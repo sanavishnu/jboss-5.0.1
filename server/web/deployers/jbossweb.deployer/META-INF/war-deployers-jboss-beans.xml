@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Web application deployers
+$Id: war-deployers-jboss-beans.xml 88877 2009-05-14 15:36:29Z alesj $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- WAR Structure -->
+   <bean name="WARStructure" class="org.jboss.web.deployers.WARStructure">
+       <property name="webInfLibFilter">
+          <!-- We accept all .jar files in WEB-INF/lib -->
+          <bean name="WebInfLibFilter" class="org.jboss.virtual.plugins.vfs.helpers.SuffixMatchFilter">
+             <constructor><parameter class="java.lang.String">.jar</parameter></constructor>
+          </bean>
+       </property>
+       <property name="includeWebInfInClasspath">true</property>
+       <property name="contextInfoOrder">1000</property>
+   </bean>
+
+   <!-- web.xml parsing deployer -->
+   <bean name="WebAppParsingDeployer" class="org.jboss.deployment.WebAppParsingDeployer">
+      <property name="relativeOrder">2000</property>
+   </bean>
+   <bean name="JBossWebAppParsingDeployer" class="org.jboss.deployment.JBossWebAppParsingDeployer">
+      <property name="relativeOrder">2001</property>
+   </bean>
+
+  <!-- See JBAS-6062 -->
+   <bean name="WebXmlLessDeployer" class="org.jboss.deployment.LegacyWebXmlLessDeployer"/>
+
+   <!-- Allow for war local class loaders: in testing -->
+   <bean name="WarClassLoaderDeployer" class="org.jboss.web.tomcat.service.deployers.WarClassLoaderDeployer">
+      <property name="relativeOrder">-1</property>
+      <property name="filteredPackages">javax.servlet,org.apache.commons.logging</property>      
+   </bean>
+        
+   <!-- 
+        Injects default clustering metadata.        
+        TODO. A better approach is to use a jboss-web.xml equivalent to conf/web.xml 
+        and conf/standardjboss.xml as the source for defaults. 
+   -->
+   <bean name="WebAppClusteringDefaultsDeployer" 
+         class="org.jboss.web.tomcat.service.deployers.ClusteringDefaultsDeployer">
+      
+      <!-- Default session cache config used by distributable webapps -->
+      <property name="cacheName">standard-session-cache</property>
+      <!-- Default session cache config used by FIELD granularity distributable webapps -->      
+      <property name="fieldGranularityCacheName">field-granularity-session-cache</property>
+      
+      <!--
+      The following two properties define when sessions are replicated to 
+      the other nodes.
+      The default value, "instant", uses the request thread to replicate changes
+      to the other nodes at the end of requests. In this case, the 
+      "SnapshotInterval" property is not used.
+      The "interval" mode uses a background thread that periodically checks for
+      modified sessions and replicates them.  The "SnapshotInterval"
+      property controls how often (in milliseconds) the background thread
+      should run.   
+      
+      Note that this property is not in effect if the replication-granularity
+      is set to FIELD. If it is FIELD, it will be per http request (that is, 
+      "instant" mode.)
+      -->
+      <property name="snapshotMode">INSTANT</property>
+      <property name="snapshotInterval">1000</property>
+      
+      <property name="replicationGranularity">SESSION</property>
+      <property name="replicationTrigger">SET_AND_NON_PRIMITIVE_GET</property>
+      <property name="replicationFieldBatchMode">true</property>
+      
+      <!--
+      Whether by default to add special session handling to coordinate use 
+      with mod_jk or other JK connector variants. 
+      If a JK connector is used, you will need to set the JvmRoute inside 
+      JBossWeb, e.g. configure,
+        Engine name="jboss.web" jvmRoute="Node1" defaultHost="localhost" 
+      in server.xml.
+      
+      This value can be configured per webapp in the webapp's jboss.xml.
+      
+      If not set, the default will be to add the special session handling
+      if a jvmRoute is configured on the Engine. So, generally the only reason
+      to configure this overall default is to set it to 'false' and thus force
+      per webapp configuration.
+      -->
+      <!-- 
+      <property name="useJK">false</property>
+      
+      <property name="useSessionPassivation">false</property>
+      <property name="passivationMaxIdleTime">-1</property>  
+      <property name="passivationMinIdleTime">-1</property>
+      -->
+
+      <!--
+       Determines the maximum interval between requests, in seconds, after 
+       which a request will trigger replication of the session's timestamp 
+       regardless of whether the request has otherwise made the session dirty.  
+       Such replication ensures that other nodes in the cluster are aware of 
+       the most recent value for the session's timestamp and won't incorrectly 
+       expire an unreplicated session upon failover. It also results in correct 
+       values for HttpSession.getLastAccessedTime() calls following failover.
+
+       The cost of timestamp replication is considerably lower in JBoss AS 5
+       than it is in earlier versions since replicating a timestamp does not
+       necessitate replicating any other data.
+   
+       A value of 0 means the metadata will be replicated whenever the session is
+       accessed.  A value of -1 means the metadata will be replicated only if some
+       other activity during the request (e.g. modifying an attribute) has
+       resulted in other replication work involving the session. A positive value
+       greater than the HttpSession.getMaxInactiveInterval() value will be treated 
+       as a likely misconfiguration and converted to 0; i.e. replicate the 
+       metadata on every request.
+      -->
+      <property name="maxUnreplicatedInterval">60</property>
+      
+   </bean>
+
+   <!-- The WebMetaData to service mbean deployer -->
+   <bean name="WarDeployer" class="org.jboss.web.tomcat.service.deployers.TomcatDeployer">
+      <install bean="ManagedDeploymentCreator" method="addAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.web.jboss.JBossWebMetaData</value>
+         </parameter>
+         <parameter>
+            <value>war</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.web.jboss.JBossWebMetaData</value>
+         </parameter>
+      </uninstall>
+
+      <!-- Inject the MainDeployer for resolving cross deployment refs -->
+      <property name="mainDeployer"><inject bean="MainDeployer" /></property>
+
+      <property name="relativeOrder">2003</property>
+      
+      <!-- FIXME Get this moved to TomcatService in deploy -->
+      <property name="configFile">
+         <value-factory bean="ServiceBindingManager" method="getResourceBinding">
+            <parameter>jboss.web:service=WebServer</parameter>
+            <parameter>${jboss.server.home.url}${/}deploy${/}jbossweb.sar${/}server.xml</parameter>
+         </value-factory>
+      </property>
+      
+      <!-- You can configure a set of authenticators keyed by http-auth method
+      used. This will apply the same set of authenticators across all web
+      applications. You can override the set of authenticators at the web
+      application level by adding <authenticators> element to the respective
+      jboss-web.xml
+      -->      
+      <property name="authenticators">
+         <map class="java.util.Properties" keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>BASIC</key>
+               <value>org.apache.catalina.authenticator.BasicAuthenticator</value>
+            </entry>
+            <entry>
+               <key>CLIENT-CERT</key>
+               <value>org.apache.catalina.authenticator.SSLAuthenticator</value>
+            </entry>
+            <entry>
+               <key>DIGEST</key>
+               <value>org.apache.catalina.authenticator.DigestAuthenticator</value>
+            </entry>
+            <entry>
+               <key>FORM</key>
+               <value>org.apache.catalina.authenticator.FormAuthenticator</value>
+            </entry>
+            <entry>
+               <key>NONE</key>
+               <value>org.apache.catalina.authenticator.NonLoginAuthenticator</value>
+            </entry>
+         </map>         
+      </property>
+      
+      <!-- The JAAS security domain to use in the absense of an explicit
+      security-domain specification in the war WEB-INF/jboss-web.xml
+      -->
+      <property name="defaultSecurityDomain">java:/jaas/jboss-web-policy</property>
+
+      <!-- Get the flag indicating if the normal Java2 parent first class
+           loading model should be used over the servlet 2.3 web container first
+           model.
+      -->
+      <property name="java2ClassLoadingCompliance">false</property>
+
+      <!-- This is NO LONGER supported this way and it will be completely removed for 6.x.
+           See JBAS-6914 for how you can achieve the same in 5.x with new MC JBossCL layer. 
+
+           A flag indicating if the JBoss Loader should be used. This loader
+           uses a unified class loader as the class loader rather than the tomcat
+           specific class loader.
+           The default is false to ensure that wars have isolated class loading
+           for duplicate jars and jsp files.
+      <property name="useJBossWebLoader">false</property>
+      -->
+
+      <!-- The list of package prefixes that should not be loaded without
+         delegating to the parent class loader before trying the web app
+         class loader. The packages listed here are those tha are used by
+         the web container implementation and cannot be overriden. The format
+         is a comma separated list of the package names. There cannot be any
+         whitespace between the package prefixes.
+         This setting only applies when UseJBossWebLoader=false.
+      -->
+      <property name="filteredPackages">javax.servlet,org.apache.commons.logging</property>
+
+      <property name="lenientEjbLink">true</property>
+
+      <!--Flag to delete the Work Dir on Context Destroy -->
+      <property name="deleteWorkDirOnContextDestroy">false</property>
+
+      <!--
+          Class of the session manager (used if context is marked as 'distributable'. Currently allowed values:
+          - org.jboss.web.tomcat.service.session.JBossCacheManager
+      -->
+      <property name="managerClass">org.jboss.web.tomcat.service.session.JBossCacheManager</property>
+
+      <!-- The name of the request property under with the authenticated JAAS
+      Subject is stored on successful authentication. If null or empty then
+      the Subject will not be stored.
+      -->
+      <!--
+      <property name="subjectAttributeName">j_subject</property>
+      -->
+
+      <!-- The SessionIdAlphabet is the set of characters used to create a session Id
+           It must be made up of exactly 65 unique characters
+      <property name="sessionIdAlphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-_</property>
+      -->
+      
+      <property name="domain">jboss.web</property>
+       <!--  Specify a Bean for JBoss Security PolicyRegistration -->
+       <property name="policyRegistrationName">JBossSecurityPolicyRegistration</property>
+       
+       <!-- Specify a SecurityManagement Wrapper -->
+       <property name="securityManagementName">JNDIBasedSecurityManagement</property>
+
+       <!-- Specify a SecurityContext FQN class name -->
+       <property name="securityContextClassName">org.jboss.security.plugins.JBossSecurityContext</property> 
+   </bean>
+   
+   <bean name="MergedJBossWebMetaDataDeployer" 
+          class="org.jboss.web.deployers.MergedJBossWebMetaDataDeployer">
+   </bean>
+
+</deployment>

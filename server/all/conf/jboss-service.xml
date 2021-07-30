@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: jboss-service.xml 88695 2009-05-12 03:32:03Z bstansberry@jboss.com $ -->
+
+<!-- ===================================================================== -->
+<!--  JBoss Server Configuration                                           -->
+<!-- ===================================================================== -->
+
+<server>
+
+   <!-- Load all jars from the JBOSS_HOME/server/<config>/lib directory and
+        the shared JBOSS_HOME/common/lib directory. This can be restricted to
+        specific jars by specifying them in the archives attribute.
+   -->
+   <classpath codebase="${jboss.server.lib.url}" archives="*"/>
+   <classpath codebase="${jboss.common.lib.url}" archives="*"/>
+
+   <!-- ==================================================================== -->
+   <!-- Main Deployer                                                        -->
+   <!-- ==================================================================== -->
+   <mbean code="org.jboss.deployment.MainDeployer"
+          name="jboss.system:service=MainDeployer">
+   	<!-- This is used to delegate the deployment handling -->
+      <attribute name="KernelMainDeployer"><inject bean="MainDeployer" /></attribute>
+      <!-- This is used to validate incomplete deployments -->
+      <attribute name="Controller"><inject bean="jboss.kernel:service=Kernel" property="controller"/></attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- XMBean Persistence                                                   -->
+   <!-- ==================================================================== -->
+   <mbean code="org.jboss.system.pm.AttributePersistenceService"
+      name="jboss:service=AttributePersistenceService"
+      xmbean-dd="resource:xmdesc/AttributePersistenceService-xmbean.xml">
+      <!-- the AttributePersistenceService is persistent, itself -->
+
+      <!--
+      <attribute name="AttributePersistenceManagerClass">org.jboss.system.pm.XMLAttributePersistenceManager</attribute>
+      <attribute name="AttributePersistenceManagerConfig">
+         <data-directory>data/xmbean-attrs</data-directory>
+      </attribute>
+      <attribute name="ApmDestroyOnServiceStop">false</attribute>
+      <attribute name="VersionTag"></attribute>
+      -->
+   </mbean>
+
+   <!-- A Thread pool service -->
+   <mbean code="org.jboss.util.threadpool.BasicThreadPool"
+      name="jboss.system:service=ThreadPool">
+      <attribute name="Name">JBoss System Threads</attribute>
+      <attribute name="ThreadGroupName">System Threads</attribute>
+      <!-- How long a thread will live without any tasks in MS -->
+      <attribute name="KeepAliveTime">60000</attribute>
+      <!-- The max number of threads in the pool -->
+      <attribute name="MaximumPoolSize">10</attribute>
+      <!-- The max number of tasks before the queue is full -->
+      <attribute name="MaximumQueueSize">1000</attribute>
+      <!-- The behavior of the pool when a task is added and the queue is full.
+      abort - a RuntimeException is thrown
+      run - the calling thread executes the task
+      wait - the calling thread blocks until the queue has room
+      discard - the task is silently discarded without being run
+      discardOldest - check to see if a task is about to complete and enque
+         the new task if possible, else run the task in the calling thread
+      -->
+      <attribute name="BlockingMode">run</attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- Log4j Initialization                                                 -->
+   <!-- ==================================================================== -->
+
+   <mbean code="org.jboss.logging.Log4jService"
+      name="jboss.system:type=Log4jService,service=Logging"
+      xmbean-dd="resource:xmdesc/Log4jService-xmbean.xml">
+      <attribute name="ConfigurationURL">resource:jboss-log4j.xml</attribute>
+      <!-- Set the org.apache.log4j.helpers.LogLog.setQuiteMode. As of log4j1.2.8
+      this needs to be set to avoid a possible deadlock on exception at the
+      appender level. See bug#696819.
+      -->
+      <attribute name="Log4jQuietMode">true</attribute>
+      <!-- How frequently in seconds the ConfigurationURL is checked for changes -->
+      <attribute name="RefreshPeriod">60</attribute>
+      
+      <!-- The value to assign to system property jboss.server.log.threshold
+           if it is not already set. This system property in turn controls
+           the logging threshold for the server.log file.
+           If the system property is already set when this service is created,
+           this value is ignored. -->
+      <attribute name="DefaultJBossServerLogThreshold">INFO</attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- Active Alarm Table                                                   -->
+   <!-- ==================================================================== -->
+
+   <!--
+      | The ActiveAlarmTable service is a simple JMX notification listener
+      | that maintains a table with the received notifications (alarms).
+      | The alarms can be acknowledged through the jmx or the web console.
+      | Modify the SubscriptionList below to subscribe for any notification
+      | in the system and treat it as an alarm.
+      | The JMXNotificationAppender is a log4j Appender that can be configured
+      | in log4j.xml, that trasforms logging events to JMX notification so they
+      | can be fed back into the table. By storing the WARN or higher level logging
+      | events you can have a quick view of important system faults.
+      |
+      | The following attributes may be set:
+      |
+      | MaxTableSize (default 1000)
+      |  - set an upper limit to the number of stored alarms
+      | LogLevel (default DEBUG)
+      |  - the log level to use for received notification, can be set to NONE
+      | ServerId (default jboss)
+      |  - used to construct unique alarm ids
+      | SubscriptionList
+      |  - subscribe for the notifications to be stored in the table
+
+   <mbean code="org.jboss.monitor.services.ActiveAlarmTable"
+          name="jboss.monitor:service=ActiveAlarmTable">
+      <attribute name="SubscriptionList">
+         <subscription-list>
+            <mbean name="jboss.monitor:*">
+               <notification type="jboss.alarm"/>
+               <notification type="JBOSS_MONITOR_NOTIFICATION"/>
+            </mbean>
+            <mbean name="jboss.system:service=Logging,type=JMXNotificationAppender"/>
+         </subscription-list>
+      </attribute>
+   </mbean>
+   -->
+
+   <!-- ==================================================================== -->
+   <!-- JBoss RMI Classloader - only install when available                  -->
+   <!-- ==================================================================== -->
+   <mbean code="org.jboss.util.property.jmx.SystemPropertyClassValue"
+      name="jboss.rmi:type=RMIClassLoader">
+      <attribute name="Property">java.rmi.server.RMIClassLoaderSpi</attribute>
+      <attribute name="ClassName">org.jboss.system.JBossRMIClassLoader</attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- Class Loading                                                        -->
+   <!-- ==================================================================== -->
+
+   <!-- A mini webserver used for dynamic and class and resource loading --> 
+   <mbean code="org.jboss.web.WebService"
+      name="jboss:service=WebService">
+      <!-- The Bind address and Port -->
+      <attribute name="BindAddress">
+         <!-- Get the interface to use from ServiceBindingManager. -->
+         <value-factory bean="ServiceBindingManager" method="getStringBinding" parameter="jboss:service=WebService"/>
+      </attribute>      
+      <attribute name="Port">
+         <!-- Get the port to use from ServiceBindingManager. -->
+         <value-factory bean="ServiceBindingManager" method="getIntBinding" parameter="jboss:service=WebService"/>
+      </attribute>
+      <!--  The address to use for the host portion of the RMI codebase URL -->
+      <attribute name="Host">${java.rmi.server.hostname}</attribute>
+      <!-- Should non-EJB .class files be downloadable -->
+      <attribute name="DownloadServerClasses">true</attribute>
+      <!-- Should resources other than .class files be downloadable. Both
+         DownloadServerClasses and DownloadResources must be true for resources
+         to be downloadable. This is false by default because its generally a
+         bad idea as server configuration files that container security
+         information can be accessed.
+       -->
+      <attribute name="DownloadResources">false</attribute>
+
+      <!-- Use the default thread pool for dynamic class loading -->
+      <depends optional-attribute-name="ThreadPool"
+         proxy-type="attribute">jboss.system:service=ThreadPool</depends>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- JNDI                                                                 -->
+   <!-- ==================================================================== -->
+
+   <!-- A simple mbean wrapper around the jndi Naming object. This
+      only handles an in memory instance. The NamingService uses this
+      as the JNDI store and exposes it remotely.
+   -->
+   <mbean code="org.jnp.server.NamingBeanImpl"
+      name="jboss:service=NamingBeanImpl"
+      xmbean-dd="resource:xmdesc/NamingBean-xmbean.xml">
+   </mbean>
+   
+   <mbean code="org.jboss.naming.NamingService"
+      name="jboss:service=Naming"
+      xmbean-dd="resource:xmdesc/NamingService-xmbean.xml">
+      <!-- The call by value mode. true if all lookups are unmarshalled using
+         the caller's TCL, false if in VM lookups return the value by reference.
+      -->
+      <attribute name="CallByValue">false</attribute>
+      
+      <!-- The listening port for the bootstrap JNP service. Set this to -1
+         to run the NamingService without the JNP invoker listening port.
+      -->
+      <attribute name="Port">
+         <value-factory bean="ServiceBindingManager" method="getIntBinding">
+            <parameter>jboss:service=Naming</parameter>
+            <parameter>Port</parameter>
+         </value-factory>
+      </attribute>
+      
+      <!-- The bootstrap JNP server bind address. This also sets the default
+         RMI service bind address. Empty == all addresses
+      -->
+      <attribute name="BindAddress">
+         <value-factory bean="ServiceBindingManager" method="getStringBinding">
+            <parameter>jboss:service=Naming</parameter>
+            <parameter>Port</parameter>
+            <parameter><null/></parameter>
+         </value-factory>
+      </attribute>
+      
+      <!-- The port of the RMI naming service, 0 == anonymous -->
+      <attribute name="RmiPort">
+         <value-factory bean="ServiceBindingManager" method="getIntBinding">
+            <parameter>jboss:service=Naming</parameter>
+            <parameter>RmiPort</parameter>
+         </value-factory>
+      </attribute>
+      <!-- The RMI service bind address. Empty == all addresses  -->
+      <attribute name="RmiBindAddress">
+         <value-factory bean="ServiceBindingManager" method="getStringBinding">
+            <parameter>jboss:service=Naming</parameter>
+            <parameter>RmiPort</parameter>
+            <parameter><null/></parameter>
+         </value-factory>
+      </attribute>
+      
+      <!-- The thread pool service used to control the bootstrap lookups -->
+      <depends optional-attribute-name="LookupPool"
+         proxy-type="attribute">jboss.system:service=ThreadPool</depends>
+      <!-- An example of using the unifed invoker as the transport.
+         <depends optional-attribute-name="InvokerProxyFactory"
+         proxy-type="attribute">jboss:service=proxyFactory,type=unified,target=Naming</depends>
+      -->
+      <depends optional-attribute-name="Naming"
+         proxy-type="attribute">jboss:service=NamingBeanImpl</depends>
+   </mbean>
+
+   <!-- Writes the bootstrap URL for the NamingService in a known location,
+        so tools (e.g. Jopr) can use it as a java.naming.provider.url.
+   -->
+   <mbean code="org.jboss.naming.NamingProviderURLWriter"
+      name="jboss:service=NamingProviderURLWriter"
+      xmbean-dd="resource:xmdesc/NamingProviderURLWriter-xmbean.xml">
+      
+      <attribute name="Server"><inject bean="JBossServer"/></attribute>
+      <attribute name="BootstrapURL"><inject bean="jboss:service=Naming" property="bootstrapURL"/></attribute>
+   </mbean>
+   
+   <mbean code="org.jboss.naming.JNDIView"
+   	name="jboss:service=JNDIView"
+   	xmbean-dd="resource:xmdesc/JNDIView-xmbean.xml">
+   	<!-- The HANamingService service name -->
+   	<attribute name="HANamingService">jboss:service=HAJNDI</attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- Security                                                             -->
+   <!-- ==================================================================== -->
+
+   <!-- JAAS security manager and realm mapping -->
+   <mbean code="org.jboss.security.plugins.JaasSecurityManagerService"
+      name="jboss.security:service=JaasSecurityManager">
+      <!-- A flag which indicates whether the SecurityAssociation server mode
+      is set on service creation. This is true by default since the
+      SecurityAssociation should be thread local for multi-threaded server
+      operation.
+      -->
+      <attribute name="ServerMode">true</attribute>
+      <attribute name="SecurityManagerClassName">org.jboss.security.plugins.JaasSecurityManager</attribute>
+      <attribute name="DefaultUnauthenticatedPrincipal">anonymous</attribute>
+      <!-- DefaultCacheTimeout: Specifies the default timed cache policy timeout
+      in seconds.
+      If you want to disable caching of security credentials, set this to 0 to
+      force authentication to occur every time. This has no affect if the
+      AuthenticationCacheJndiName has been changed from the default value.
+      -->
+       <attribute name="DefaultCacheTimeout">1800</attribute>
+      <!-- DefaultCacheResolution: Specifies the default timed cache policy
+      resolution in seconds. This controls the interval at which the cache
+      current timestamp is updated and should be less than the DefaultCacheTimeout
+      in order for the timeout to be meaningful. This has no affect if the
+      AuthenticationCacheJndiName has been changed from the default value.
+      -->
+      <attribute name="DefaultCacheResolution">60</attribute>
+      <!-- DeepCopySubjectMode: This set the copy mode of subjects done by the
+      security managers to be deep copies that makes copies of the subject
+      principals and credentials if they are cloneable. It should be set to
+      true if subject include mutable content that can be corrupted when
+      multiple threads have the same identity and cache flushes/logout clearing
+      the subject in one thread results in subject references affecting other
+      threads.
+      -->
+      <attribute name="DeepCopySubjectMode">false</attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- Monitoring and Management                                            -->
+   <!-- ==================================================================== -->
+
+   <!-- Uncomment to enable JMX monitoring of the bean cache
+   <mbean code="org.jboss.monitor.BeanCacheMonitor"
+          name="jboss.monitor:name=BeanCacheMonitor"/>
+   -->
+
+   <!-- Uncomment to enable JMX monitoring of the entity bean locking
+   <mbean code="org.jboss.monitor.EntityLockMonitor"
+          name="jboss.monitor:name=EntityLockMonitor"/>
+   -->
+
+   <!-- ==================================================================== -->
+   <!-- An MBean that is a registry for JDBC type-mapping metadata           -->
+   <!-- ==================================================================== -->
+
+   <mbean code="org.jboss.ejb.plugins.cmp.jdbc.metadata.MetaDataLibrary"
+      name="jboss.jdbc:service=metadata"/>
+
+</server>

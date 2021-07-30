@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  EJB3 Connectors
+  
+-->
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <!-- 
+    
+    JBoss Remoting Connector  
+    
+    Note: Bean Name "org.jboss.ejb3.RemotingConnector" is used
+    as a lookup value; alter only after checking java references
+    to this key.
+    
+  -->
+  <bean name="org.jboss.ejb3.RemotingConnector"
+    class="org.jboss.remoting.transport.Connector">
+
+    <property name="invokerLocator">
+
+      <value-factory bean="ServiceBindingManager"
+        method="getStringBinding">
+        <parameter>
+          jboss.remoting:type=Connector,name=DefaultEjb3Connector,handler=ejb3
+        </parameter>
+        <parameter>
+          <null />
+        </parameter>
+        <parameter>socket://${jboss.bind.address}:${port}</parameter>
+        <parameter>
+          <null />
+        </parameter>
+        <parameter>3873</parameter>
+      </value-factory>
+
+    </property>
+    <property name="serverConfiguration">
+      <inject bean="ServerConfiguration" />
+    </property>
+  </bean>
+
+  <!-- Remoting Server Configuration -->
+  <bean name="ServerConfiguration"
+    class="org.jboss.remoting.ServerConfiguration">
+    <property name="invocationHandlers">
+      <map keyClass="java.lang.String" valueClass="java.lang.String">
+        <entry>
+          <key>AOP</key>
+          <value>
+            org.jboss.aspects.remoting.AOPRemotingInvocationHandler
+          </value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+</deployment>

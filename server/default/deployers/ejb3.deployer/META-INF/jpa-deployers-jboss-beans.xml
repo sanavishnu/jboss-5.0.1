@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <bean name="DataSourceDependencyResolver" class="org.jboss.as.jpa.resolvers.JBossASDataSourceDependencyResolver"/>
+   
+   <bean name="JavaEEModuleInformer" class="org.jboss.as.javaee.SimpleJavaEEModuleInformer"/>
+   
+   <bean name="JBossSearchStrategy" class="org.jboss.jpa.resolvers.strategy.JBossSearchStrategy"/>
+   
+   <bean name="SpecCompliantSearchStrategy" class="org.jboss.jpa.resolvers.strategy.SpecCompliantSearchStrategy"/>
+   
+   <!--
+      Can be DefaultPersistenceUnitDependencyResolver for spec compliant resolving, 
+      InterApplicationPersistenceUnitDependencyResolver for resolving beyond EARs,
+      or DynamicPersistencePersistenceUnitDependencyResolver which allows configuration via JMX.
+   -->
+   <bean name="PersistenceUnitDependencyResolver" class="org.jboss.jpa.resolvers.DynamicPersistenceUnitDependencyResolver"/>
+   
+   <bean name="XPCResolver" class="org.jboss.ejb3.stateful.EJB3XPCResolver"/>
+   
+   <bean name="PersistenceParsingDeployer" class="org.jboss.jpa.deployers.PersistenceParsingDeployer"/>
+
+   <bean name="PersistenceDeployer" class="org.jboss.jpa.deployers.PersistenceDeployer"/>
+   <bean name="PersistenceUnitDeployer" class="org.jboss.jpa.deployers.PersistenceUnitDeployer">
+      <property name="defaultPersistenceProperties">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>hibernate.transaction.manager_lookup_class</key>
+               <value>org.hibernate.transaction.JBossTransactionManagerLookup</value>
+            </entry>
+            <!--entry>
+               <key>hibernate.connection.release_mode</key>
+               <value>after_statement</value>
+            </entry-->
+            <!--entry>
+               <key>hibernate.transaction.flush_before_completion</key>
+               <value>false</value>
+            </entry-->
+            <!--entry>
+               <key>hibernate.transaction.auto_close_session</key>
+               <value>false</value>
+            </entry-->
+            <!--entry>
+               <key>hibernate.query.factory_class</key>
+               <value>org.hibernate.hql.ast.ASTQueryTranslatorFactory</value>
+            </entry-->
+            <!--entry>
+               <key>hibernate.hbm2ddl.auto</key>
+               <value>create-drop</value>
+            </entry-->
+            <entry>
+               <key>hibernate.cache.provider_class</key>
+               <value>org.hibernate.cache.HashtableCacheProvider</value>
+            </entry>
+            <!-- Clustered cache with JBoss Cache -->
+            <!--entry>
+               <key>hibernate.cache.region.factory_class</key>
+               <value>org.hibernate.cache.jbc2.JndiMultiplexedJBossCacheRegionFactory</value>
+            </entry>
+            <entry>
+               <key>hibernate.cache.region.jbc2.cachefactory</key>
+               <value>java:CacheManager</value>
+            </entry>
+            <entry>
+               <key>hibernate.cache.region.jbc2.cfg.entity</key>
+               <value>pessimistic-entity</value>
+            </entry>
+            <entry>
+               <key>hibernate.cache.region.jbc2.cfg.query</key>
+               <value>local-query</value>
+            </entry-->
+            <!--entry>
+               <key>hibernate.dialect</key>
+               <value>org.hibernate.dialect.HSQLDialect</value>
+            </entry-->
+            <entry>
+               <key>hibernate.jndi.java.naming.factory.initial</key>
+               <value>org.jnp.interfaces.NamingContextFactory</value>
+            </entry>
+            <entry>
+               <key>hibernate.jndi.java.naming.factory.url.pkgs</key>
+               <value>org.jboss.naming:org.jnp.interfaces</value>
+            </entry>
+            <entry>
+               <key>hibernate.bytecode.use_reflection_optimizer</key>
+               <value>false</value>
+            </entry>
+            <!-- I don't think this is honored, but EJB3Deployer uses it -->
+            <entry>
+               <key>hibernate.bytecode.provider</key>
+               <value>javassist</value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+</deployment>

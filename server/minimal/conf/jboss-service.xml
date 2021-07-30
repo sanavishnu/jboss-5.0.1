@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: jboss-service.xml 88695 2009-05-12 03:32:03Z bstansberry@jboss.com $ -->
+
+<!-- ===================================================================== -->
+<!--  A minimal JBoss Server Configuration                                 -->
+<!-- ===================================================================== -->
+
+<server>
+
+   <!-- Load all jars from the JBOSS_DIST/server/<config>/lib directory. This
+        can be restricted to specific jars by specifying them in the archives
+        attribute.
+    -->
+   <classpath codebase="${jboss.server.lib.url}" archives="*"/>
+
+   <!-- ==================================================================== -->
+   <!-- Log4j Initialization                                                 -->
+   <!-- ==================================================================== -->
+   <mbean code="org.jboss.logging.Log4jService"
+      name="jboss.system:type=Log4jService,service=Logging"
+      xmbean-dd="resource:xmdesc/Log4jService-xmbean.xml">
+      <attribute name="ConfigurationURL">resource:jboss-log4j.xml</attribute>      
+      <!-- The value to assign to system property jboss.server.log.threshold
+           if it is not already set. This system property in turn controls
+           the logging threshold for the server.log file.
+           If the system property is already set when this service is created,
+           this value is ignored. -->
+      <attribute name="DefaultJBossServerLogThreshold">INFO</attribute>
+   </mbean>
+   
+   <!-- A Thread pool service -->
+   <mbean code="org.jboss.util.threadpool.BasicThreadPool"
+      name="jboss.system:service=ThreadPool">
+      <attribute name="Name">JBoss System Threads</attribute>
+      <attribute name="ThreadGroupName">System Threads</attribute>
+      <!-- How long a thread will live without any tasks in MS -->
+      <attribute name="KeepAliveTime">60000</attribute>
+      <!-- The max number of threads in the pool -->
+      <attribute name="MaximumPoolSize">10</attribute>
+      <!-- The max number of tasks before the queue is full -->
+      <attribute name="MaximumQueueSize">1000</attribute>
+      <!-- The behavior of the pool when a task is added and the queue is full.
+      abort - a RuntimeException is thrown
+      run - the calling thread executes the task
+      wait - the calling thread blocks until the queue has room
+      discard - the task is silently discarded without being run
+      discardOldest - check to see if a task is about to complete and enque
+         the new task if possible, else run the task in the calling thread
+      -->
+      <attribute name="BlockingMode">run</attribute>
+   </mbean>
+
+   <!-- ==================================================================== -->
+   <!-- JNDI                                                                 -->
+   <!-- ==================================================================== -->
+
+   <!-- A simple mbean wrapper around the jndi Naming object. This
+      only handles an in memory instance. The NamingService uses this
+      as the JNDI store and exposes it remotely.
+   -->
+   <mbean code="org.jnp.server.NamingBeanImpl"
+      name="jboss:service=NamingBeanImpl"
+      xmbean-dd="resource:xmdesc/NamingBean-xmbean.xml">
+   </mbean>
+   
+   <mbean code="org.jboss.naming.NamingService"
+      name="jboss:service=Naming"
+      xmbean-dd="resource:xmdesc/NamingService-xmbean.xml">
+      <!-- The call by value mode. true if all lookups are unmarshalled using
+         the caller's TCL, false if in VM lookups return the value by reference.
+      -->
+      <attribute name="CallByValue">false</attribute>
+      <!-- The listening port for the bootstrap JNP service. Set this to -1
+         to run the NamingService without the JNP invoker listening port.
+      -->
+      <attribute name="Port">1099</attribute>
+      <!-- The bootstrap JNP server bind address. This also sets the default
+         RMI service bind address. Empty == all addresses
+      -->
+      <attribute name="BindAddress">${jboss.bind.address}</attribute>
+      <!-- The port of the RMI naming service, 0 == anonymous -->
+      <attribute name="RmiPort">1098</attribute>
+      <!-- The RMI service bind address. Empty == all addresses
+      -->
+      <attribute name="RmiBindAddress">${jboss.bind.address}</attribute>
+      <!-- The thread pool service used to control the bootstrap lookups -->
+      <depends optional-attribute-name="LookupPool"
+         proxy-type="attribute">jboss.system:service=ThreadPool</depends>
+      <!-- An example of using the unifed invoker as the transport.
+         <depends optional-attribute-name="InvokerProxyFactory"
+         proxy-type="attribute">jboss:service=proxyFactory,type=unified,target=Naming</depends>
+      -->
+      <depends optional-attribute-name="Naming"
+         proxy-type="attribute">jboss:service=NamingBeanImpl</depends>
+   </mbean>  
+
+   <!-- Writes the bootstrap URL for the NamingService in a known location,
+        so tools (e.g. Jopr) can use it as a java.naming.provider.url.
+   -->
+   <mbean code="org.jboss.naming.NamingProviderURLWriter"
+      name="jboss:service=NamingProviderURLWriter"
+      xmbean-dd="resource:xmdesc/NamingProviderURLWriter-xmbean.xml">
+      
+      <attribute name="Server"><inject bean="JBossServer"/></attribute>
+      <attribute name="BootstrapURL"><inject bean="jboss:service=Naming" property="bootstrapURL"/></attribute>
+   </mbean> 
+
+</server>

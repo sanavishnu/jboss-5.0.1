@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!--
+  DTD used to configure JMX notification listening subscriptions:
+  which JMX Notifications to intercept from which MBeans.
+  
+  MBeans that implement org.jboss.system.ListenerServiceMBean
+  have the SubscriptionList attribute, whose value must conform
+  to this DTD.
+  
+  For example:
+  
+  <server>
+    <mbean code="jboss.example.NotificationMonitor"
+           name="jboss.monitor:name=NotificationMonitor">
+
+      <attribute name="SubscriptionList">      
+        <subscription-list>
+          <mbean name="*:service=invoker,*" handback="anObject"/>
+          <mbean name="jboss.monitor:*">
+            <notification type="JBOSS_MONITOR_NOTIFICATION"/>
+          </mbean>
+          <mbean name="JMImplementation:type=MBeanServerDelegate">
+            <notification type="JMX.mbean.registered"/>
+           [...]
+          </mbean
+          [...]
+        </subscription-list>
+      </attribute>
+      [ ... your-other-mbean-attributes ...]
+    </mbean>
+  </server>
+
+  The filter mechanism has been extended to support specification
+  of arbitrary filters, using filter factory plugins, so now we can have:
+
+  <attribute name="SubscriptionList">
+    <subscription-list>
+      <mbean name="jboss.system:*">
+        <filter factory="NotificationFilterSupportFactory">
+          <enable type="org.jboss.system.ServiceMBean.start"/>
+          <enable type="org.jboss.system.ServiceMBean.stop"/>
+        </filter>
+      </mbean>
+      <mbean name="jboss.monitor:service=MemoryMonitor">
+        <filter factory="AttributeChangeNotificationFilterFactory">
+          <enable attribute-name="State"/>
+        </filter>
+      </mbean>        
+      <mbean name="JMImplementation:type=MBeanServerDelegate">
+        <filter factory="MBeanServerNotificationFilterFactory">
+          <enable type="JMX.mbean"/>
+          <enable object-name="jboss:type=Service,name=SystemProperties"/>
+        </filter>
+      </mbean>
+    </subscription-list>
+  </attribute>
+       
+  $Id: jboss-subscription.dtd 29471 2005-03-14 19:10:57Z andd $
+   
+  Author: <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
+-->
+
+<!-- The subscription-list encapsulates the set of MBeans/JMX-Notifications
+that should be monitored (subscribed for). At the first level it contains
+a series of zero or more MBean subscription specifications.
+-->
+<!ELEMENT subscription-list (mbean*)>
+
+<!-- The mbean element is used to identify one or more (in case of a pattern
+specification) mbeans that should be monitored. The mbean may contain an
+optional filter element, or instead, zero or more notification elements.
+If no filter or notification element(s) is specified, all JMX Notification
+types will be monitored. Otherwise, a filter will be installed to monitor
+a subset of the emitted Notifications.
+-->
+<!ELEMENT mbean (filter? | notification*)>
+
+<!-- The name attribute in the mbean specification is required to match one
+or more MBeans. For example:
+
+  <mbean name="*:*"/>                     - matches all MBeans in the server
+  <mbean name="jboss:*"/>                 - matches all MBeans in domain jboss
+  <mbean name="jboss:service=invoker,*"/> - matches all MBeans in domain jboss
+                                             whose service=invoker
+  <mbean name="jboss:service=invoker,type=local"/>
+                                          - matches this particular MBean
+-->
+<!ATTLIST mbean name CDATA #REQUIRED>
+
+<!-- When making a notification subscription an optional handback string
+maybe specified. All incoming notifications that occur due to this particular
+mbean subscription will carry the handback object.
+-->
+<!ATTLIST mbean handback CDATA #IMPLIED>
+
+<!-- Specification of a notification filter to apply to the subscription.
+The content of this element will vary according to the chosen
+NotificationFilterFactory implementation. For example,
+MBeanServerNotificationFilterFactory supports the following config:
+
+  <mbean name="JMImplementation:type=MBeanServerDelegate">
+    <filter factory="MBeanServerNotificationFilterFactory">
+      <enable type="JMX.mbean"/>
+      <enable object-name="jboss:type=Service,name=SystemProperties"/>
+      ...
+    </filter>
+  </mbean>
+-->
+<!ELEMENT filter ANY>
+
+<!-- The name of a class implementing org.jboss.system.NotificationFilterFactory
+interface. It will be used to construct the filter that will be applied
+to the enclosing subscription. Three filter factories corresponding to the
+"standard" jmx notification filters are already implemented:
+
+  org.jboss.system.filterfactory.AttributeChangeNotificationFilterFactory
+  org.jboss.system.filterfactory.MBeanServerNotificationFilterFactory
+  org.jboss.system.filterfactory.NotificationFilterSupportFactory
+  
+As a convenience, you don't need to specify the full package name for
+the pre-packaged factories.
+-->
+<!ATTLIST filter factory CDATA #REQUIRED>
+
+<!-- Specification of a particular JMX notification type to be monitored.
+-->
+<!ELEMENT notification EMPTY>
+
+<!-- The notification type is used as a prefix in the installed notification
+type filter. For example:
+
+  <notification type="JMX.mbean"/>  - matches both JMX.mbean.registered &
+                                                   JMX.mbean.unregistered
+-->
+<!ATTLIST notification type CDATA #REQUIRED>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:jboss="http://www.jboss.com/xml/ns/javaee"
+   xmlns:jee="http://java.sun.com/xml/ns/javaee"
+   targetNamespace="http://www.jboss.com/xml/ns/javaee"
+   version="5.0"
+   elementFormDefault="qualified"
+   >
+   <xsd:element name="jboss-client" type="jboss:jboss-clientType"/>
+   <xsd:complexType name="ejb-refType">
+      <xsd:sequence>
+         <xsd:element name="home" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ejb-link" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="remote" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="ejb-ref-type" type="jboss:ejb-ref-typeType" minOccurs="0"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ejb-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="message-destinationType">
+      <xsd:sequence>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="icon" type="jboss:iconType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="display-name" type="jboss:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="message-destination-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="persistence-unit-refType">
+      <xsd:sequence>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="persistence-unit-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="persistence-unit-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="message-destination-refType">
+      <xsd:sequence>
+         <xsd:element name="message-destination-link" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="message-destination-type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="message-destination-usage" type="jboss:message-destination-usageType" minOccurs="0"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="message-destination-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="port-component-refType">
+      <xsd:sequence>
+         <xsd:element name="config-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="stub-property" type="jboss:stub-propertyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="config-file" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="call-property" type="jboss:call-propertyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="enable-mtom" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="port-component-link" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="service-endpoint-interface" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="port-qname" type="xsd:QName" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="stub-propertyType">
+      <xsd:sequence>
+         <xsd:element name="prop-name" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+         <xsd:element name="prop-value" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="call-propertyType">
+      <xsd:sequence>
+         <xsd:element name="prop-name" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+         <xsd:element name="prop-value" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="env-entryType">
+      <xsd:sequence>
+         <xsd:element name="env-entry-type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="env-entry-value" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="env-entry-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="jboss-clientType">
+      <xsd:sequence>
+         <xsd:element name="callback-handler" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="metadata-complete" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="icon" type="jboss:iconType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="display-name" type="jboss:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:sequence>
+            <xsd:element name="env-entry" type="jboss:env-entryType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ejb-ref" type="jboss:ejb-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ejb-local-ref" type="jboss:ejb-local-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="service-ref" type="jboss:service-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="resource-ref" type="jboss:resource-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="resource-env-ref" type="jboss:resource-env-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="message-destination-ref" type="jboss:message-destination-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="persistence-context-ref" type="jboss:persistence-context-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="persistence-unit-ref" type="jboss:persistence-unit-refType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="post-construct" type="jboss:lifecycle-callbackType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="pre-destroy" type="jboss:lifecycle-callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>
+         <xsd:element name="message-destinations" type="jboss:message-destinationType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="depends" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+      <xsd:attribute name="version" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="descriptionType">
+      <xsd:sequence>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+      <xsd:attribute name="lang" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="ejb-local-refType">
+      <xsd:sequence>
+         <xsd:element name="ejb-link" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="local-jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="ejb-ref-type" type="jboss:ejb-ref-typeType" minOccurs="0"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="local-home" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="local" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ejb-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="resource-env-refType">
+      <xsd:sequence>
+         <xsd:element name="resource-env-ref-type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="resource-env-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:simpleType name="res-sharing-scopeType">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="Shareable"/>
+         <xsd:enumeration value="Unshareable"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="iconType">
+      <xsd:sequence>
+         <xsd:element name="small-icon" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="large-icon" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+      <xsd:attribute name="lang" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="injection-targetType">
+      <xsd:sequence>
+         <xsd:element name="injection-target-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target-class" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="res-authType">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="SERVLET"/>
+         <xsd:enumeration value="Container"/>
+         <xsd:enumeration value="Application"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="service-ref_handlerType">
+      <xsd:sequence>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="icon" type="jboss:iconType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="display-name" type="jboss:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="handler-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="handler-class" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="init-param" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="soap-header" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="soap-role" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="port-name" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="propertyType">
+      <xsd:sequence>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:simpleType name="message-destination-usageType">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="ConsumesProduces"/>
+         <xsd:enumeration value="Consumes"/>
+         <xsd:enumeration value="Produces"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="lifecycle-callbackType">
+      <xsd:sequence>
+         <xsd:element name="lifecycle-callback-class" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="lifecycle-callback-method" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="emptyType">
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="display-nameType">
+      <xsd:sequence>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+      <xsd:attribute name="lang" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="resource-refType">
+      <xsd:sequence>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="res-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="res-type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="res-auth" type="jboss:res-authType" minOccurs="0"/>
+         <xsd:element name="res-sharing-scope" type="jboss:res-sharing-scopeType" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="res-url" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="persistence-context-refType">
+      <xsd:sequence>
+         <xsd:element name="persistence-property" type="jboss:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="persistence-context-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="persistence-context-type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="persistence-unit-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="service-refType">
+      <xsd:sequence>
+         <xsd:element name="service-ref-type" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="service-impl-class" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="wsdl-file" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="handler" type="jboss:service-ref_handlerType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="port-component-ref" type="jboss:port-component-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="service-interface" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="config-file" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="handler-chains" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="service-qname" type="xsd:QName" minOccurs="0"/>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="service-ref-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="key" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="handler-chain" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="config-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jaxrpc-mapping-file" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="injection-target" type="jboss:injection-targetType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="wsdl-override" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="icon" type="jboss:iconType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="display-name" type="jboss:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="dependency-ignored" type="xsd:boolean" minOccurs="0"/>
+         <xsd:element name="mapped-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="jndi-name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ignore-dependency" type="jboss:emptyType" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:simpleType name="ejb-ref-typeType">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="Session"/>
+         <xsd:enumeration value="Entity"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="service-ref_handler-chainType">
+      <xsd:sequence>
+         <xsd:element name="service-name-pattern" type="xsd:QName" minOccurs="0"/>
+         <xsd:element name="handler" type="jboss:service-ref_handlerType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="port-name-pattern" type="xsd:QName" minOccurs="0"/>
+         <xsd:element name="protocol-bindings" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:group name="descriptionGroup">
+      <xsd:sequence>
+         <xsd:element name="description" type="jboss:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="icon" type="jboss:iconType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="display-name" type="jboss:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:group>
+   <xsd:group name="jbossJndiEnvironmentRefsGroup">
+      <xsd:sequence>
+         <xsd:element name="env-entry" type="jboss:env-entryType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="ejb-ref" type="jboss:ejb-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="ejb-local-ref" type="jboss:ejb-local-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="service-ref" type="jboss:service-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="resource-ref" type="jboss:resource-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="resource-env-ref" type="jboss:resource-env-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="message-destination-ref" type="jboss:message-destination-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="persistence-context-ref" type="jboss:persistence-context-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="persistence-unit-ref" type="jboss:persistence-unit-refType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="post-construct" type="jboss:lifecycle-callbackType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="pre-destroy" type="jboss:lifecycle-callbackType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:group>
+</xsd:schema>

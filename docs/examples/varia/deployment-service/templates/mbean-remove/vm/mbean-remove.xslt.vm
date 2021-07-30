@@ -1,0 +1,34 @@
+## ---------------------------------------------------------
+## This is a Velocity template which generates an XSLT used
+## to remove an MBean
+##
+## $Id: mbean-remove.xslt.vm 41587 2006-03-01 17:07:35Z clin $
+## ---------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
+
+    <!-- Find the matching MBean and skip it, but put out a message -->
+    <xsl:template match="/server/mbean[$mbean.xpath]">
+    <!-- The empty xsl:text blocks provide proper spacing and newlines for the comment -->
+    <xsl:text>
+    </xsl:text>
+    <xsl:comment>WARNING: An mbean was removed by the deployment service </xsl:comment>
+    <xsl:text>
+    </xsl:text>
+    <xsl:comment>         and any comments associated with this mbean    </xsl:comment>
+    <xsl:text>
+    </xsl:text>
+    <xsl:comment>         is obsolete.                                   </xsl:comment>
+    <xsl:text>
+    </xsl:text>
+    </xsl:template>   
+
+    <!-- Copy all other data -->
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+          <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>

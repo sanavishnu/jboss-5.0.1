@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:s="http://jboss.com/products/seam/taglib"
+        xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+        xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
+
+<body>
+
+<f:view>
+    Usage: The following parameters must be set in the calling page
+
+    paginationDataModel - Data model of the underlying table being controlled (used for total size)
+    paginationDataTableName - Name of the data table to be controlled
+    <ui:composition>
+
+        <ui:param name="paginationDataScrollerName" value="#{paginationDataTableName}Scroller"/>
+
+        <rich:spacer height="10px"/>
+        <rich:datascroller id="#{paginationDataScrollerName}" for="#{paginationDataTableName}"
+                           align="right" renderIfSinglePage="false" fastStep="2"
+                           stepControls="show" fastControls="hide" boundaryControls="show"
+                           binding="#{datascrollerUI.datascroller}">
+            <f:facet name="controlsSeparator">
+                <h:outputText value="|"/>
+            </f:facet>
+            <f:facet name="first">
+                <h:outputText value="#{messages['component.dataPaginator.firstpage']}"
+                              styleClass="rich-datascr-textlinks"/>
+            </f:facet>
+            <f:facet name="first_disabled">
+                <h:outputText value="#{messages['component.dataPaginator.firstpage']}"
+                              styleClass="rich-datascr-textdisabled"/>
+            </f:facet>
+            <f:facet name="last">
+                <h:outputText value="#{messages['component.dataPaginator.lastpage']}"
+                              styleClass="rich-datascr-textlinks"/>
+            </f:facet>
+            <f:facet name="last_disabled">
+                <h:outputText value="#{messages['component.dataPaginator.lastpage']}"
+                              styleClass="rich-datascr-textdisabled"/>
+            </f:facet>
+            <f:facet name="next">
+                <h:panelGroup>
+                    <h:graphicImage value="images/ArrowNextNorm.gif" style="padding: 0px 5px 0px 7px;"/>
+                    <h:outputText id="nextPage" value="#{messages['component.dataPaginator.nextpage']}"
+                                  styleClass="rich-datascr-textlinks"/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="next_disabled">
+                <h:panelGroup>
+                    <h:graphicImage value="images/ArrowNextDisa.gif" style="padding: 0px 5px 0px 7px; cursor:default;"/>
+                    <h:outputText value="#{messages['component.dataPaginator.nextpage']}"
+                                  styleClass="rich-datascr-textdisabled"/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="previous">
+                <h:panelGroup>
+                    <h:outputText value="#{messages['component.dataPaginator.previouspage']}"
+                                  styleClass="rich-datascr-textlinks"/>
+                    <h:graphicImage value="images/ArrowPrevNorm.gif" style="padding: 0px 7px 0px 5px;"/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="previous_disabled">
+                <h:panelGroup>
+                    <h:outputText value="#{messages['component.dataPaginator.previouspage']}"
+                                  styleClass="rich-datascr-textdisabled"/>
+                    <h:graphicImage value="images/ArrowPrevDisa.gif" style="padding: 0px 7px 0px 5px; cursor:default;"/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="fastforward">
+                <h:outputText value="#{messages['component.dataPaginator.fastforward']}"
+                              styleClass="rich-datascr-textlinks"/>
+            </f:facet>
+            <f:facet name="fastforward_disabled">
+                <h:outputText value="#{messages['component.dataPaginator.fastforward']}"
+                              styleClass="rich-datascr-textdisabled"/>
+            </f:facet>
+            <f:facet name="fastrewind">
+                <h:outputText value="#{messages['component.dataPaginator.fastbackward']}"
+                              styleClass="rich-datascr-textlinks"/>
+            </f:facet>
+            <f:facet name="fastrewind_disabled">
+                <h:outputText value="#{messages['component.dataPaginator.fastbackward']}"
+                              styleClass="rich-datascr-textdisabled"/>
+            </f:facet>
+        </rich:datascroller>
+        <h:panelGroup layout="block" style=" margin-top: -4px; float: right; font-size:11px;">
+            <h:outputText id="paginationTotalItems" value="Total: #{paginationDataModel.size}"
+                          style="margin-right: 1em;"/>
+
+            <!-- Allow the user to configure the number of items per page
+       displayed in a data table. -->
+            <h:outputText value="Items Per Page:" style="margin-right: .2em;"
+                          rendered="#{paginationDataModel.size > tableManager.minimumPageSize}"/>
+            <h:selectOneListbox
+                    style="margin-right: 1em; width: 3.5em; height: 1.8em; position: relative; top: -0.05em; left: 0.1em;"
+                    id="currentPageSize" size="1"
+                    value="#{tableManager.numRows}"
+                    rendered="#{paginationDataModel.size > tableManager.minimumPageSize}">
+                <a4j:support event="onchange"
+                             reRender="#{paginationDataTableName}, #{paginationDataScrollerName}"
+                             action="#{datascrollerUI.resetDatascroller}"/>
+                <f:selectItems value="#{tableManager.pageSizes}"/>
+            </h:selectOneListbox>
+        </h:panelGroup>
+    </ui:composition>
+</f:view>
+
+</body>
+</html>

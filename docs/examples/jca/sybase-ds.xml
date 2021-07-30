@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- New ConnectionManager setup for Sybase ASE/ASA jConnect driver        -->
+<!-- Thanks to Marc Zampetti <zampetti@aol.net>                            -->
+<!-- This is a minimal example.  See the generic example for other stuff   -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: sybase-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>jdbc/SybaseDB</jndi-name>
+    <!-- Sybase jConnect URL for the database. 
+    NOTE: The hostname and port are made up values. The optional
+          database name is provided, as well as some additinal Driver
+          parameters.
+    -->
+    <connection-url>jdbc:sybase:Tds:host.at.some.domain:5000/db_name?JCONNECT_VERSION=6</connection-url>
+    <driver-class>com.sybase.jdbc2.jdbc.SybDataSource</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.SybaseExceptionSorter</exception-sorter-class-name>
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>Sybase</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+
+</datasources>

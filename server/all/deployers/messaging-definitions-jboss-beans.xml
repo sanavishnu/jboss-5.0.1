@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	The messaging profileservice definitions. This beans need to be installed
+	in the deployers phase. 
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="QueueMODefinition" class="org.jboss.jms.server.destination.QueueMODefinition">
+    <constructor>
+      <parameter><inject bean="ManagedObjectFactory" /></parameter>
+    </constructor>
+  </bean>
+
+  <bean name="TopicMODefinition" class="org.jboss.jms.server.destination.TopicMODefinition">
+    <constructor>
+      <parameter><inject bean="ManagedObjectFactory" /></parameter>
+    </constructor>
+  </bean>
+
+</deployment>

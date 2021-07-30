@@ -1,0 +1,60 @@
+## ---------------------------------------------------------
+## This is a Velocity template which generates an XSLT used
+## to update the attributes of any MBean
+##
+## $Id: mbean-update.xslt.vm 41066 2006-02-09 01:10:38Z peterj $
+## ---------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
+
+    <!-- Transform the desired MBean data -->
+    <xsl:template match="/server/mbean[$mbean.xpath]">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <!-- The empty xsl:text blocks provide proper spacing and newlines for the comment -->
+            <xsl:text>
+    </xsl:text>
+    <xsl:comment>WARNING: this mbean was changed by the deployment service </xsl:comment>
+    <xsl:text>
+    </xsl:text>
+    <xsl:comment>         and any comments associated with this mbean      </xsl:comment>
+    <xsl:text>
+    </xsl:text>
+    <xsl:comment>         could be incorrect.                              </xsl:comment>
+    <xsl:text>
+</xsl:text>
+#foreach ($key in $mbean.depends.keySet())
+            <xsl:element name="depends">
+#if ($key != "")
+                <xsl:attribute name="optional-attribute-name">
+                    <xsl:text>$key</xsl:text>
+                </xsl:attribute>
+#end ## if ($key != "")
+                <xsl:text>$mbean.depends.get($key)</xsl:text>
+            </xsl:element>
+#end ## foreach ($key in $mbean.depends.keySet())
+#foreach ($key in $mbean.attributes.keySet())
+            <xsl:element name="attribute">
+                <xsl:attribute name="name">
+                    <xsl:text>$key</xsl:text>
+                </xsl:attribute>
+#set ($val = $mbean.attributes.get($key))
+#if ($val.indexOf("<") >= 0)
+                $val
+#else
+                <xsl:text>$val</xsl:text>
+#end ## if ($key == "DefaultSecurityConfig")
+            </xsl:element>
+#end ## foreach ($key in $mbean.attributes.keySet())
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- Copy all other data -->
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+          <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>

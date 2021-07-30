@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   <!-- The provider for EJB3 UserTransactions -->
+   <bean name="EJB3UserTransactionprovider" class="org.jboss.ejb3.tx.EJB3UserTransactionProvider">
+      <depends>UserTransactionRegistry</depends>
+      <constructor factoryClass="org.jboss.ejb3.tx.EJB3UserTransactionProvider" factoryMethod="getSingleton"/>
+   </bean>
+</deployment>

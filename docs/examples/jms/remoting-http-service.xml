@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     HTTP-based Remoting service deployment descriptor.
+
+     $Id: remoting-http-service.xml 3222 2007-10-20 12:13:57Z timfox $
+ -->
+
+<server>
+
+   <mbean code="org.jboss.remoting.transport.Connector"
+          name="jboss.messaging:service=Connector,transport=http"
+          display-name="HTTP Transport Connector">
+      <attribute name="Configuration">
+         <config>
+            <invoker transport="http">
+               <!-- There should be no reason to change these parameters - warning!
+                    Changing them may stop JBoss Messaging working correctly -->
+               <attribute name="marshaller" isParam="true">org.jboss.jms.wireformat.JMSWireFormat</attribute>
+               <attribute name="unmarshaller" isParam="true">org.jboss.jms.wireformat.JMSWireFormat</attribute>               
+               <attribute name="dataType" isParam="true">jms</attribute>
+               <attribute name="serverBindAddress">${jboss.bind.address}</attribute>
+               <attribute name="serverBindPort">${jboss.messaging.connector.http.port:4458}</attribute>               
+               <attribute name="callbackStore">org.jboss.remoting.callback.BlockingCallbackStore</attribute>    
+               <!-- End immutable parameters -->
+                  
+               <!-- The period of sending pings to the server -->
+               <attribute name="clientLeasePeriod" isParam="true">10000</attribute>
+                      
+               <!-- Set this to true if you want the HTTP transport to block waiting for server->client traffic.
+               Or false if you want it to poll for new traffic periodically. Recommended is true -->                       
+               <attribute name="blockingMode" isParam="true">blocking</attribute>
+               
+               <!-- Timeout for blocking. Only has relevance if blockingMode = true -->
+               <attribute name="blockingTimeout" isParam="true">30000</attribute>
+                
+               <!-- The periodicity of polling. Only has relevance if blockingMode = false -->               
+               <attribute name="callbackPollPeriod" isParam="true">10000</attribute>                                                                               
+            </invoker>
+            <handlers>
+               <handler subsystem="JMS">org.jboss.jms.server.remoting.JMSServerInvocationHandler</handler>
+            </handlers>
+         </config>
+      </attribute>
+   </mbean>
+
+</server>

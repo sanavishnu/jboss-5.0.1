@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Security Deployer
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0"> 
+
+   <!-- Instance of Policy Registration -->
+   <bean name="JBossSecurityPolicyRegistration"
+         class="org.jboss.security.plugins.JBossPolicyRegistration" />
+
+   <bean name="EARSecurityDeployer" class="org.jboss.deployment.EarSecurityDeployer"/>
+   <bean name="EJBSecurityDeployer" class="org.jboss.ejb.deployers.EjbSecurityDeployer">
+      <property name="policyRegistration"><inject bean="JBossSecurityPolicyRegistration"/></property>
+   </bean>
+   <bean name="WARSecurityDeployer" class="org.jboss.web.deployers.WarSecurityDeployer">
+      <property name="policyRegistration"><inject bean="JBossSecurityPolicyRegistration"/></property>
+   </bean>
+
+   <bean name="SecurityParser" class="org.jboss.deployers.vfs.spi.deployer.SchemaResolverDeployer">
+      <constructor>
+         <parameter>org.jboss.security.microcontainer.beans.metadata.SecurityPolicyMetaData</parameter>
+      </constructor>
+      <!-- The Deployer mandates this suffix. So we use a dummy -->
+      <property name="suffix">dummy-policy.xml</property>
+      <property name="registerWithJBossXB">true</property>
+   </bean>
+
+   <!--Deployer for JBossXACML Config -->
+   <bean name="XACMLParsingDeployer"
+            class="org.jboss.security.deployers.XacmlConfigParsingDeployer" />
+
+   <!-- Deployer for JBossACL Config -->
+   <bean name="ACLParsingDeployer" class="org.jboss.security.deployers.AclConfigParsingDeployer"/>
+</deployment>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: db2-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>DB2DS</jndi-name>
+    <connection-url>jdbc:db2:yourdatabase</connection-url>
+    
+    <!-- DB2 Universal Driver Note connection URL is in form of
+         jdbc:db2://host:port:dbname
+         
+         Default port for Type 4 driver is 50000
+         
+         Note, host and port must be specified if using Type 4 driver. And be forewarned, no native
+         XA support is provided with Type 4; you must set a DB property calling for Type 2 to get XA
+         
+      <driver-class>com.ibm.db2.jcc.DB2Driver</driver-class>
+      <connection-url>jdbc:db2://[hostname]:[port]/databasename"</connection-url>
+      
+      Please see http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0512kokkat/
+      or the DB2 JDBC application developers manual.
+    -->  
+    
+    <driver-class>COM.ibm.db2.jdbc.app.DB2Driver</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+    <min-pool-size>0</min-pool-size>
+    
+    <!-- New org.jboss.resource.adapter.jdbc.vendor.DB2ExceptionSorter
+    
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.DB2ExceptionSorter</exception-sorter-class-name>
+    
+    --> 
+    
+    <!-- sql to call when connection is created
+    <new-connection-sql>some arbitrary sql</new-connection-sql>
+    -->
+
+    <!-- sql to call on an existing pooled connection when it is obtained from pool 
+    <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+    -->
+
+  <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+ 
+     
+      <metadata>
+         <type-mapping>DB2</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+
+</datasources>

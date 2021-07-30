@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!-- The JBoss specific elements used to integrate the servlet 2.2 web.xml
+elements into a JBoss deployment. This version applies to the JBoss 2.4 and
+earlier series. See the jboss-web_3_0.dtd for changes available only in 3.x.
+
+DOCTYPE jboss-web
+    PUBLIC "-//JBoss//DTD Web Application 2.2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-web.dtd"
+-->
+<!-- The jboss-web element is the root element.
+-->
+<!ELEMENT jboss-web (security-domain?, resource-ref* , ejb-ref*)>
+
+<!-- The security-domain element allows one to specify a module wide
+security manager domain. It specifies the JNDI name of the security
+manager that implements the EJBSecurityManager and RealmMapping for
+the domain.
+-->
+<!ELEMENT security-domain (#PCDATA)>
+
+<!-- The ejb-ref element maps from the servlet ENC relative name
+of the ejb reference to the deployment environment JNDI name of
+the bean.
+Example:
+    <ejb-ref>
+        <ejb-ref-name>ejb/Bean0</ejb-ref-name>
+        <jndi-name>deployed/ejbs/Bean0</jndi-name>
+    </ejb-ref>
+-->
+<!ELEMENT ejb-ref (ejb-ref-name , jndi-name)>
+
+<!-- The ejb-ref-name element gives the ENC relative name used
+in the web-app.xml ejb-ref-name element.
+-->
+<!ELEMENT ejb-ref-name (#PCDATA)>
+
+<!-- The jndi-name element specifies the JNDI name of the deployed
+EJB home interface to which the servlet ENC binding will link to.
+-->
+<!ELEMENT jndi-name (#PCDATA)>
+
+<!ELEMENT resource-ref (res-ref-name , jndi-name)>
+
+<!ELEMENT res-ref-name (#PCDATA)>
+

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    EJB3 Deployers
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="MessageDestinationReferenceResolver" class="org.jboss.ejb3.resolvers.DefaultMessageDestinationReferenceResolver"/>
+   
+   <bean name="Ejb3DependenciesDeployer" class="org.jboss.ejb3.deployers.Ejb3DependenciesDeployer">
+      <!-- TODO: allow for configuration
+      <property name="dependencies">
+         <dependency xmlns="urn:jboss:dependency:1.0">
+            <item>javax.transaction.TransactionManager</item>
+         </dependency>
+      </property>
+      -->
+   </bean>
+   
+   <bean name="Ejb3Deployer" class="org.jboss.ejb3.deployers.Ejb3Deployer">
+      <install bean="ManagedDeploymentCreator" method="addVersionedAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.ejb.jboss.JBossMetaData</value>
+         </parameter>
+         <parameter>
+            <value>ejb3x</value>
+         </parameter>
+         <parameter>
+            <value>3.*</value>
+         </parameter>
+         <parameter>
+            <value>getEjbVersion</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeVersionedAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.ejb.jboss.JBossMetaData</value>
+         </parameter>
+         <parameter>
+            <value>ejb3x</value>
+         </parameter>
+      </uninstall>
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+      <property name="cacheFactoryRegistry"><inject bean="EJB3CacheFactoryRegistry" /></property>
+      <property name="poolFactoryRegistry"><inject bean="EJB3PoolFactoryRegistry" /></property>
+      <property name="persistenceManagerFactoryRegistry"><inject bean="EJB3PersistenceManagerFactoryRegistry" /></property>
+      <!-- Should war deployments be scanned for annotated ejbs -->
+      <property name="scanWars">false</property>
+      
+      <!-- 
+   
+      Configure the deployer to optionally require a deployment 
+      descriptor for deployable units.  By turning this switch to "true", 
+      "META-INF/jboss.xml" or the EJB3 Deployment Descriptor "META-INF/ejb-jar.xml" 
+      will be required for deployment, enabling a performance increace in deployment by
+      not scanning for annotations in non-deployable EJB3 JARs.
+      
+      Default for this value is "false".
+      
+      -->
+      <property name="deploymentDescriptorRequired">false</property>
+      
+      <property name="ignoredJarsSet">
+         <set elementClass="java.lang.String">
+            <value>snmp-adaptor.jar</value>
+            <value>otherimages.jar</value>
+            <value>applet.jar</value>
+            <value>jcommon.jar</value>
+            <value>console-mgr-classes.jar</value>
+            <value>jfreechart.jar</value>
+            <value>juddi-service.jar</value>
+            <value>wsdl4j.jar</value>
+            <value>commons-collections.jar</value>
+            <value>commons-pool.jar</value>
+            <value>juddi.jar</value>
+            <value>commons-discovery.jar</value>
+            <value>uddi4j.jar</value>
+            <value>axis.jar</value>
+            <value>commons-dbcp.jar</value>
+            <value>jboss-juddiaxis.jar</value>
+            <value>trove.jar</value>
+            <value>javassist.jar</value>
+            <value>jboss-aop-jdk50.jar</value>
+            <value>jboss-aspect-library-jdk50.jar</value>
+            <value>ejb3-persistence.jar</value>
+            <value>commons-validator-1.1.3.jar</value>
+            <value>commons-collections.jar</value>
+            <value>commons-fileupload.jar</value>
+            <value>commons-pool.jar</value>
+            <value>hibernate-entitymanager.jar</value>
+            <value>jboss-ejb3x.jar</value>
+            <value>commons-digester-1.6.jar</value>
+            <value>cglib-2.1.1.jar</value>
+            <value>commons-discovery.jar</value>
+            <value>jboss-annotations-ejb3.jar</value>
+            <value>jaxen-1.1-beta-4.jar</value>
+            <value>hibernate-annotations.jar</value>
+            <value>commons-httpclient.jar</value>
+            <value>commons-logging.jar</value>
+            <value>commons-vfs.jar</value>
+            <value>hibernate3.jar</value>
+            <value>commons-logging-api.jar</value>
+            <value>asm.jar</value>
+            <value>asm-attrs.jar</value>
+            <value>commons-lang-2.0.jar</value>
+            <value>commons-beanutils.jar</value>
+            <value>jboss-ejb3.jar</value>
+            <value>dom4j.jar</value>
+            <value>commons-codec-1.2.jar</value>
+            <value>wsdl4j.jar</value>
+            <value>xmlsec.jar</value>
+            <value>jbossws.jar</value>
+            <value>jboss-bean-deployer.jar</value>
+            <value>jboss-microcontainer.jar</value>
+            <value>jboss-dependency.jar</value>
+            <value>jboss-container.jar</value>
+            <value>tomcat-coyote.jar</value>
+            <value>commons-collections.jar</value>
+            <value>myfaces.jar</value>
+            <value>jstl.jar</value>
+            <value>commons-digester-1.6.jar</value>
+            <value>myfaces-impl.jar</value>
+            <value>commons-beanutils.jar</value>
+            <value>myfaces-jsf-api.jar</value>
+            <value>commons-codec-1.2.jar</value>
+            <value>catalina-optional.jar</value>
+            <value>tomcat-util.jar</value>
+            <value>jasper-compiler.jar</value>
+            <value>commons-el.jar</value>
+            <value>jasper-compiler-jdt.jar</value>
+            <value>tomcat-http.jar</value>
+            <value>catalina-manager.jar</value>
+            <value>jasper-runtime.jar</value>
+            <value>tomcat55-service.jar</value>
+            <value>servlets-invoker.jar</value>
+            <value>catalina.jar</value>
+            <value>naming-resources.jar</value>
+            <value>servlets-default.jar</value>
+            <value>tomcat-ajp.jar</value>
+            <value>commons-modeler.jar</value>
+            <value>tomcat-apr.jar</value>
+            <value>servlets-webdav.jar</value>
+         </set>
+      </property>
+      <depends>AspectLibrary</depends>
+   </bean>
+   
+   <bean name="AppClientParsingDeployer" class="org.jboss.ejb3.deployers.AppClientParsingDeployer">
+      <!-- TODO: check depends -->
+      <depends>AspectLibrary</depends>
+   </bean>
+   
+   <bean name="JBossClientParsingDeployer" class="org.jboss.ejb3.deployers.JBossClientParsingDeployer">
+      <depends>AppClientParsingDeployer</depends>
+   </bean>
+   <bean name="MergedJBossClientMetaDataDeployer" class="org.jboss.ejb3.deployers.MergedJBossClientMetaDataDeployer">
+      <depends>AppClientParsingDeployer</depends>
+   </bean>
+
+   <bean name="Ejb3ClientDeployer" class="org.jboss.ejb3.deployers.Ejb3ClientDeployer">
+      <install bean="ManagedDeploymentCreator" method="addAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.client.jboss.JBossClientMetaData</value>
+         </parameter>
+         <parameter>
+            <value>car</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.client.jboss.JBossClientMetaData</value>
+         </parameter>
+      </uninstall>
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+      <!-- TODO: check depends -->
+      <depends>AspectLibrary</depends>
+   </bean>
+   
+   <!-- EJB3 Cache Factory Registry -->
+   <bean name="EJB3CacheFactoryRegistry" class="org.jboss.ejb3.cache.CacheFactoryRegistry">
+      <property name="factories">
+         <!-- Define each of the registered factories -->
+         <map class="java.util.HashMap" keyClass="java.lang.String"
+            valueClass="java.lang.Class">
+            <!-- NoPassivationCache -->
+            <entry>
+               <key>NoPassivationCache</key>
+               <value>org.jboss.ejb3.cache.NoPassivationCacheFactory</value>
+            </entry>
+            <!-- SimpleStatefulCache -->
+            <entry>
+               <key>SimpleStatefulCache</key>
+               <value>org.jboss.ejb3.cache.simple.SimpleStatefulCacheFactory</value>
+            </entry>
+            <!-- StatefulTreeCache -->
+            <entry>
+               <key>StatefulTreeCache</key>
+               <value>org.jboss.ejb3.cache.tree.StatefulTreeCacheFactory</value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+   
+   <!-- EJB3 Pool Factory Registry -->
+   <bean name="EJB3PoolFactoryRegistry" class="org.jboss.ejb3.pool.PoolFactoryRegistry">
+      <property name="factories">
+         <!-- Define each of the registered factories -->
+         <map class="java.util.HashMap" keyClass="java.lang.String"
+            valueClass="java.lang.Class">
+            <!-- ThreadlocalPool -->
+            <entry>
+               <key>ThreadlocalPool</key>
+               <value>org.jboss.ejb3.pool.ThreadlocalPoolFactory</value>
+            </entry>
+            <!-- StrictMaxPool -->
+            <entry>
+               <key>StrictMaxPool</key>
+               <value>org.jboss.ejb3.pool.StrictMaxPoolFactory</value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+   
+   <!-- EJB3 Persistence Manager Factory Registry -->
+   <bean name="EJB3PersistenceManagerFactoryRegistry" class="org.jboss.ejb3.cache.persistence.PersistenceManagerFactoryRegistry">
+      <property name="factories">
+         <!-- Define each of the registered factories -->
+         <map class="java.util.HashMap" keyClass="java.lang.String"
+            valueClass="java.lang.Class">
+            <!-- StatefulSessionFilePersistenceManager -->
+            <entry>
+               <key>StatefulSessionFilePersistenceManager</key>
+               <value>org.jboss.ejb3.cache.simple.StatefulSessionFilePersistenceManagerFactory</value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+   
+   <bean name="JNDIKernelRegistryPlugin" class="org.jboss.ejb3.kernel.JNDIKernelRegistryPlugin"/>
+   
+   <!-- Persistence Unit deployers -->
+   <bean name="PersistenceUnitParsingDeployer" class="org.jboss.ejb3.deployers.PersistenceUnitParsingDeployer">
+      <install bean="ManagedDeploymentCreator" method="addAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.jpa.spec.PersistenceMetaData</value>
+         </parameter>
+         <parameter>
+            <value>par</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.jpa.spec.PersistenceMetaData</value>
+         </parameter>
+      </uninstall>
+   </bean>
+
+   <!-- 
+    
+    JNDI Registrars
+    
+    
+    The JNDI Registrar is responsible for all JNDI Bindings for
+    an EJB.
+    
+  -->
+
+  <!-- SLSB JNDI Registrar -->
+  <bean name="org.jboss.ejb3.JndiRegistrar.Session.SLSBJndiRegistrar"
+    class="org.jboss.ejb3.proxy.impl.jndiregistrar.JndiStatelessSessionRegistrar">
+    <constructor>
+      <parameter>
+        org.jboss.ejb3.proxy.impl.objectfactory.session.stateless.StatelessSessionProxyObjectFactory
+      </parameter>
+    </constructor>
+  </bean>
+
+  <!-- SFSB JNDI Registrar -->
+  <bean name="org.jboss.ejb3.JndiRegistrar.Session.SFSBJndiRegistrar"
+    class="org.jboss.ejb3.proxy.impl.jndiregistrar.JndiStatefulSessionRegistrar">
+    <constructor>
+      <parameter>
+        org.jboss.ejb3.proxy.impl.objectfactory.session.stateful.StatefulSessionProxyObjectFactory
+      </parameter>
+    </constructor>
+  </bean>  
+  
+  <!-- @Service JNDI Registrar -->
+  <bean name="org.jboss.ejb3.JndiRegistrar.Session.ServiceJndiRegistrar"
+    class="org.jboss.ejb3.proxy.impl.jndiregistrar.JndiServiceRegistrar">
+    <constructor>
+      <parameter>
+        org.jboss.ejb3.proxy.impl.objectfactory.session.service.ServiceProxyObjectFactory
+      </parameter>
+    </constructor>
+  </bean>
+   
+  <bean name="org.jboss.ejb3.ProxyClusteringRegistry"
+        class="org.jboss.ejb3.proxy.clustered.registry.ProxyClusteringRegistry"/>
+
+  <!-- Clustered SLSB JNDI Registrar -->
+  <bean name="org.jboss.ejb3.JndiRegistrar.Session.ClusteredSLSBJndiRegistrar"
+    class="org.jboss.ejb3.proxy.clustered.jndiregistrar.JndiClusteredStatelessSessionRegistrar">
+    <constructor>
+      <parameter>
+        org.jboss.ejb3.proxy.clustered.objectfactory.session.stateless.StatelessSessionClusteredProxyObjectFactory
+      </parameter>
+      <parameter><inject bean="org.jboss.ejb3.ProxyClusteringRegistry"/></parameter>
+    </constructor>
+  </bean>
+
+  <!-- Clustered SFSB JNDI Registrar -->
+  <bean name="org.jboss.ejb3.JndiRegistrar.Session.ClusteredSFSBJndiRegistrar"
+    class="org.jboss.ejb3.proxy.clustered.jndiregistrar.JndiClusteredStatefulSessionRegistrar">
+    <constructor>
+      <parameter>
+        org.jboss.ejb3.proxy.clustered.objectfactory.session.stateful.StatefulSessionClusteredProxyObjectFactory
+      </parameter>
+      <parameter><inject bean="org.jboss.ejb3.ProxyClusteringRegistry"/></parameter>
+    </constructor>
+  </bean>
+
+  <!-- EJB3 ProcessorChain Deployer -->
+  <bean name="Ejb3MetadataProcessingDeployer"
+    class="org.jboss.ejb3.deployers.Ejb3MetadataProcessingDeployer" />
+  <!-- EJB3 JNDI Policy Decorator Deployer -->
+  <bean name="EjbMetadataJndiPolicyDecoratorDeployer"
+    class="org.jboss.ejb3.deployers.EjbMetadataJndiPolicyDecoratorDeployer" />
+    
+  <!-- EJB Reference Resolver -->
+  <bean name="org.jboss.ejb3.EjbReferenceResolver" class="org.jboss.ejb3.common.resolvers.spi.EjbReferenceResolver">
+    <constructor factoryClass="org.jboss.ejb3.common.resolvers.spi.EjbReferenceResolverFactory"
+                 factoryMethod="newInstance">
+      <parameter>org.jboss.ejb3.common.resolvers.plugins.FirstMatchEjbReferenceResolver</parameter>
+    </constructor>
+  </bean>
+  
+  <!-- Add Annotation Plugins upon installation -->
+  <bean name="org.jboss.ejb3.AddAnnotationPluginOnBeanAnnotationAdaptorCallbackService" 
+    class="org.jboss.ejb3.mcint.annotationadaptor.AddAnnotationPluginOnBeanAnnotationAdaptorCallbackService">
+    <constructor>
+      <parameter><inject bean="jboss.kernel:service=Kernel"/></parameter>
+    </constructor>
+  </bean>
+    
+  <!-- EJB Reference Annotation Plugin -->
+  <bean name="org.jboss.ejb3.EjbReferenceAnnotationPlugin"
+    class="org.jboss.ejb3.mcint.metadata.plugins.EjbReferenceAnnotationPlugin">
+    <constructor>
+      <parameter><inject bean="org.jboss.ejb3.EjbReferenceResolver" /></parameter>
+    </constructor>
+  </bean>
+
+</deployment>

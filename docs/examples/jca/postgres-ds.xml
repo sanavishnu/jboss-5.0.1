@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: postgres-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!--  Datasource config for Postgres                                      -->
+<!-- ==================================================================== -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>PostgresDS</jndi-name>
+    <connection-url>jdbc:postgresql://[servername]:[port]/[database name]</connection-url>
+    <driver-class>org.postgresql.Driver</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+        <!-- sql to call when connection is created.  Can be anything, select 1 is valid for PostgreSQL
+        <new-connection-sql>select 1</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool.  Can be anything, select 1 is valid for PostgreSQL
+        <check-valid-connection-sql>select 1</check-valid-connection-sql>
+        -->
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>PostgreSQL 7.2</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+
+</datasources>

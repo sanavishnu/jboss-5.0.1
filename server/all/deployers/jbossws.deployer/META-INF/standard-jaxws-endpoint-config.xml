@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jaxws-config xmlns="urn:jboss:jaxws-config:2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="urn:jboss:jaxws-config:2.0 schema/jaxws-config_2_0.xsd">
+  
+  <endpoint-config>
+    <config-name>Standard Endpoint</config-name>
+    <pre-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP11_HTTP</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>Recording Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.wsf.framework.invocation.RecordingServerHandler</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </pre-handler-chains>
+  </endpoint-config>
+  
+  <!--
+    Generates message part names 'parameters' in WSDL for document/literal/wapped.
+    See: [JBWS-771] Use part names that are friendly to .NET
+  -->
+  <endpoint-config>
+    <config-name>.NET friendly Endpoint</config-name>
+    <feature>http://org.jboss.ws/binding/wsdl/dotnet</feature>
+  </endpoint-config>
+  
+  <endpoint-config>
+    <config-name>Standard WSAddressing Endpoint</config-name>
+    <post-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP11_HTTP</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>WSAddressing Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.ws.extensions.addressing.jaxws.WSAddressingServerHandler</javaee:handler-class>
+        </javaee:handler>
+        <javaee:handler>
+          <javaee:handler-name>Recording Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.wsf.framework.invocation.RecordingServerHandler</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </post-handler-chains>
+  </endpoint-config>
+  
+  <endpoint-config>
+    <config-name>Standard SOAP 1.2 WSAddressing Endpoint</config-name>
+    <post-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP12_HTTP</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>WSAddressing Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.ws.extensions.addressing.jaxws.WSAddressingServerHandler</javaee:handler-class>
+        </javaee:handler>
+        <javaee:handler>
+          <javaee:handler-name>Recording Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.wsf.framework.invocation.RecordingServerHandler</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </post-handler-chains>
+  </endpoint-config>
+  
+  <endpoint-config>
+    <config-name>Standard WSSecurity Endpoint</config-name>
+    <post-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP11_HTTP ##SOAP11_HTTP_MTOM</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>WSSecurity Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.ws.extensions.security.jaxws.WSSecurityHandlerServer</javaee:handler-class>
+        </javaee:handler>
+        <javaee:handler>
+          <javaee:handler-name>Recording Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.wsf.framework.invocation.RecordingServerHandler</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </post-handler-chains>
+  </endpoint-config>
+  
+</jaxws-config>

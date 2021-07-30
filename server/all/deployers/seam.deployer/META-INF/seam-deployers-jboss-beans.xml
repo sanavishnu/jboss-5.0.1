@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    JBoss Seam + JBossAS integration
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <!-- Seam deployer -->
+  <bean name="SeamDeployer" class="org.jboss.seam.integration.microcontainer.deployers.SeamWebUrlIntegrationDeployer"/>
+
+  <!-- Seam modification type matcher -->
+  <bean name="SeamMTMatcher" class="org.jboss.seam.integration.microcontainer.deployers.SeamTempModificationTypeMatcher"/>
+
+</deployment>

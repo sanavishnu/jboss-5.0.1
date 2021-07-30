@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!-- $Id: firebird-ds.xml 84882 2009-02-27 17:39:55Z scott.stark@jboss.org $ -->
+  
+  <!-- ==================================================================== -->
+  <!-- New ConnectionManager setup for firebird dbs using jca-jdbc xa driver-->
+  <!-- Build jmx-api (build/build.sh all) and view for config documentation -->
+  <!-- ==================================================================== -->
+
+<connection-factories>
+
+  <!--FBManager can be used to create and drop databases.  
+    Drop is especially useful during testing, since it 
+    assures a clean start next time. -->
+  <mbean code="org.firebirdsql.management.FBManager" name="jboss.jca:service=FirebirdManager">
+    <attribute name="FileName">${jboss.server.data.dir}${/}fbtest.gdb</attribute>
+    <attribute name="UserName">sysdba</attribute>
+    <attribute name="Password">masterkey</attribute>
+    <attribute name="CreateOnStart">true</attribute>
+    <attribute name="DropOnStop">false</attribute>
+  </mbean>
+
+  <tx-connection-factory>
+    <jndi-name>FirebirdDS</jndi-name>
+    <xa-transaction/>
+    <!-- uncomment to enable interleaving <interleaving/> -->
+
+    <rar-name>firebirdsql.rar</rar-name>
+    <connection-definition>javax.sql.DataSource</connection-definition>    
+    <config-property name="Database" type="java.lang.String">localhost/3050:${jboss.server.data.dir}${/}fbtest.gdb</config-property>
+    <user-name>sysdba</user-name>
+    <password>masterkey</password>
+    <!--additional properties. only use one way of setting tx isolation, please
+    <config-property name="TransactionIsolation"></config-property>
+    <config-property name="TransactionIsolationName">TRANSACTION_READ_COMMITTED</config-property>
+    <config-property name="BlobBufferLength"></config-property>
+    <config-property name="Encoding">UNICODE_FSS</config-property>
+    -->
+    <min-pool-size>0</min-pool-size>
+    <!-- sql to call when connection is created
+    <new-connection-sql>some arbitrary sql</new-connection-sql>
+    -->
+    <!-- sql to call on an existing pooled connection when it is obtained from pool 
+    <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+    -->
+    <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->    
+    <metadata>
+      <type-mapping>Firebird</type-mapping>
+    </metadata>    
+  </tx-connection-factory>
+
+</connection-factories>

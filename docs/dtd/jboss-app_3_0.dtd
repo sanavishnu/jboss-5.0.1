@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!-- The JBoss specific elements for ears.
+$Id: jboss-app_3_0.dtd 20476 2004-04-17 13:29:24Z tdiesler $
+
+DOCTYPE jboss-app
+    PUBLIC "-//JBoss//DTD J2EE Application 1.3//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-app_3_0.dtd"
+-->
+
+<!-- The jboss-app element is the root element.
+-->
+<!ELEMENT jboss-app (loader-repository?, module*)>
+
+<!-- The loader-repository specifies the name of the UnifiedLoaderRepository
+   MBean to use for the ear to provide ear level scoping of classes deployed
+   in the ear. It is a unique JMX ObjectName string.
+
+   Example:
+   <loader-repository>jboss.test:loader=cts-cmp2v1-sar.ear</loader-repository>
+-->
+<!ELEMENT loader-repository (#PCDATA)>
+<!-- The loaderRepositoryClass attribute gives the classname loader-repository
+implementation.
+-->
+<!ATTLIST loader-repository loaderRepositoryClass CDATA #IMPLIED>
+
+<!-- The module element is used to specify a jboss specific module archive.
+-->
+<!ELEMENT module (service)>
+
+<!-- The service element specifies a service archive (SAR) to deploy.
+
+Example:
+   <module>
+      <service>external.sar</service>
+   </module>
+-->
+<!ELEMENT service (#PCDATA)>
+
+

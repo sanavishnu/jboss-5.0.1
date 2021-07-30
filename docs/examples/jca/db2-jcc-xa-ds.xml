@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<datasources>
+    <!--
+        IBM DB2 XA driver
+        db2jcc.jar
+    -->
+    
+    <xa-datasource>
+        <jndi-name>DB2XADS</jndi-name>
+       
+        <xa-datasource-class>com.ibm.db2.jcc.DB2XADataSource</xa-datasource-class>
+        
+        <xa-datasource-property name="DatabaseName">your_database_name</xa-datasource-property>
+        <xa-datasource-property name="User">your_user</xa-datasource-property>
+        <xa-datasource-property name="Password">your_password</xa-datasource-property>
+        
+        <!-- Note, as opposed to the Type2 driver, DB2 Type 4 requires the PortNumber. By default this is 50000-->
+        <xa-datasource-property name="PortNumber">your_port_number</xa-datasource-property>
+        
+        <!-- Must be set if using multiple DB2 XA resources in same transaction -->
+        
+        <isSameRM-override-value>false</isSameRM-override-value>    
+        
+        <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml -->
+        <metadata>
+            <type-mapping>DB2</type-mapping>
+        </metadata>
+    
+    </xa-datasource>
+    
+</datasources>

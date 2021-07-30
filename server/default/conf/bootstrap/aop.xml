@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   AOP configuration
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader><inject bean="aop-classloader:0.0.0"/></classloader>
+
+   <classloader name="aop-classloader" xmlns="urn:jboss:classloader:1.0" export-all="NON_EMPTY" import-all="true">
+      <root>${jboss.lib.url}jboss-aop-asintegration-core.jar</root>
+      <root>${jboss.lib.url}jboss-aop-asintegration-jmx.jar</root>
+      <root>${jboss.lib.url}jboss-aop-asintegration-mc.jar</root>
+      <root>${jboss.lib.url}jboss-aop-deployers.jar</root>
+      <root>${jboss.lib.url}jboss-aop-jboss5.jar</root>
+   </classloader>
+
+   <!-- Integration -->
+   <bean name="AOPClassLoaderScopingPolicy" class="org.jboss.aop.asintegration.jboss5.VFSClassLoaderScopingPolicy"/>
+   
+   <bean name="AOPClassPoolFactory" class="org.jboss.aop.classpool.jbosscl.JBossClDelegatingClassPoolFactory">
+      <constructor>
+         <parameter><inject bean="AOPClassLoaderScopingPolicy" property="registry"/></parameter>
+         <parameter><inject bean="AOPRegisterModuleCallback"/></parameter>
+      </constructor>
+   </bean>
+
+   <bean name="AOPJBossIntegration" class="org.jboss.aop.asintegration.jboss5.JBoss5Integration">
+      <property name="classPoolFactory"><inject bean="AOPClassPoolFactory"/></property>
+      <property name="aopClassLoaderScopingPolicy"><inject bean="AOPClassLoaderScopingPolicy"/></property>
+   </bean>
+
+   <bean name="DefaultAspectManager" class="org.jboss.aop.microcontainer.beans.metadata.DefaultAspectManager">
+      <property name="managerBean">AspectManager</property>
+      <property name="managerProperty">aspectManager</property>
+   </bean>
+
+   <!-- bean name="AOPBootstrap" class="org.jboss.aop.asintegration.jboss5.AOPBootstrap" -->
+      <!--  This one lives in AS 5 source tree -->
+      <!-- property name="policy"><inject bean="AOPClassLoaderScopingPolicy"/></property>
+       <property name="manager"><inject bean="AspectManager" property="aspectManager"/></property>
+   </bean-->
+
+   <bean name="AOPRegisterModuleCallback" class="org.jboss.aop.asintegration.jboss5.RegisterModuleCallback">
+      <!-- classloader><null/></classloader -->
+      <incallback method="addModule" state="Installed"/>
+      <uncallback method="removeModule" state="Installed"/>
+   </bean>
+   <!--
+      Valid values for the AspectManager bean for use with enableTransformer=true are:
+      * org.jboss.aop.deployers.AspectManagerJDK5 - works with the -javaagent:pluggable-instrumentor.jar switch
+      * org.jboss.aop.deployers.AspectManagerJRockit - works with JRockit and the -Xmanagement:class=org.jboss.aop.hook.JRockitPluggableClassPreProcessor switch
+   -->
+   <bean name="AspectManager" class="org.jboss.aop.deployers.AspectManagerJDK5">
+      <constructor>
+         <parameter><![CDATA[
+	         <aop>
+			      <aspect name="mainDeployer" class="org.jboss.profileservice.aop.MainDeployerAspect"/>
+					   <bind pointcut="execution(* $instanceof{org.jboss.deployers.spi.deployment.MainDeployer}->process(..))">
+				      <advice name="process" aspect="mainDeployer"/>
+				   </bind>
+					<aspect name="persist" class="org.jboss.profileservice.aop.PersistAspect"/>
+					<bind pointcut="execution(* $instanceof{org.jboss.managed.api.ManagedProperty}->setValue(..))">
+				      <advice name="setValue" aspect="persist"/>
+				   </bind>
+				</aop>]]>
+	      </parameter>
+      </constructor>
+
+      <property name="jbossIntegration"><inject bean="AOPJBossIntegration"/></property>
+
+      <property name="enableLoadtimeWeaving">false</property>
+      <!-- only relevant when EnableLoadtimeWeaving is true.
+           When transformer is on, every loaded class gets
+           transformed.  If AOP can't find the class, then it
+           throws an exception.  Sometimes, classes may not have
+           all the classes they reference.  So, the Suppressing
+           is needed.  (i.e. Jboss cache in the default configuration -->
+      <property name="suppressTransformationErrors">true</property>
+      <property name="prune">true</property>
+      <property name="include">org.jboss.test., org.jboss.injbossaop.</property>
+      <property name="exclude">org.jboss.</property>
+      <!-- This avoids instrumentation of hibernate cglib enhanced proxies
+      <property name="ignore">*$$EnhancerByCGLIB$$*</property> -->
+      <property name="optimized">true</property>
+      <property name="verbose">false</property>
+      <!--
+         Available choices for this attribute are:
+            org.jboss.aop.instrument.ClassicInstrumentor (default)
+            org.jboss.aop.instrument.GeneratedAdvisorInstrumentor
+       <property name="instrumentor">org.jboss.aop.instrument.ClassicInstrumentor</property>
+      -->
+	  <!-- 
+		By default the deployment of the aspects contained in 
+		../deployers/jboss-aop-jboss5.deployer/base-aspects.xml
+		are not deployed. To turn on deployment uncomment this property
+	  <property name="useBaseXml">true</property>
+	  -->
+   </bean>
+
+</deployment>

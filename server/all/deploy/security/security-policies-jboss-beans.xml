@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <application-policy xmlns="urn:jboss:security-beans:1.0" name="jboss-web-policy" extends="other">
+      <authorization>
+         <policy-module code="org.jboss.security.authorization.modules.DelegatingAuthorizationModule" flag="required"/>
+      </authorization>
+   </application-policy>   
+
+   <application-policy xmlns="urn:jboss:security-beans:1.0" name="jboss-ejb-policy" extends="other">
+      <authorization>
+         <policy-module code="org.jboss.security.authorization.modules.DelegatingAuthorizationModule" flag="required"/>
+      </authorization>
+   </application-policy>
+
+</deployment>

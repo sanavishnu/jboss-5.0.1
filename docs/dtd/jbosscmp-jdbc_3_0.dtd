@@ -1,0 +1,608 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!--
+This is the XML DTD for the jbosscmp-jdbc deployment descriptor.
+  <!DOCTYPE jbosscmp-jdbc PUBLIC
+      "-//JBoss//DTD JBOSSCMP-JDBC 3.0//EN"
+      "http://www.jboss.org/j2ee/dtd/jbosscmp-jdbc_3_0.dtd">
+-->
+
+<!--
+The root element of JBossCMP-JDBC configuration files.
+-->
+<!ELEMENT jbosscmp-jdbc (defaults?, enterprise-beans?, relationships?,
+         dependent-value-classes?, type-mappings?)>
+
+<!--
+The optional defaults elements contains the default values for 
+entities, and relationships.
+-->
+<!ELEMENT defaults ((datasource, datasource-mapping)?, create-table?, 
+         remove-table?, read-only?, read-time-out?, row-locking?, 
+         pk-constraint?, fk-constraint?, preferred-relation-mapping?, 
+         read-ahead?, list-cache-max?, fetch-size?)>
+
+
+<!--
+The optional datasource element contains the jndi-name used to lookup
+the datasource.  All database connections used by an entity or relation table are obtained from the datasource. 
+-->
+<!ELEMENT datasource (#PCDATA)>
+
+
+<!--
+The optional datasource-mapping element contains the name of the type mapping
+that will be used for this datasource.
+-->
+<!ELEMENT datasource-mapping (#PCDATA)>
+
+
+<!--
+Should the persistence manager attempt to create tables if they are 
+not present?
+
+The create-table element must be one of the two following:
+         <create-table>true</create-table>
+         <create-table>false</create-table>
+-->
+<!ELEMENT create-table (#PCDATA)>
+
+
+<!--
+Should the persistence manager attempt to remove tables during shutdown?
+
+The remove-table element must be one of the two following:
+         <remove-table>true</remove-table>
+         <remove-table>false</remove-table>
+-->
+<!ELEMENT remove-table (#PCDATA)>
+
+
+<!--
+Is the entity or cmp-field read-only?
+
+The read-only element must be one of the two following:
+         <read-only>true</read-only>
+         <read-only>false</read-only>
+-->
+<!ELEMENT read-only (#PCDATA)>
+
+
+<!--
+Specifies the ammount of time that a read-only field is considered
+valid (milliseconds).
+-->
+<!ELEMENT read-time-out (#PCDATA)>
+
+
+<!--
+Should select statements the SELECT ... FOR UPDATE syntax?
+
+The row-locking element must be one of the two following:
+         <row-locking>true</row-locking>
+         <row-locking>false</row-locking>
+-->
+<!ELEMENT row-locking (#PCDATA)>
+
+
+<!--
+Should a foreign key constraint be added for this relationship role?
+
+The fk-constraint element must be one of the two following:
+         <fk-constraint>true</fk-constraint>
+         <fk-constraint>false</fk-constraint>
+-->
+<!ELEMENT fk-constraint (#PCDATA)>
+
+
+<!--
+Should a primary key constraint be added when creating tables?
+
+The pk-constraint element must be one of the two following:
+         <pk-constraint>true</pk-constraint>
+         <pk-constraint>false</pk-constraint>
+-->
+<!ELEMENT pk-constraint (#PCDATA)>
+
+
+<!--
+Specifies the preferred mapping style for relationships.
+
+The preferred-relation-mapping element must be one of the two following:
+   <preferred-relation-mapping>foreign-key</preferred-relation-mapping>
+   <preferred-relation-mapping>relation-table</preferred-relation-mapping>
+-->
+<!ELEMENT preferred-relation-mapping (#PCDATA)>
+
+<!--
+Specifies the read ahead strategy.
+
+         <read-ahead>
+            <strategy>on-load</strategy>
+            <page-size>255</page-size>
+            <eager-load-group>*</eager-load-group>
+         </read-ahead>
+-->
+<!ELEMENT read-ahead (strategy, page-size?, eager-load-group?)>
+
+<!--
+Specifies the strategy used to read-ahead data in queries.
+
+The strategy element must be one of the two following:
+         <strategy>none</strategy>
+         <strategy>on-load</strategy>
+         <strategy>on-find</strategy>
+-->
+<!ELEMENT strategy (#PCDATA)>
+
+
+<!--
+Specifies the number of entities that will be read in a single 
+read-ahead load query.
+-->
+<!ELEMENT page-size (#PCDATA)>
+
+
+<!--
+Specifies the number of simultaneous queries that can be tracked by 
+the cache for an entity. 
+-->
+<!ELEMENT list-cache-max (#PCDATA)>
+
+
+<!--
+Specifies the number of entities to read in one round-trip to
+the underlying datastore.
+-->
+<!ELEMENT fetch-size (#PCDATA)>
+
+
+<!--
+The enterprise-beans element contains the entity elements that will 
+be configured.
+-->
+<!ELEMENT enterprise-beans (entity+)>
+
+
+<!--
+The entity element contains the configuration of an entity
+-->
+<!ELEMENT entity (ejb-name, (datasource, datasource-mapping)?, create-table?, 
+         remove-table?, read-only?, read-time-out?, row-locking?, 
+         pk-constraint?, read-ahead?, list-cache-max?, fetch-size?, table-name?,
+         cmp-field*, load-groups?, eager-load-group?, lazy-load-groups?, 
+         query*)>
+
+<!--
+Name of the entity being configured.  This must match an entity declared
+in the ejb-jar.xml file.
+-->
+<!ELEMENT ejb-name (#PCDATA)>
+
+
+<!--
+This is the name of the table that will hold data for this entity. 
+Each entity instance will be stored in one row of this table. 
+-->
+<!ELEMENT table-name (#PCDATA)>
+
+
+<!--
+The cmp-field element contains the configuration of a cmp-field.
+-->
+<!ELEMENT cmp-field (field-name, read-only?, read-time-out?, 
+         column-name?, not-null?, ((jdbc-type, sql-type) | (property+))? )>
+
+
+<!--
+Name of the cmp-field being configured.  This must match a cmp-field 
+declared for this entity in the ejb-jar.xml file.
+-->
+<!ELEMENT field-name (#PCDATA)>
+
+
+<!--
+The name of the column that will hold the data for this field.
+-->
+<!ELEMENT column-name (#PCDATA)>
+
+
+<!--
+If present the field will not allow a field value.
+-->
+<!ELEMENT not-null EMPTY>
+
+
+<!--
+This is the JDBC type that is used when setting parameters in a JDBC
+PreparedStatement or loading data from a JDBC ResultSet for this 
+cmp-field. The valid types are defined in java.sql.Types. 
+-->
+<!ELEMENT jdbc-type (#PCDATA)>
+ 
+
+<!--
+This is the SQL type that is used in create table statements for 
+this field. Valid sql-types are only limited by your database vendor. 
+-->
+<!ELEMENT sql-type (#PCDATA)>
+
+
+<!--
+The property element contains the configuration of a dependent
+value class property of a cmp-field that is the type of a dependent
+value class.
+-->
+<!ELEMENT property (property-name, column-name?, not-null?,
+         (jdbc-type, sql-type)?)>
+
+
+<!--
+Name of the property being configured. In a dependent-value-class
+element this must match a JavaBean property of the class. In a
+cmp-field element this must match a flattened propety of the
+dependent-value-class field type.
+-->
+<!ELEMENT property-name (#PCDATA)>
+
+<!--
+Contains the named load groups.
+-->
+<!ELEMENT load-groups (load-group+)>
+
+
+<!--
+A named group of fields that will be loaded together.
+-->
+<!ELEMENT load-group (description?, load-group-name, field-name+)>
+
+<!--
+Contains the name of a load group.
+-->
+<!ELEMENT load-group-name (#PCDATA)>
+
+
+<!--
+Contains the name of the load group that will eager loaded for this entity.
+-->
+<!ELEMENT eager-load-group (#PCDATA)>
+
+
+<!--
+Contains the names of the groups that will be lazy loaded together. 
+-->
+<!ELEMENT lazy-load-groups (load-group-name+)>
+
+
+<!--
+Descriptive text.
+-->
+<!ELEMENT description (#PCDATA)>
+
+
+<!--
+The query element contains the configuration of a query.
+-->
+<!ELEMENT query (description?, query-method, 
+      (jboss-ql | dynamic-ql | declared-sql)?, read-ahead?)>
+
+
+<!--
+The query method that being configured.  This must match a 
+query-method declared for this entity in the ejb-jar.xml file.
+-->
+<!ELEMENT query-method (method-name, method-params)>
+
+
+<!-- 
+The name of the query method that is being configured.
+-->
+<!ELEMENT method-name (#PCDATA)>
+
+
+<!--
+The method-parameters contains the parameters of the method that is
+being configured. Method parameters must be in the same order as the
+method and have the same type.
+-->
+<!ELEMENT method-params (method-param*)>
+
+
+<!--
+The java class of one parameter for a query.
+
+An example follows:
+   <method-param>java.lang.String</method-param>
+-->
+<!ELEMENT method-param (#PCDATA)>
+
+
+<!--
+JBossQL query.  JBossQL is a superset of EJB-QL.
+-->
+<!ELEMENT jboss-ql (#PCDATA)>
+
+
+<!--
+Dynamic JBossQL query.  The JBossQL is passed to the query and compiled
+on the fly.
+-->
+<!ELEMENT dynamic-ql EMPTY>
+
+
+<!--
+Explicitly declared sql fragments.
+-->
+<!ELEMENT declared-sql (select?, from?, where?, order?, other?)>
+
+
+<!--
+Delcares what is to be selected.  A finder may only have the distinct element.
+-->
+<!ELEMENT select (distinct?, (ejb-name, field-name?)?, alias?)>
+
+
+<!--
+Delared additional SQl to append to the generated from clause.
+
+Example:  <from>, FullAddressEJB as a</from>
+-->
+<!ELEMENT from (#PCDATA)>
+
+<!-- 
+If the empty distinct element is present, the SELECT DISTINCT 
+syntax will be used. This syntax is used by default for ejbSelect
+methods that return a java.util.Set.
+-->
+<!ELEMENT distinct EMPTY>
+
+
+<!--
+Declares the where clause for the query.
+
+Example: <where>TITLE={0} OR ARTIST={0} OR TYPE={0} OR NOTES={0}</where>
+-->
+<!ELEMENT where (#PCDATA)>
+
+
+<!--
+Declares the order clause for the query.
+
+Example: <order>TITLE</order>
+-->
+<!ELEMENT order (#PCDATA)>
+
+
+<!--
+Declares the other sql that is appended to the end of a query.
+
+Example: <other>LIMIT 100 OFFSET 200</other>
+-->
+<!ELEMENT other (#PCDATA)>
+
+<!--
+Declare the alias to use for the main select table.
+
+Example: <alias>my_table</alias>
+-->
+<!ELEMENT alias (#PCDATA)>
+
+
+<!--
+The relationships element contains the ejb-relation elements that will 
+be configured.
+-->
+<!ELEMENT relationships (ejb-relation+)>
+
+
+<!--
+The ejb-relation element contains the configuration of an
+ejb-relation.
+-->
+<!ELEMENT ejb-relation (ejb-relation-name, read-only?, read-time-out?,
+         (foreign-key-mapping | relation-table-mapping)?,
+         (ejb-relationship-role, ejb-relationship-role)?)>
+
+
+<!--
+Name of the ejb-relation being configured.  This must match an 
+ejb-relation declared in the ejb-jar.xml file.
+-->
+<!ELEMENT ejb-relation-name (#PCDATA)>
+
+
+<!--
+Specifies that the ejb-relation should be mapped with foreign-keys.
+This mapping is not available for many-to-many relationships.
+-->
+<!ELEMENT foreign-key-mapping EMPTY>
+
+
+<!--
+Specifies that the ejb-relation should be mapped with a relation-table.
+-->
+<!ELEMENT relation-table-mapping (table-name?, 
+         (datasource, datasource-mapping)?, create-table?, remove-table?,
+         row-locking?, pk-constraint?)>
+
+
+<!--
+The ejb-rejationship-role element contains the configuration of an
+ejb-relationship-role.
+-->
+<!ELEMENT ejb-relationship-role (ejb-relationship-role-name,
+         fk-constraint?, key-fields?, read-ahead?)>
+
+
+<!--
+Name of the ejb-relationship-role being configured.  This must match
+an ejb-relationship-role declared for this ejb-relation in the 
+ejb-jar.xml file.
+-->
+<!ELEMENT ejb-relationship-role-name (#PCDATA)>
+
+
+<!--
+Contains the key fields. The interperation of the key fields depends
+on the mapping style of the relationship.
+-->
+<!ELEMENT key-fields (key-field*)>
+
+<!--
+The key-field element declared the configuration of a key field.
+The field-name element must match the field-name of one of the 
+primary key fields of the this entity.
+-->
+<!ELEMENT key-field (field-name, 
+         ((column-name, (jdbc-type, sql-type)?) | (property*))
+         )>
+
+
+<!--
+Contains the known dependent value classes.
+-->
+<!ELEMENT dependent-value-classes (dependent-value-class*)>
+
+
+<!--
+The dependent-value-class element contains the configuration of a
+dependent value class.
+-->
+<!ELEMENT dependent-value-class (description?, class, property+)>
+
+
+<!--
+Name of the java class to which the dependent value class configuration 
+applies.
+-->
+<!ELEMENT class (#PCDATA)>
+
+
+<!--
+The type-mappings element contains the java to sql mappings.
+-->
+<!ELEMENT type-mappings (type-mapping+)>
+
+<!--
+The type-mapping element contains a named java to sql mapping.
+This includes both type mapping and function mapping.
+-->
+<!ELEMENT type-mapping (name, row-locking-template, pk-constraint-template, 
+      fk-constraint-template, alias-header-prefix, alias-header-suffix,
+      alias-max-length, subquery-supported, true-mapping, false-mapping,
+      function-mapping*, mapping+)>
+
+<!--
+Name of the type-mapping.
+-->
+<!ELEMENT name (#PCDATA)>
+
+<!-- 
+This is the template used to create a row lock on the selected rows. The 
+arguments supplied are as follows:
+
+1. Select clause
+2. From clasue; the order of the tables is currently not guarenteed
+3. Where clause
+
+If row locking is not supported in select statement this element should be 
+empty. The most common form of row locking is select for update as in the 
+example that follows:
+
+SELECT ?1 FROM ?2 WHERE ?3 FOR UPDATE
+-->
+<!ELEMENT row-locking-template (#PCDATA)>
+
+<!-- 
+This is the template used to create a primary key constraint in the create 
+table statement. The arguments supplied are as follows:
+
+1. Primary key constraint name; which is always pk_{table-name}
+2. Comma sepperated list of primary key column names
+
+If a primary key constraint clause is not supported in a create table statement
+this element should be empty. The most common form of a primary key constraint 
+follows:
+
+CONSTRAINT ?1 PRIMARY KEY (?2)
+-->
+<!ELEMENT pk-constraint-template (#PCDATA)>
+
+<!-- 
+This is the template used to create a foreign key constraint in sepperate 
+statement. The arguments supplied are as follows:
+
+1. Table name
+2. Foreign key constraint name; which is always fk_{table-name}_{cmr-field-name}
+3. Comma sepperated list of foreign key column names
+4. References table name
+5. Comma sepperated list of the referenced primary key column names
+
+If the datasource does not support foreign key constraints this element should
+be empty. The most common form of a foreign key constraint follows:
+
+ALTER TABLE ?1 ADD CONSTRAINT ?2 FOREIGN KEY (?3) REFERENCES ?4 (?5)
+-->
+<!ELEMENT fk-constraint-template (#PCDATA)>
+
+<!--
+An alias header is prepended to a generated table alias by the EJB-QL compiler
+to prevent name collisions. An alias header is constructed as folows:
+
+alias-header-prefix + int_counter + alias-header-suffix
+-->
+<!ELEMENT alias-header-prefix (#PCDATA)>
+<!ELEMENT alias-header-suffix (#PCDATA)>
+<!ELEMENT alias-max-length (#PCDATA)>
+
+<!--
+Does this type-mapping support subqueries. Some EJB-QL opperators are mapped 
+to exists subqueries.  If subquery is false the EJB-QL compiler will use a
+left join and is null.
+
+The subquery-supported element must be one of the two following:
+         <create-table>true</create-table>
+         <create-table>false</create-table>
+-->
+<!ELEMENT subquery-supported (#PCDATA)>
+
+<!--
+The true and false mappings are the mappings for true and false in EJB-QL
+queries.
+-->
+<!ELEMENT true-mapping (#PCDATA)>
+<!ELEMENT false-mapping (#PCDATA)>
+
+<!--
+Specifies the mapping from a java type to a jdbc and a sql type.
+-->
+<!ELEMENT mapping (java-type, jdbc-type, sql-type)>
+
+<!-- 
+Specifies the java class type to be mapped.
+-->
+<!ELEMENT java-type (#PCDATA)>
+
+<!--
+Specifies the mapping from an EJB-QL function to a sql function.
+-->
+<!ELEMENT function-mapping (function-name, function-sql)>
+
+<!--
+The name of the function to be mapped.
+-->
+<!ELEMENT function-name (#PCDATA)>
+
+<!--
+The sql to which the function is mapped.  The sql can contain
+parameters specified with a question mark followed by the base one
+parameter number.  For example, function mapping for concat in Oracle
+follows:
+
+<function-mapping>
+   <function-name>concat</function-name>
+   <function-sql>(?1 || ?2)</function-sql>
+</function-mapping>
+-->
+<!ELEMENT function-sql (#PCDATA)>
+

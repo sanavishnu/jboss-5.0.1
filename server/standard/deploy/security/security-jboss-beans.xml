@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Security beans
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <annotation>@org.jboss.managed.api.annotation.ManagementDeployment(description="JBossSX Security Beans")</annotation>
+
+   <!-- Password Mask Management Bean-->
+   <bean name="JBossSecurityPasswordMaskManagement"
+         class="org.jboss.security.integration.password.PasswordMaskManagement" >
+         <property name="keyStoreLocation">password/password.keystore</property>
+         <property name="keyStoreAlias">jboss</property>
+         <property name="passwordEncryptedFileName">password/jboss_password_enc.dat</property>
+         <property name="keyStorePasswordEncryptedFileName">password/jboss_keystore_pass.dat</property>
+   </bean>
+
+   <!-- Support for @Password -->
+   <lifecycle-configure xmlns="urn:jboss:aop-beans:1.0"
+        name="PasswordRegistrationAdvice"
+        class="org.jboss.security.integration.password.PasswordLifecycleCallback"
+        classes="@org.jboss.security.integration.password.Password"
+        manager-bean="AspectManager"
+        manager-property="aspectManager">
+        <property name="passwordManagement"><inject bean="JBossSecurityPasswordMaskManagement"/></property>
+   </lifecycle-configure>
+  
+  <lifecycle-create xmlns="urn:jboss:aop-beans:1.0"
+        name="PasswordCreateDestroyAdvice"
+        class="org.jboss.security.integration.password.PasswordLifecycleCallback"
+        classes="@org.jboss.security.integration.password.Password"
+        manager-bean="AspectManager"
+        manager-property="aspectManager">
+        <property name="passwordManagement"><inject bean="JBossSecurityPasswordMaskManagement"/></property>
+  </lifecycle-create>
+
+  <lifecycle-install xmlns="urn:jboss:aop-beans:1.0"
+       name="PasswordStartStopAdvice"
+       class="org.jboss.security.integration.password.PasswordLifecycleCallback"
+       classes="@org.jboss.security.integration.password.Password"
+       manager-bean="AspectManager"
+       manager-property="aspectManager">
+       <property name="passwordManagement"><inject bean="JBossSecurityPasswordMaskManagement"/></property>
+   </lifecycle-install>
+
+   <!--  Establish the basic XML Based Configuration-->
+   <bean name="XMLLoginConfig" class="org.jboss.security.auth.login.XMLLoginConfig">
+      <property name="configResource">login-config.xml</property>
+   </bean>
+
+   <bean name="SecurityConfig" class="org.jboss.security.plugins.SecurityConfig">
+      <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+      <property name="defaultLoginConfig"><inject bean="XMLLoginConfig"/></property>
+   </bean>
+ 
+   <!-- JNDI Context legacy establishment of java:/jaas/securityDomain -->
+   <bean name="JBossSecurityJNDIContextEstablishment"
+      class="org.jboss.security.integration.JNDIContextEstablishment"/> 
+
+   <!-- JNDI Based Security Management -->
+   <bean name="JNDIBasedSecurityManagement"
+      class="org.jboss.security.integration.JNDIBasedSecurityManagement"/> 
+
+   <!-- Instance of JBoss Security Subject Factory -->
+   <bean name="JBossSecuritySubjectFactory"
+         class="org.jboss.security.integration.JBossSecuritySubjectFactory">
+   <property name="securityManagement"><inject bean="JNDIBasedSecurityManagement" /></property>
+   </bean>
+         
+   <!-- Bind the PolicyRegistration to JNDI under java:/policyRegistration 
+   and SecurityManagement under java:/securityManagement -->
+   <bean name="JNDIBasedSecurityRegistration" 
+         class="org.jboss.security.integration.JNDIBasedSecurityRegistration">
+      <!-- This has to be on one line, see JBMDR-49 -->
+      <annotation>@org.jboss.managed.api.annotation.ManagementObject(name="JNDIBasedSecurityRegistration",componentType=@org.jboss.managed.api.annotation.ManagementComponent(type="MCBean", subtype="Security"))</annotation>
+      <property name="policyRegistration"><inject bean="JBossSecurityPolicyRegistration" /></property>
+      <property name="securityManagement"><inject bean="JNDIBasedSecurityManagement" /></property>
+   </bean>
+ </deployment>

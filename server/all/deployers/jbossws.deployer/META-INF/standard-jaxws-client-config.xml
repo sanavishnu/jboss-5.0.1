@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jaxws-config xmlns="urn:jboss:jaxws-config:2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="urn:jboss:jaxws-config:2.0 schema/jaxws-config_2_0.xsd">
+  
+  <client-config>
+    <config-name>Standard Client</config-name>
+    <feature>http://org.jboss.ws/dispatch/validate</feature>
+    <property>
+      <property-name>http://org.jboss.ws/http#chunksize</property-name>
+      <property-value>2048</property-value>
+    </property>
+  </client-config>
+  
+  <client-config>
+    <config-name>HTTP 1.0 Client</config-name>
+    <feature>http://org.jboss.ws/dispatch/validate</feature>
+  </client-config>
+  
+  <client-config>
+    <config-name>Standard WSAddressing Client</config-name>
+    <post-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP11_HTTP</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>WSAddressing Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.ws.extensions.addressing.jaxws.WSAddressingClientHandler</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </post-handler-chains>
+  </client-config>
+  
+  <client-config>
+    <config-name>Standard SOAP 1.2 WSAddressing Client</config-name>
+    <post-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP12_HTTP</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>WSAddressing Handler</javaee:handler-name>
+          <javaee:handler-class>org.jboss.ws.extensions.addressing.jaxws.WSAddressingClientHandler</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </post-handler-chains>
+  </client-config>
+  
+  <client-config>
+    <config-name>Standard WSSecurity Client</config-name>
+    <post-handler-chains>
+      <javaee:handler-chain>
+        <javaee:protocol-bindings>##SOAP11_HTTP ##SOAP11_HTTP_MTOM</javaee:protocol-bindings>
+        <javaee:handler>
+          <javaee:handler-name>WSSecurityHandlerOutbound</javaee:handler-name>
+          <javaee:handler-class>org.jboss.ws.extensions.security.jaxws.WSSecurityHandlerClient</javaee:handler-class>
+        </javaee:handler>
+      </javaee:handler-chain>
+    </post-handler-chains>
+  </client-config>
+  
+</jaxws-config>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The JBoss service configuration file for the EJB deployer service.
+  
+  $Id: ejb2-timer-service.xml 85945 2009-03-16 19:45:12Z dimitris@jboss.org $
+-->
+<server>
+
+  <!-- ==================================================================== -->
+  <!-- J2EE Timer Service                                                   -->
+  <!-- ==================================================================== -->
+
+  <!--
+    A persistence policy that persists timers to a database.
+    
+    The 2 supported db persistence plugins are:
+      org.jboss.ejb.txtimer.GeneralPurposeDatabasePersistencePlugin
+      org.jboss.ejb.txtimer.OracleDatabasePersistencePlugin
+      
+    The table name defaults to "TIMERS". It can be overriden using the
+    'TimersTable' attribute if the persistence plugin supports it.
+    When overriding the timers table, an optional schema can be specified
+    using the syntax [schema.]table
+  -->
+  <mbean code="org.jboss.ejb.txtimer.DatabasePersistencePolicy" name="jboss.ejb:service=EJBTimerService,persistencePolicy=database">
+    <!-- DataSourceBinding ObjectName -->
+    <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
+    <!-- The plugin that handles database persistence -->
+    <attribute name="DatabasePersistencePlugin">org.jboss.ejb.txtimer.GeneralPurposeDatabasePersistencePlugin</attribute>
+    <!-- The timers table name -->
+    <attribute name="TimersTable">TIMERS</attribute>
+    <depends>jboss.jdbc:datasource=DefaultDS,service=metadata</depends>
+  </mbean>
+
+  <!-- A persistence policy that does not persist the timer
+  <mbean code="org.jboss.ejb.txtimer.NoopPersistencePolicy" name="jboss.ejb:service=EJBTimerService,persistencePolicy=noop"/>
+  -->
+   
+   <!-- A retry policy that uses a fixed interval in milli seconds -->
+   <mbean code="org.jboss.ejb.txtimer.FixedDelayRetryPolicy" name="jboss.ejb:service=EJBTimerService,retryPolicy=fixedDelay">
+     <attribute name="Delay">100</attribute>
+   </mbean>
+
+  <!-- An EJB Timer Service that is Tx aware -->
+  <mbean code="org.jboss.ejb.txtimer.EJBTimerServiceImpl"
+    name="jboss.ejb:service=EJBTimerService">
+    <attribute name="TimerIdGeneratorClassName">org.jboss.ejb.txtimer.BigIntegerTimerIdGenerator</attribute>
+    <attribute name="TimedObjectInvokerClassName">org.jboss.ejb.txtimer.TimedObjectInvokerImpl</attribute>
+    <depends optional-attribute-name="RetryPolicy">jboss.ejb:service=EJBTimerService,retryPolicy=fixedDelay</depends>
+    <depends optional-attribute-name="PersistencePolicy">jboss.ejb:service=EJBTimerService,persistencePolicy=database</depends>
+    <depends optional-attribute-name="TransactionManagerFactory" proxy-type="org.jboss.tm.TransactionManagerFactory">
+      jboss:service=TransactionManager
+    </depends>    
+  </mbean>
+
+</server>

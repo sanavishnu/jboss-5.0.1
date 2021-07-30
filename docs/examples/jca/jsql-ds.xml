@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: jsql-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+  <!-- ======================================================================-->
+  <!-- ConnectionManager setup for JSQL Microsoft SQL Server 2000 driver     -->
+  <!-- ===================================================================== -->
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>JSQLDS</jndi-name>
+    <connection-url>jdbc:JSQLConnect://localhost:1433/databaseName=testdb</connection-url>
+    <driver-class>com.jnetdirect.jsql.JSQLDriver</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+
+  </local-tx-datasource>
+
+</datasources>

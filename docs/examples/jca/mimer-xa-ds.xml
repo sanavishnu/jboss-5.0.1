@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: mimer-xa-ds.xml 23720 2004-09-15 14:37:40Z loubyansky $ -->
+
+<!-- ==================================================================== -->
+<!-- ConnectionManager setup for Mimer SQL for distributed transactions   -->
+<!--                                                                      -->
+<!-- Requires version 9                                                   -->
+<!--                                                                      -->
+<!-- Supplied by fredrik.alund@upright.se                                 -->
+<!-- ==================================================================== -->
+
+<datasources>
+   <xa-datasource>
+      <jndi-name>XAMimerDS</jndi-name>
+      <xa-datasource-class>com.mimer.jdbc.MimerXADataSource</xa-datasource-class>
+      <xa-datasource-property name="DatabaseName">multi1</xa-datasource-property>
+      <xa-datasource-property name="ServerName">localhost</xa-datasource-property>
+      <xa-datasource-property name="PortNumber">1360</xa-datasource-property>
+      <user-name>changeme</user-name>
+      <password>changeme</password>
+      <min-pool-size>5</min-pool-size>
+      <max-pool-size>100</max-pool-size>
+      <blocking-timeout-millis>5000</blocking-timeout-millis>
+      <idle-timeout-minutes>15</idle-timeout-minutes>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>Mimer SQL</type-mapping>
+      </metadata>
+   </xa-datasource>
+</datasources>

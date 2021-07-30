@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- The Derby embedded database JCA connection factory config -->
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: derby-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+<datasources>
+   <local-tx-datasource>
+
+      <!-- The jndi name of the DataSource, it is prefixed with java:/ -->
+      <!-- Datasources are not available outside the virtual machine -->
+      <jndi-name>DerbyDS</jndi-name>
+
+      <!-- for in-process persistent db, saved when jboss stops. The
+      org.jboss.jdbc.DerbyDatabase mbean is necessary for properly db shutdown -->
+      <connection-url>jdbc:derby:${jboss.server.data.dir}${/}derby${/}localDB;create=true</connection-url>
+
+      <!-- The driver class -->
+      <driver-class>org.apache.derby.jdbc.EmbeddedDriver</driver-class>
+
+      <!-- The login and password -->
+      <user-name>sa</user-name>
+      <password></password>
+
+      <!-- The minimum connections in a pool/sub-pool. Pools are lazily constructed on first use -->
+      <min-pool-size>5</min-pool-size>
+
+      <!-- The maximum connections in a pool/sub-pool -->
+      <max-pool-size>20</max-pool-size>
+
+      <!-- The time before an unused connection is destroyed -->
+      <idle-timeout-minutes>5</idle-timeout-minutes>
+
+      <!-- Whether to check all statements are closed when the connection is returned to the pool,
+           this is a debugging feature that should be turned off in production -->
+      <track-statements/>
+
+      <!-- This mbean can be used when using in process persistent derby -->
+      <depends>jboss:service=Derby</depends>
+   </local-tx-datasource>
+
+   <mbean code="org.jboss.jdbc.DerbyDatabase" name="jboss:service=Derby"/>
+</datasources>

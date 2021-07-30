@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+        >
+<head>
+    <title></title>
+</head>
+<body>
+<ui:composition>
+    <div id="pageheader">
+        <div class="floatleft">
+            <h:panelGrid columns="2">
+              <h:outputLink value="http://jboss.org/embjopr/">
+                <h:graphicImage value="images/header.png" alt="Embedded Jopr"/>
+              </h:outputLink>
+              <h:panelGroup styleClass="headerText">
+                #{messages['product.name']}
+              </h:panelGroup>
+            </h:panelGrid>
+        </div>
+        <div class="login">
+            <h:outputText rendered="#{not empty identity.username}">
+                #{messages['security.loggedIn']} #{identity.username}&nbsp;
+                [<s:link id="logoutLink" action="#{identity.logout}">#{messages['security.logout']}</s:link>]
+            </h:outputText>
+            <h:outputText rendered="#{empty identity.username}">
+                #{messages['security.NotLoggedIn']}&nbsp;
+                [<s:link action="/login.xhtml">#{messages['security.login']}</s:link>]
+            </h:outputText>
+            <ui:remove>
+                <!-- Disable the Help link until we actually have some online help to link to. -->
+                |
+                [<a href="#">#{messages['help.link']}</a>]
+            </ui:remove>
+            <h:outputText rendered="#{debug}">
+                |
+                [<s:link action="#{debugAction.dumpInventory()}">Dump Inventory</s:link>]
+                |
+                [<s:link action="#{debugAction.runServerScan()}">Run Server Scan</s:link>]
+                |
+                [<s:link action="#{debugAction.runServiceScan()}">Run Service Scan</s:link>]
+                |
+                [<s:link action="#{debugAction.testErrorPage()}">Test Error Page</s:link>]
+            </h:outputText>
+        </div>
+    </div>
+</ui:composition>
+</body>
+</html>

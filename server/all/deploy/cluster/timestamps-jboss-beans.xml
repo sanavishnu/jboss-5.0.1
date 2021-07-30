@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   
+   <!--
+     Service that estimates and tracks discrepancies in system clocks 
+     for current and past members of the cluster 
+    -->
+   <bean name="TimestampDiscrepancyService"
+         class="org.jboss.ha.timestamp.TimestampDiscrepancyService">    
+
+      <!-- The partition used for group RPCs to track timestamps -->
+      <property name="partition"><inject bean="HAPartition"/></property>
+      
+      <!-- How often to check the timestamps on other nodes -->
+      <property name="minStatusCheckFrequency">20000</property>
+      
+   </bean>
+   
+   <!-- Logs WARN or ERROR if TimestampDiscrepancyService detects
+        an overly long system clock difference between this and another node.-->
+   <bean name="TimestampDiscrepancyWarnService"
+         class="org.jboss.ha.timestamp.TimestampDiscrepancyValidationService">    
+
+      <!-- The source of timestamp discrepancy information -->
+      <property name="timestampDiscrepancyService"><inject bean="TimestampDiscrepancyService"/></property>
+      
+      <!-- Maximum discrepancy (in ms) which if exceeded triggers logging -->
+      <property name="maxDiscrepancy">120000</property>
+      <!--  Should any logging be at ERROR rather than WARN? -->
+      <property name="useErrorLogging">false</property>
+      
+   </bean>
+
+</deployment>

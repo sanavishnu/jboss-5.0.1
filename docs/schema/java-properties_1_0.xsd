@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: java-properties_1_0.xsd 33892 2005-07-25 02:47:23Z starksm $
+-->
+<xs:schema version="1.0"
+   targetNamespace="urn:jboss:java-properties"
+   xmlns:java="urn:jboss:custom-object-binding"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   xmlns:jbxb="http://www.jboss.org/xml/ns/jbxb"
+   attributeFormDefault="unqualified"
+   elementFormDefault="qualified"
+   >
+   <xs:annotation>
+      <xs:documentation>A JBossXB schema for specifying how a java.util.Properties
+         object is unmarshalled.
+      </xs:documentation>
+   </xs:annotation>
+   <xs:element name="properties">
+      <xs:annotation>
+         <xs:appinfo>
+            <jbxb:class impl="java.util.Properties"/>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="property" maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>
+                     <jbxb:putMethod name="setProperty" keyType="java.lang.String" valueType="java.lang.String"/>
+                  </xs:appinfo>
+               </xs:annotation>
+               <xs:complexType id="propertyType">
+                  <xs:annotation>
+                     <xs:appinfo>
+                        <jbxb:mapEntry/>
+                     </xs:appinfo>
+                  </xs:annotation>
+                  <xs:sequence>
+                     <xs:element name="key" type="xs:string">
+                        <xs:annotation>
+                           <xs:appinfo>
+                              <jbxb:mapEntryKey/>
+                           </xs:appinfo>
+                        </xs:annotation>
+                     </xs:element>
+                     <xs:element name="value" type="xs:string">
+                        <xs:annotation>
+                           <xs:appinfo>
+                              <jbxb:mapEntryValue/>
+                           </xs:appinfo>
+                        </xs:annotation>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

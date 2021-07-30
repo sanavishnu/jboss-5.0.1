@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: jdatastore-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!-- Copy these jar's from your JBuilder6/lib to your jboss's lib         -->
+<!--                dx.jar,jdsserver.jar,jds.jar                          -->
+<!--  Originally from Brent Thompson www.protegra.com/javagroup.html      -->
+<!-- ==================================================================== -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>JDataStoreDS</jndi-name>
+    <connection-url>jdbc:borland:dslocal:/home/brent/JBuilder6/samples/JDataStore/datastores/employee.jds</connection-url>
+    <driver-class>com.borland.datastore.jdbc.DataStoreDriver</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+  </local-tx-datasource>
+
+</datasources>

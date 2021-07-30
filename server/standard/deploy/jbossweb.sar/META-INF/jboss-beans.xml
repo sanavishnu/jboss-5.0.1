@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="WebServer"
+         class="org.jboss.web.tomcat.service.deployers.TomcatService">
+         
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.web:service=WebServer", exposedInterface=org.jboss.web.tomcat.service.deployers.TomcatServiceMBean.class,registerDirectly=true)</annotation>
+
+      <!-- Only needed if the org.jboss.web.tomcat.service.jca.CachedConnectionValve
+           is enabled in the tomcat server.xml file.
+      -->
+      <depends>jboss.jca:service=CachedConnectionManager</depends>
+
+      <!-- Transaction manager for unfinished transaction checking in the CachedConnectionValve -->      
+      <depends>jboss:service=TransactionManager</depends>
+
+      <!-- Inject the TomcatDeployer -->
+      <property name="tomcatDeployer"><inject bean="WarDeployer"/></property>
+      <!-- Set the securityManagerService used to flush the auth cache on session expiration -->
+      <property name="securityManagerService">
+         <inject bean="jboss.security:service=JaasSecurityManager" />
+      </property>
+      <!-- 
+         Do not configure other JMX attributes via this file.
+         Use the WarDeployer bean in deployers/jboss-web.deployer/war-deployers-beans.xml
+      -->
+
+   </bean>
+
+   <bean name="WebServerMO"
+      class="org.jboss.web.tomcat.service.management.WebServer">
+      <property name="domain">jboss.web</property>
+      <property name="nameProps">
+         <map class="java.util.Properties" keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>service</key>
+               <value>WebServer</value>
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+   <bean name="ConnectorBean-http-${jboss.bind.address}-8080MO"
+      class="org.jboss.web.tomcat.service.management.ConnectorBean">
+      <property name="domain">jboss.web</property>
+      <property name="nameProps">
+         <map class="java.util.Properties" keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>type</key>
+               <value>GlobalRequestProcessor</value>
+            </entry>
+         </map>
+      </property>
+      <property name="port">
+         <value-factory bean="ServiceBindingManager"
+            method="getIntBinding" >
+            <parameter>jboss.web:service=WebServer</parameter>
+         </value-factory>
+      </property>
+      <property name="address">
+         <value-factory bean="ServiceBindingManager"
+            method="getStringBinding" >
+            <parameter>jboss.web:service=WebServer</parameter>
+         </value-factory>
+      </property>
+      <property name="server"><inject bean="JMXKernel" property="mbeanServer"/></property>
+   </bean>
+   <bean name="ThreadPool-http-${jboss.bind.address}-8080MO"
+      class="org.jboss.web.tomcat.service.management.ThreadPool">
+      <property name="domain">jboss.web</property>
+      <property name="nameProps">
+         <map class="java.util.Properties" keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>type</key>
+               <value>ThreadPool</value>
+            </entry>
+         </map>
+      </property>
+      <property name="port">
+         <value-factory bean="ServiceBindingManager"
+            method="getIntBinding" parameter="jboss.web:service=WebServer"/>
+      </property>
+      <property name="address">
+         <value-factory bean="ServiceBindingManager"
+            method="getStringBinding" parameter="jboss.web:service=WebServer"/>
+      </property>
+      <property name="server"><inject bean="JMXKernel" property="mbeanServer"/></property>
+   </bean>
+   <bean name="${jboss.bind.address}-MO"
+      class="org.jboss.web.tomcat.service.management.Host">
+      <property name="domain">jboss.web</property>
+      <property name="nameProps">
+         <map class="java.util.Properties" keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>type</key>
+               <value>Host</value>
+            </entry>
+         <entry>
+            <key>host</key>
+            <value>
+               <value-factory bean="ServiceBindingManager"
+                  method="getStringBinding" parameter="jboss.web:service=WebServer"/>
+            </value>
+         </entry>
+         </map>
+      </property>
+   </bean>
+
+   
+</deployment>

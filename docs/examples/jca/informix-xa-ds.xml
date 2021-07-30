@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: informix-xa-ds.xml 26313 2004-12-02 10:52:37Z schrouf $ -->
+
+
+<datasources>
+  <xa-datasource>
+    <jndi-name>InformixXADS</jndi-name>
+    <xa-datasource-class>com.informix.jdbcx.IfxXADataSource</xa-datasource-class>
+    <xa-datasource-property name="IfxWAITTIME">10</xa-datasource-property>
+    <xa-datasource-property name="Description">Something Descriptive</xa-datasource-property>
+    <xa-datasource-property name="IfxIFXHOST">myhost.mydomain.com</xa-datasource-property>
+    <xa-datasource-property name="PortNumber">1557</xa-datasource-property>
+    <xa-datasource-property name="DatabaseName">mydb</xa-datasource-property>
+    <xa-datasource-property name="ServerName">myserver</xa-datasource-property>
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.InformixExceptionSorter</exception-sorter-class-name>
+    <!-- sql to call when connection is created
+    <new-connection-sql>some arbitrary sql</new-connection-sql>
+      -->
+    <!-- sql to call on an existing pooled connection when it is obtained from pool 
+    <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+      -->
+
+    <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+    <metadata>
+       <type-mapping>InformixDB</type-mapping>
+    </metadata>
+  </xa-datasource>
+
+</datasources>

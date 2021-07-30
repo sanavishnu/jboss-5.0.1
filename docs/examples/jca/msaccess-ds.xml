@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+
+<!-- $Id: msaccess-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!-- This uses the sun jdbc-odbc driver, so don't expect miracles          -->
+<!-- Thanks to Alan Moor, who warns...                                     -->
+<!-- Remember, though, never trust critical data, or data that you can't   -->
+<!-- afford to lose, or data that you need quick access to, or data that   -->
+<!-- needs to be secure, to Microsoft Access.                              -->
+<!-- ===================================================================== -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>MSAccessDS</jndi-name>
+    <!-- format of URL is "jdbc:odbc:DSNNAME" -->
+    <connection-url>jdbc:odbc:INsightDSN</connection-url>
+    <driver-class>sun.jdbc.odbc.JdbcOdbcDriver</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+  </local-tx-datasource>
+
+</datasources>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+
+   <!-- ==================================================================== -->
+   <!-- Remoting services                                                    -->
+   <!-- ==================================================================== -->
+   
+   <!-- For detailed description of all these configuration attributes, please see the       -->
+   <!-- JBoss Remoting User's Guide (http://www.jboss.org/jbossremoting/docs/index.html) or  -->
+   <!-- the Remoting wiki (http://www.jboss.org/community/docs/DOC-11782).                   -->
+            
+   <!-- Unified invoker.  Registers itself as an invocation handler with UnifiedInvokerConnector. -->
+   <!-- Can find more details on unified invoker configuration at                                 -->
+   <!-- http://docs.jboss.org/jbossas/unified_invoker/UnifiedInvoker_guide.html.                  -->
+   <bean name="UnifiedInvoker" class="org.jboss.invocation.unified.server.UnifiedInvoker">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=invoker,type=unified",exposedInterface=org.jboss.invocation.unified.server.UnifiedInvokerMBean.class,registerDirectly=true)</annotation>
+      <property name="connector"><inject bean="UnifiedInvokerConnector"/></property>
+      <depends>TransactionManager</depends>
+   </bean>
+   
+   
+   <!-- The Connector is the core component of the remoting server service.        -->
+   <!-- It binds the remoting invoker (transport protocol, callback configuration, -->
+   <!-- data marshalling, etc.) with the invocation handlers.                      -->
+   <bean name="UnifiedInvokerConnector" class="org.jboss.remoting.transport.Connector">
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.remoting:service=Connector,transport=socket",exposedInterface=org.jboss.remoting.transport.ConnectorMBean.class,registerDirectly=true)</annotation>
+      <property name="serverConfiguration"><inject bean="UnifiedInvokerConfiguration"/></property>
+   </bean>
+   
+   
+   <!-- Remoting server configuration -->
+   <bean name="UnifiedInvokerConfiguration" class="org.jboss.remoting.ServerConfiguration">
+      <constructor>
+         <!-- transport: Others include sslsocket, bisocket, sslbisocket, http, https, rmi, sslrmi, servlet, sslservlet. -->
+         <parameter>socket</parameter>
+      </constructor>
+   
+      <!-- Parameters visible to both client and server -->
+      <property name="invokerLocatorParameters">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
+            <entry>
+               <key>serverBindAddress</key>
+               <value>
+                  <value-factory bean="ServiceBindingManager" method="getStringBinding">
+                     <parameter>UnifiedInvokerConnector</parameter>
+                     <parameter>${host}</parameter>
+                  </value-factory>
+               </value>
+            </entry>
+            <entry>
+               <key>serverBindPort</key>
+               <value>
+                  <value-factory bean="ServiceBindingManager" method="getStringBinding">
+                     <parameter>UnifiedInvokerConnector</parameter>
+                     <parameter>${port}</parameter>
+                  </value-factory>
+               </value>
+            </entry>
+            
+            <!-- Multihome configuration with ServiceBindingManager.  The string will   -->
+            <!-- have the form "192.168.2.2:7777!10.11.12.238:8888", which results in   -->
+            <!-- a Remoting server listening on 192.168.2.2:7777 and 10.11.12.238:8888. -->
+            <!-- See the beans "homes1" and "homes2" at the bottom of this file and     -->
+            <!-- the conf/bindings.xml file.                                            -->
+            <!--entry>
+               <key>homes</key>
+               <value><value-factory bean="homes2" method="toString"/></value>
+            </entry-->
+
+            <entry><key>dataType</key>     <value>invocation</value></entry>
+            <entry><key>marshaller</key>   <value>org.jboss.invocation.unified.marshall.InvocationMarshaller</value></entry>
+            <entry><key>unmarshaller</key> <value>org.jboss.invocation.unified.marshall.InvocationUnMarshaller</value></entry>
+           
+            <!-- A socket transport parameter -->
+            <entry><key>enableTcpNoDelay</key> <value>true</value></entry>
+            
+            <!-- Selected optional parameters: -->
+         
+            <!-- Parameters for connecting from outside of a firewall. -->
+            <!--entry><key>clientConnectAddress</key> <value>a.b.c.d</value></entry-->
+            <!--entry><key>clientConnectPort</key>    <value>7777</value></entry-->
+            
+            <!-- Parameter for expressing a set of addresses to which a client can try to connect. -->
+            <!-- The server could be, for example, a multihome server behind a firewall.  The      -->
+            <!-- "homes4" bean could be defined the same way the "homes2" bean is defined below.   -->
+            <!--entry>
+               <key>connecthomes</key>
+               <value><value-factory bean="homes4" method="toString"/></value>
+            </entry-->
+            
+            <!-- Socket read timeout.  Defaults to 60000 ms (1 minute) -->
+            <!-- on the server, 1800000 ms (30 minutes) on the client. -->
+            <!--entry><key>timeout</key> <value>120000</value></entry-->
+         
+            <!-- Maximum number of connections in client invoker's    -->
+            <!-- connection pool (socket transport).  Defaults to 50. -->
+            <!--entry><key>clientMaxPoolSize</key> <value>20</value></entry-->
+         
+            <!-- Configures traffic class on underlying sockets (socket transport). -->
+            <!-- Default value determined by socket implementation.                 -->
+            <!--entry><key>trafficClass</key> <value>2</value></entry-->
+         </map>
+      </property>
+     
+      <!-- Parameters visible only to server -->
+      <property name="serverParameters">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
+       
+            <!-- Selected optional parameters: -->
+         
+            <!-- Maximum number of worker threads on the      -->
+            <!-- server (socket transport).  Defaults to 300. -->
+            <!--entry><key>maxPoolSize</key> <value>500</value></entry-->
+            
+            <!-- Number of seconds after which an idle worker thread will be    -->
+            <!-- purged (socket transport).  By default purging is not enabled. -->
+            <!--entry><key>idleTimeout</key> <value>60</value></entry-->
+         </map>
+      </property>
+                                
+      <property name="invocationHandlers">
+         <map keyClass="java.lang.String" valueClass="java.lang.String">
+            <!-- The JSR88 deployment service StreamingTarget handler -->
+            <entry><key>JSR88</key> <value>org.jboss.deployment.remoting.DeployHandler</value></entry>
+         </map>
+      </property>
+   </bean>
+   
+   <!-- Beans homes1 and homes2 are used to construct a multihome Remoting server. -->
+   <!--bean name="homes1" class="java.lang.StringBuffer">
+      <constructor>
+         <parameter class="java.lang.String">
+            <value-factory bean="ServiceBindingManager" method="getStringBinding">
+               <parameter>UnifiedInvokerConnector:bindingHome1</parameter>
+               <parameter>${host}:${port}</parameter>
+            </value-factory>
+         </parameter>
+      </constructor>
+   </bean-->
+   
+   <!--bean name="homes2" class="java.lang.StringBuffer">
+      <constructor factoryMethod="append">
+         <factory bean="homes1"/>
+         <parameter>
+            <value-factory bean="ServiceBindingManager" method="getStringBinding">
+               <parameter>UnifiedInvokerConnector:bindingHome2</parameter>
+               <parameter>!${host}:${port}</parameter>
+            </value-factory>
+         </parameter>
+      </constructor>
+   </bean--> 
+   
+</deployment>

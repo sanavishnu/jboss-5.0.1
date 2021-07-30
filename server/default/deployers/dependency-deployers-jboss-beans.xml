@@ -1,0 +1,18 @@
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <!-- Generic dependency deployer -->
+
+  <!-- aliases.txt -->
+  <bean name="DeploymentAliasesParserDeployer" class="org.jboss.deployers.vfs.plugins.dependency.AliasesParserDeployer"/>
+  <bean name="DeploymentAliasesDeployer" class="org.jboss.deployers.vfs.plugins.dependency.DeploymentAliasesDeployer">
+    <constructor>
+      <parameter><inject bean="jboss.kernel:service=KernelController"/></parameter>
+    </constructor>
+  </bean>
+
+  <!-- jboss-dependency.xml -->
+  <bean name="DependenciesParserDeployer" class="org.jboss.deployers.vfs.plugins.dependency.DependenciesParserDeployer"/>
+  <bean name="DependenciesMDDeployer" class="org.jboss.deployers.vfs.plugins.dependency.DependenciesMetaDataDeployer"/>
+  <bean name="DeploymentDependenciesDeployer" class="org.jboss.deployers.vfs.plugins.dependency.DeploymentDependencyDeployer"/>
+
+</deployment>

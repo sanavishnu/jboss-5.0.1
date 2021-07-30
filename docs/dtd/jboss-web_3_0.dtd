@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!-- The JBoss specific elements used to integrate the servlet 2.3 web.xml
+elements into a JBoss deployment. This version applies to the JBoss 3.x
+releases.
+
+DOCTYPE jboss-web
+    PUBLIC "-//JBoss//DTD Web Application 2.3//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-web_3_0.dtd"
+-->
+
+<!-- The jboss-web element is the root element.
+-->
+<!ELEMENT jboss-web (security-domain?, context-root?, virtual-host?,
+resource-env-ref*, resource-ref* , ejb-ref*)>
+
+<!-- The context-root element specifies the context root of a web
+application. This is normally specified at the ear level using the standard
+J2EE application.xml descriptor, but it may be given here for standalone wars.
+This should not override the application.xml level specification.
+-->
+<!ELEMENT context-root (#PCDATA)>
+
+<!-- The security-domain element allows one to specify a module wide
+security manager domain. It specifies the JNDI name of the security
+manager that implements the org.jboss.security.AuthenticationManager and
+org.jboss.security.RealmMapping interfaces for the domain.
+-->
+<!ELEMENT security-domain (#PCDATA)>
+
+<!-- The virtual-host element allows one to specify which virtual host the war
+should be deployed to. Example, to specify that a war should be deployed to the
+www.jboss-store.org virtual host add the following virtual-host element:
+   <virtual-host>www.jboss-store.org</virtual-host>
+-->
+<!ELEMENT virtual-host (#PCDATA)>
+
+<!--The resource-env-ref element maps from the servlet ENC relative name
+of the resource-env-ref to the deployment environment JNDI name of
+the administered object resource.
+Example:
+    <resource-env-ref>
+        <resource-env-ref-name>jms/NewsTopic</resource-env-ref-name>
+        <jndi-name>topic/NewsTopic</jndi-name>
+    </resource-env-ref>
+-->
+<!ELEMENT resource-env-ref (resource-env-ref-name , jndi-name)>
+
+<!-- The resource-env-ref-name specifies the name of the web.xml
+resource-env-ref-name element which this mapping applies.
+-->
+<!ELEMENT resource-env-ref-name (#PCDATA)>
+
+<!--The resource-ref element maps from the servlet ENC relative name
+of the resource-ref to the deployment environment JNDI name of
+the resource manager connection factory.
+Example:
+    <resource-ref>
+        <res-ref-name>jdbc/TheDataSource</res-ref-name>
+        <jndi-name>java:/DefaultDS</jndi-name>
+    </resource-ref>
+
+    <resource-ref>
+        <res-ref-name>jdbc/TheDataSource</res-ref-name>
+        <res-url>http://x.y.z</res-url>
+    </resource-ref>
+-->
+<!ELEMENT resource-ref (res-ref-name , (jndi-name | res-url))>
+
+<!-- The res-ref-name specifies the name of the web.xml res-ref-name element
+which this mapping applies.
+-->
+<!ELEMENT res-ref-name (#PCDATA)>
+
+<!-- The ejb-ref element maps from the servlet ENC relative name
+of the ejb reference to the deployment environment JNDI name of
+the bean.
+Example:
+    <ejb-ref>
+        <ejb-ref-name>ejb/Bean0</ejb-ref-name>
+        <jndi-name>deployed/ejbs/Bean0</jndi-name>
+    </ejb-ref>
+-->
+<!ELEMENT ejb-ref (ejb-ref-name , jndi-name)>
+
+<!-- The ejb-ref-name element gives the ENC relative name used
+in the web.xml ejb-ref-name element.
+
+Used in: ejb-ref
+-->
+<!ELEMENT ejb-ref-name (#PCDATA)>
+
+<!-- The jndi-name element specifies the JNDI name of the deployed
+object to which the servlet ENC binding will link to via a JNDI
+LinkRef.
+
+Used in: resource-ref, resource-env-ref, ejb-ref
+-->
+<!ELEMENT jndi-name (#PCDATA)>
+
+<!-- The res-url element value is url a URL string.
+
+   Used in: resource-ref
+-->
+<!ELEMENT res-url (#PCDATA)>

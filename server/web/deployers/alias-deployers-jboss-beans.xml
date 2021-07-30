@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Deployers that know how to handle direct aliases in deployment
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="AliasComponentDeployer" class="org.jboss.deployers.vfs.deployer.kernel.AliasDeploymentDeployer" />
+
+  <bean name="DeploymentAliasDeployer" class="org.jboss.deployers.vfs.deployer.kernel.DeploymentAliasMetaDataDeployer">
+     <constructor><parameter class="org.jboss.kernel.Kernel"><inject bean="jboss.kernel:service=Kernel"/></parameter></constructor>
+  </bean>
+
+</deployment>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mbean PUBLIC
+   "-//JBoss//DTD JBOSS XMBEAN 1.1//EN"
+   "http://www.jboss.org/j2ee/dtd/jboss_xmbean_1_1.dtd">
+
+<!-- The NamingProviderURLWriter XMBean
+   $Id: NamingBean-xmbean.xml 85945 2009-03-16 19:45:12Z dimitris@jboss.org $
+-->
+<mbean>
+   <description>Writes the bootstrap URL of the NamingService to a known location</description>
+
+   <class>org.jboss.naming.NamingProviderURLWriter</class>
+   
+   <constructor>
+       <description>The default constructor</description>
+       <name>NamingProviderURLWriter</name>
+   </constructor>
+   
+   <attribute access="read-write" getMethod="getOutputDirURI" setMethod="setOutputDirURI">
+       <description>URL of the base dir into which the file with the provider URL should be written</description>
+       <name>OutputDirURI</name>
+       <type>java.net.URI</type>
+   </attribute>
+   
+   <attribute access="read-write" getMethod="getOutputFileName" setMethod="setOutputFileName">
+       <description>Name, relative to the OutputDirURL, of the file into which the provider URL should be written</description>
+       <name>OutputFileName</name>
+       <type>java.lang.String</type>
+   </attribute>
+   
+   <attribute access="write-only" setMethod="setServer">
+       <description>Server object from which the OutputDirURL can be obtained if not directly configured</description>
+       <name>Server</name>
+       <type>org.jboss.bootstrap.spi.Server</type>
+   </attribute>
+   
+   <attribute access="read-write" getMethod="getBootstrapURL" setMethod="setBootstrapURL">
+      <description>URL that can be accessed to bootstrap a connection to the NamingService</description>
+      <name>BootstrapURL</name>
+      <type>java.lang.String</type>
+   </attribute>  
+   
+   <!-- Operations -->
+   <operation>
+       <description>The start lifecycle op</description>
+       <name>start</name>
+       <return-type>void</return-type>
+   </operation>
+   <operation>
+       <description>The stop lifecycle op</description>
+       <name>stop</name>
+       <return-type>void</return-type>
+   </operation>
+   
+</mbean>

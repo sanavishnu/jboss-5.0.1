@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template configuration that produces an XSLT used to update an 
+  arbitrary MBean descriptor.
+  
+  Documentation for the deployment service can be found at: 
+  http://www.jboss.org/wiki/Wiki.jsp?page=DeploymentService
+-->
+<template-config template="vm/mbean-update.xslt.vm">
+
+  <property-list>
+    <!-- All properties are dynamic, hence none are provided here -->
+  </property-list>
+
+</template-config>

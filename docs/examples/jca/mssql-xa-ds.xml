@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: mssql-xa-ds.xml 77479 2008-08-26 10:33:09Z alex.loubyansky@jboss.com $ -->
+  <!-- ==================================================================== -->
+  <!-- ConnectionManager setup for xa Microsoft SQL Server 2005, using      -->
+  <!-- Microsoft's JDBC driver.                                             -->
+  <!-- Thanks to Benjamin Geer  <benjamin.geer@misys.com>                   -->
+  <!-- Be sure to set the JndiName property to the name you want to look up -->
+  <!-- the datasource under and set the location of your database in        -->
+  <!-- the xa-datasource-property section.                                  -->
+  <!-- Further information about the Microsoft JDBC Driver version 1.1      -->
+  <!-- can be found here:                                                   -->
+  <!-- http://msdn2.microsoft.com/en-us/library/aa496082.aspx               -->
+  <!-- ==================================================================== -->
+
+
+<datasources>
+  <xa-datasource>
+    <jndi-name>MSSQLXADS</jndi-name>
+    <!-- uncomment to enable interleaving <interleaving/> -->
+    <isSameRM-override-value>false</isSameRM-override-value>
+    <xa-datasource-class>com.microsoft.sqlserver.jdbc.SQLServerXADataSource</xa-datasource-class>
+    <xa-datasource-property name="ServerName">myserver</xa-datasource-property>
+    <xa-datasource-property name="DatabaseName">mydatabase</xa-datasource-property>
+    <xa-datasource-property name="SelectMethod">cursor</xa-datasource-property>
+<!-- not sure if these should be here-->
+    <user-name>x</user-name>
+    <password>y</password>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>MS SQLSERVER2000</type-mapping>
+      </metadata>
+  </xa-datasource>
+
+</datasources>

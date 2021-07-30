@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.jboss.org/schema/ra"
+    xmlns:ra="http://www.jboss.org/schema/ra" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:j2ee="http://java.sun.com/xml/ns/j2ee"
+    elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+
+    <xs:import namespace="http://java.sun.com/xml/ns/j2ee" schemaLocation="j2ee_1_4.xsd"/>
+
+    <xs:element name="jboss-ra" type="ra:jbossRaType"/>                              
+    
+    <xs:complexType name="jbossRaType">           
+        
+        <xs:sequence>
+            <xs:element name="ra-config-property" type="ra:ra-config-property-type" minOccurs="0" maxOccurs="unbounded"/>  
+        </xs:sequence>
+        
+    </xs:complexType>
+    
+    <xs:complexType name="ra-config-property-type">
+
+        <xs:sequence>
+            <xs:element name="ra-config-property-name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ra-config-property-type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ra-config-property-value" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

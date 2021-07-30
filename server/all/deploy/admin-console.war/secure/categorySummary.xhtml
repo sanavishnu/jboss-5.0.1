@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:s="http://jboss.com/products/seam/taglib"
+        xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+        >
+
+<body>
+<f:view>
+    <ui:composition template="/layout.xhtml">
+
+        <ui:define name="pagetitle">#{category.subCategory.name}</ui:define>
+        <ui:define name="tabmenu">
+            <ui:include src="/include/tabMenu.xhtml">
+                <ui:param name="activeTab" value="summary"/>
+            </ui:include>
+        </ui:define>
+
+        <ui:define name="body">
+
+            <div class="tabmenubox">
+
+                <ui:include src="../include/displayGlobalMessages.xhtml"/>
+
+                <div class="instructionalText">
+                    #{category.subCategory.description}
+                </div>
+                <div class="actionHeader">
+                    <div class="floatright">
+                        <!--  JBMANCON-437 temporarily disable
+                        <h:form rendered="# { category.subCategory.creatable}" style="text-align: right;">
+                            <s:button action="# { templateDropDownPopulator.getTemplateDropDownEntriesBySubCategory()}"
+                                value="# { messages['summary.resourceType.addNew']}" styleClass="buttonmed">
+                                <f:param name="selectedSubCategoryPath" value="# { category.path}"/>
+                            </s:button>
+                        </h:form>
+                        <h:outputLabel rendered="# { !category.subCategory.creatable}"
+                            value="# { messages['resourcetype.no.action']}"/>
+                        -->
+                        <h:outputLabel value="#{messages['resourcetype.no.action']}"/>
+                    </div>
+                    <h:form>
+                        <h:outputLabel style="padding-right:6px;">View by Type:</h:outputLabel>
+                        <h:selectOneMenu onchange="submit()" immediate="true"
+                                         valueChangeListener="#{summaryAction.resourceTypeSelected}">
+                            <f:selectItems value="#{commonActionUtil.asSelectItemList()}"></f:selectItems>
+                        </h:selectOneMenu>
+                    </h:form>
+                </div>
+                <h:form id="categorySummaryForm">
+                    <rich:dataTable
+                            id="dataTable"
+                            rows="#{tableManager.numRows}"
+                            value="#{resources}"
+                            var="resourceItem"
+                            styleClass="controlTable"
+                            rowClasses="oddRow,evenRow"
+                            columnClasses="rich-table-cell, rich-table-cell, rich-table-cell, rich-table-cell-action">
+
+                        <f:facet name="header">
+                            <rich:columnGroup>
+                                <rich:column>
+                                    <h:outputText value="Name"/>
+                                </rich:column>
+                                <rich:column>
+                                    <h:outputText value="Type"/>
+                                </rich:column>
+                                <rich:column>
+                                    <h:outputText value="Status"/>
+                                </rich:column>
+                                <rich:column>
+                                    <h:outputText value="Actions"/>
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+
+                        <rich:column>
+                            <!-- TODO: style should be either link-avilable or link-unavailable -->
+                            <s:link
+                                    value="#{resourceItem.name}"
+                                    view="/secure/summary.xhtml"
+                                    styleClass="link-available">
+                                <f:param name="path"
+                                         value="#{navigationAction.getResourcePath(resourceItem.resource.id)}"/>
+                            </s:link>
+                        </rich:column>
+                        <rich:column>
+                            <s:link view="/secure/summary.xhtml">#{resourceItem.type}
+                                <!-- get the child node corresponding to the type of this item, then get its path -->
+                                <f:param name="path" value="#{summaryAction.getResourceTypePath(resourceItem.type)}"/>
+                            </s:link>
+                        </rich:column>
+                        <rich:column>
+                            <h:outputText value="#{resourceItem.availability}"/>
+                        </rich:column>
+                        <rich:column>
+                            <ui:param name="confirmDeleteMessage"
+                                      value="#{messages['summary.category.confirmDelete']}"/>
+                            <s:button id="removeButton"
+                                      action="#{resourceCRUDAction.removeResourceAction()}" value="Delete"
+                                      onclick="if (!confirm('#{confirmDeleteMessage}')) return false;"
+                                      styleClass="buttonsmall"
+                                      rendered="#{resourceItem.resource.resourceType.deletable}">
+                                <f:param name="resourceId" value="#{resourceItem.resource.id}"/>
+                            </s:button>
+                        </rich:column>
+                        <f:facet name="footer"><h:graphicImage value="images/spacer.gif"/>
+                        </f:facet>
+                    </rich:dataTable>
+
+                    <ui:param name="paginationDataModel" value="#{resources}"/>
+                    <ui:param name="paginationDataTableName" value="dataTable"/>
+                    <ui:include src="../include/resourceDataScroller.xhtml"/>
+                </h:form>
+            </div>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0beta" attributeFormDefault="unqualified"
+   elementFormDefault="qualified"
+   targetNamespace="urn:jboss:jndi-binding-service:1.0"
+   xmlns:jndi="urn:jboss:jndi-binding-service:1.0"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   xmlns:jbxb="http://www.jboss.org/xml/ns/jbxb"
+   >
+   <xs:annotation>
+      <xs:documentation>This schema defines the content model for the
+         JNDIBindingService BindingsConfig attribute content.<![CDATA[
+	    <jndi:bindings xmlns:jndi="urn:jboss:jndi-binding-service"
+	      version="1.0">
+	      ...
+	    </jndi:bindings>
+         ]]></xs:documentation>
+      <xs:appinfo>
+         <jbxb:schemaBindings>
+            <jbxb:ignoreUnresolvedFieldOrClass>false</jbxb:ignoreUnresolvedFieldOrClass>
+            <jbxb:replacePropertyRefs>true</jbxb:replacePropertyRefs>
+         </jbxb:schemaBindings>
+      </xs:appinfo>
+   </xs:annotation>
+   <xs:element name="bindings">
+      <xs:annotation>
+         <xs:appinfo>
+            <jbxb:class impl="org.jboss.naming.JNDIBindings"/>
+         </xs:appinfo>
+      </xs:annotation>
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="binding" minOccurs="1"
+               maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>
+                     <jbxb:class impl="org.jboss.naming.JNDIBinding"/>
+                     <jbxb:property name="Bindings" />
+                  </xs:appinfo>
+               </xs:annotation>
+               <xs:complexType>
+                  <xs:choice minOccurs="1" maxOccurs="1">
+                     <xs:element name="value">
+                        <xs:annotation>
+                           <xs:appinfo>
+                              <jbxb:skip/>
+                           </xs:appinfo>
+                        </xs:annotation>
+                        <xs:complexType>
+                           <xs:annotation>
+                              <xs:appinfo>
+                                 <jbxb:characters>
+                                    <jbxb:property name="text"/>
+                                 </jbxb:characters>
+                              </xs:appinfo>
+                           </xs:annotation>
+                           <xs:simpleContent>
+                              <xs:extension base="xs:string">
+                                 <xs:attribute name="type" type="xs:string" use="optional">
+                                 </xs:attribute>
+                                 <xs:attribute name="editor" type="xs:string" use="optional">
+                                 </xs:attribute>
+                                 <xs:attribute name="trim" type="xs:boolean" default="true">
+                                 </xs:attribute>
+                              </xs:extension>
+                           </xs:simpleContent>
+                        </xs:complexType>
+                     </xs:element>
+                     <xs:any namespace="##other">
+                        <xs:annotation>
+                           <xs:documentation>An extension point for arbitrary xml value fragments</xs:documentation>
+                           <xs:appinfo>
+                              <jbxb:property name="value"/>
+                           </xs:appinfo>
+                        </xs:annotation>
+                     </xs:any>
+                  </xs:choice>
+                  <xs:attribute name="name" type="xs:string" use="required">
+                     <xs:annotation>
+                        <xs:documentation>The JNDI name of the binding</xs:documentation>
+                     </xs:annotation>
+                  </xs:attribute>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

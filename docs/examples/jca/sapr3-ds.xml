@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!-- ==================================================================== -->
+  <!-- ConnectionManager setup for SAP R3                                   -->
+  <!--  Author: David Jencks (d_jencks@users.sourceforge.net)               -->
+  <!--  Author: Chris Pinfold (chrisp@yambay.com)                           -->
+  <!--  Author: Juraj Lenharcik (nort@nort.de) ;-)	                    -->
+  <!-- ==================================================================== -->
+
+<connection-factories>
+  <tx-connection-factory>
+    <adapter-display-name>SAPJRA</adapter-display-name>
+    <jndi-name>eis/SAPJRA</jndi-name>
+    <config-property name="SAPClient" type="java.lang.String">150</config-property>
+    <user-name>dsgsd</user-name>
+    <password>sdgsdg</password>
+    <config-property name="Language" type="java.lang.String">DE</config-property>
+    <config-property name="ServerName" type="java.lang.String">44.44.44.44</config-property>
+    <config-property name="SystemNumber" type="java.lang.String">00</config-property>
+    <config-property name="PortNumber" type="java.lang.String">10</config-property>
+<!--    <config-property name="GatewayServerName" type="java.lang.String">a</config-property>
+    <config-property name="GatewayServiceNumber" type="java.lang.String">a</config-property>
+    <config-property name="MessageServerName" type="java.lang.String">a</config-property>
+    <config-property name="SystemName" type="java.lang.String">a</config-property>
+    <config-property name="GroupName" type="java.lang.String">a</config-property>   -->
+  </tx-connection-factory>
+</connection-factories>

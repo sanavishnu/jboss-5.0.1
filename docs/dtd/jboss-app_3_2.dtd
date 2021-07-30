@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!-- The JBoss 3.2.x specific elements for ears.
+$Id: jboss-app_3_2.dtd 22964 2004-08-14 00:35:40Z starksm $
+
+DOCTYPE jboss-app
+    PUBLIC "-//JBoss//DTD J2EE Application 1.3V2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-app_3_2.dtd"
+-->
+
+<!-- The jboss-app element is the root element.
+-->
+<!ELEMENT jboss-app (loader-repository?, jmx-name?, module*)>
+
+<!-- The loader-repository specifies the name of the UnifiedLoaderRepository
+   MBean to use for the ear to provide ear level scoping of classes deployed
+   in the ear. It is a unique JMX ObjectName string. It may also specify
+   an arbitrary configuration by including a loader-repository-config element.
+
+Examples:
+   <loader-repository>jboss.test:loader=cts-cmp2v1-sar.ear</loader-repository>
+
+   <loader-repository loaderRepositoryClass='dot.com.LoaderRepository'>
+      dot.com:loader=unique-archive-name
+      <loader-repository-config configParserClass='dot.com.LoaderParser'>
+         java2ParentDelegaton=true
+      </loader-repository-config>
+   </loader-repository>
+-->
+<!ELEMENT loader-repository (#PCDATA | loader-repository-config)*>
+<!-- The loaderRepositoryClass attribute gives the classname of the
+org.jboss.mx.loading.LoaderRepository implementation.
+-->
+<!ATTLIST loader-repository loaderRepositoryClass CDATA #IMPLIED>
+
+<!-- The loader-repository-config element specifies any arbitrary configuration
+fragment for use in configuring the loader-repository instance. The actual
+content of this element is specific to the loaderRepositoryClass and the
+code parsing the element.
+-->
+<!ELEMENT loader-repository-config (#PCDATA)>
+<!-- The configParserClass attribute gives the classname of the
+org.jboss.mx.loading.LoaderRepositoryFactory.LoaderRepositoryConfigParser
+implementation to use to parse the loader-repository-config content.
+-->
+<!ATTLIST loader-repository-config configParserClass CDATA #IMPLIED>
+
+<!-- The jmx-name element allows one to specify the JMX ObjectName to use
+for the MBean associated with the ejb-jar module. This must be a unique
+name and valid JMX ObjectName string.
+
+  Used in: jboss-app
+-->
+<!ELEMENT jmx-name (#PCDATA)>
+
+<!-- The module element is used to specify a jboss specific module archive.
+-->
+<!ELEMENT module (service | har)>
+
+<!-- The service element specifies a service archive (SAR) to deploy.
+
+Example:
+   <module>
+      <service>external.sar</service>
+   </module>
+-->
+<!ELEMENT service (#PCDATA)>
+
+<!-- The har element specifies a Hibernate archive (HAR) to deploy.
+
+Example:
+   <module>
+      <har>myapp.har</har>
+   </module>
+-->
+<!ELEMENT har (#PCDATA)>

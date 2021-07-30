@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="install" name="installer">
+
+  <property name="server.default" value="../../../../server/default"/>
+  
+  <target name="install" 
+    description="Installs the DeploymentService to the default configuration">
+
+    <copy todir="${server.default}/conf">
+      <fileset dir=".">
+        <include name="templates/**"/>
+      </fileset>
+    </copy>
+    
+    <mkdir dir="${server.default}/deploy/deployment-service.sar"/>
+    <unjar src="deployment-service.sar"
+       dest="${server.default}/deploy/deployment-service.sar"/>
+    
+  </target>
+  
+  <target name="clean"
+    description="Cleans up the DeploymentService from the default configuration">
+
+    <delete dir="${server.default}/deploy/deployment-service.sar"/>    
+    <delete dir="${server.default}/conf/templates"/>
+    
+  </target>
+  
+</project>

@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0beta"
+   attributeFormDefault="unqualified"
+   elementFormDefault="qualified"
+   xmlns:jbxb="http://www.jboss.org/xml/ns/jbxb"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:annotation>
+        <xs:documentation>The JBossXB schema customization
+        elements</xs:documentation>
+    </xs:annotation>
+    <xs:element name="schemaBindings">
+        <xs:annotation>
+            <xs:documentation>This element defines default bindings for the
+                schema</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <!-- The child elements can be selected in any order. -->
+            <xs:choice maxOccurs="unbounded" minOccurs="1">
+                <xs:element maxOccurs="1" minOccurs="0" ref="jbxb:package"/>
+
+               <xs:element name="ignoreUnresolvedFieldOrClass" type="xs:boolean" default="true"
+                  maxOccurs="1" minOccurs="0">
+                  <xs:annotation>
+                     <xs:documentation>The ignoreUnresolvedFieldOrClass specifies the behavior the parser chooses
+                        when a field is not found in the parent class for a child value, or when an element does not have
+                        any class assignement. If false, an exception will be thrown when either situation is encountered.
+                        If true, the missing mapping is ignored and the parse continues.
+                        </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+
+               <xs:element name="replacePropertyRefs" type="xs:boolean" default="true"
+                  maxOccurs="1" minOccurs="0">
+                  <xs:annotation>
+                     <xs:documentation>The replacePropertyRefs flag indicates whether the
+                        text content of values has ${x} system property references replaced
+                        during parsing. The default is true.
+                        </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="package" type="xs:NCName">
+        <xs:annotation>
+            <xs:documentation> Defines the default package for the schema which
+                is used for searching classes when unmarshalling elements of
+                complex types. If jbxb:package is not present, schema's
+                namespace URI will be used as the base to generate the default
+                package name for the schema (the mapping is defined in JAXB2.0
+                spec D.5.1 Mapping from a Namespace URI). Example: <![CDATA[
+                   <xsd:annotation>
+                      <xsd:appinfo>
+                         <jbxb:schema>
+                            <jbxb:package name="org.jboss.test.xml.pojoserver.metadata"/>
+                         </jbxb:schema>
+                      </xsd:appinfo>
+                   </xsd:annotation>
+                ]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="characters">
+        <xs:annotation>
+            <xs:documentation> Binds text content of complex types. This element
+                is just a container for jbxb:value, jbxb:property,
+                jbxb:mapEntryKey, jbxb:mapEntryValue elements, all of them are
+                optional. This element can only appear inside complex type
+                definitions. Example: <![CDATA[
+                   <xsd:complexType name="namedValueType" mixed="true">
+                      <xsd:annotation>
+                         <xsd:appinfo>
+                            <jbxb:class impl="org.jboss.test.xml.pojoserver.metadata.AbstractPropertyMetaData"/>
+                            <jbxb:characters>
+                               <jbxb:property name="value"/>
+                               <jbxb:value unmarshalMethod="org.jboss.test.xml.pojoserver.metadata.DataTypeConverter.unmarshalStringValue"/>
+                            </jbxb:characters>
+                         </xsd:appinfo>
+                      </xsd:annotation>
+                  <xsd:complexContent>
+                  ...
+                  </xsd:complexContent>
+               </xsd:complexType>
+                ]]></xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="jbxb:property"/>
+                <xs:element ref="jbxb:value"/>
+                <xs:element ref="jbxb:mapEntryKey"/>
+                <xs:element ref="jbxb:mapEntryValue"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="class" type="xs:NCName">
+        <xs:annotation>
+            <xs:documentation> Binds XML element or complex type to a Java class
+                which is specified as a value of attribute 'impl'. If jbxb:class
+                is used inside complex type definition, all elements of this
+                complex type will be unmarshalled into the specified Java type
+                unless there is overriding jbxb:class in an element declaration.
+                Example: <![CDATA[
+               <xsd:complexType name="deploymentType">
+                  <xsd:annotation>
+                     <xsd:appinfo>
+                        <jbxb:class impl="org.jboss.test.xml.pojoserver.deployment.AbstractKernelDeployment"/>
+                     </xsd:appinfo>
+                  </xsd:annotation>
+                  <xsd:sequence>
+                     ...
+                  </xsd:sequence>
+               </xsd:complexType>
+            
+               <xsd:element name="list" type="listType">
+                  <xsd:annotation>
+                     <xsd:appinfo>
+                        <jbxb:class impl="org.jboss.test.xml.pojoserver.metadata.AbstractListMetaData"/>
+                     </xsd:appinfo>
+                  </xsd:annotation>
+               </xsd:element>
+                ]]></xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="impl" type="xs:NCName" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="property">
+        <xs:annotation>
+            <xs:documentation> Binds an element to property/field in a class.
+                This element can appear inside an element definition or inside
+                jbxb:characters. If jbxb:property is not specified for an
+                element, the property name is resolved based on the element's
+                name using "D.2 The Name to Identifier Mapping Algorithm"
+                defined in JAXB2.0 spec. Example: <![CDATA[
+   <xsd:element name="list" type="listType">
+      <xsd:annotation>
+         <xsd:appinfo>
+            <jbxb:property name="value"/>
+            <jbxb:class impl="org.jboss.test.xml.pojoserver.metadata.AbstractListMetaData"/>
+         </xsd:appinfo>
+      </xsd:annotation>
+   </xsd:element>
+                ]]></xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:NCName" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="value">
+        <xs:annotation>
+            <xs:documentation> Binds text value (attribute value or text
+                content) to a Java value. There are two attributes:
+                unmarshalMethod which specfies a public static method that is
+                used to unmarshal text values and marshalMethod which also a
+                public static method that is used to marshal Java values. Both
+                methods are defined as concatenation of fully-qualified class
+                name, '.' and the method name. unmarshalMethod must have two
+                parameters: the first one of type java.lang.String and the
+                second one is of type javax.xml.namespace.NamespaceContext.
+                marshalMethod must also have two parameters: the first one is of
+                type java.lang.Object and the second one is of type
+                javax.xml.namespace.NamespaceContext. jbxb:value can appear
+                inside simple type definitions, attribute declarations and
+                jbxb:characters. If jbxb:value is not used, text values are
+                unmarshalled using default simple types to Java bindings
+                defained in JAXB2.0 spec. If simple type is a user-defined, by
+                default it is not unmarshalled and passed as a string. Example: <![CDATA[
+                <xsd:simpleType name="kernelControllerState">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <jbxb:value unmarshalMethod="org.jboss.test.xml.pojoserver.metadata.KernelControllerStateDatatypeConverter.unmarshal"/>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Not Installed" />
+                        <xsd:enumeration value="Described" />
+                        <xsd:enumeration value="Instantiated" />
+                        <xsd:enumeration value="Configured" />
+                        <xsd:enumeration value="Lifecycle" />
+                        <xsd:enumeration value="Started" />
+                        <xsd:enumeration value="Installed" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+
+                public class KernelControllerStateDatatypeConverter
+                {
+                    public static KernelControllerState unmarshal(String text, NamespaceContext nsCtx)
+                    {
+                        KernelControllerState state;
+                        if(KernelControllerState.NOT_INSTALLED.getStateString().equals(text))
+                        {
+                           state = KernelControllerState.NOT_INSTALLED;
+                        }
+                        else
+                        ...
+                ]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="addMethod">
+        <xs:annotation>
+            <xs:documentation> Specified on an element that should be added to
+                its parent not with a setter (is not a property) and not with a
+                field but with a custom method. The attributes are: * name - the
+                name of the method. There is not default value for this
+                attribute. It must be set. * valueType - the type of the
+                argument. If not present, the default is java.lang.Object. And
+                there is a special value 'child' which means the type of the
+                child should be used as the argument's type. Example: <![CDATA[
+              <xs:element name="user">
+                <xsd:annotation>
+                  <xsd:appinfo>
+                    <jbxb:class impl="org.jboss.test.xml.mbeanserver.Users$User"/>
+                    <jbxb:addMethod name="addUser" valueType="child"/>
+                  </xsd:appinfo>
+                </xsd:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="ur:role"/>
+                  </xs:sequence>
+                  <xs:attribute name="name" use="required" type="xs:NCName"/>
+                  <xs:attribute name="password" use="required" type="xs:NCName"/>
+                </xs:complexType>
+              </xs:element> 
+                ]]></xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:NCName" use="required">
+                <xs:annotation>
+                    <xs:documentation>This required attribute specifies the name
+                        of the add method</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="java.lang.Object" name="valueType"
+                type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation> the type of the add method argument. If
+                        not present, the default is java.lang.Object. And there
+                        is a special value 'child' which means the type of the
+                        child should be used as the argument's type.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="putMethod">
+        <xs:annotation>
+            <xs:documentation/>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute default="put" name="name" type="xs:NCName"
+                use="optional">
+                <xs:annotation>
+                    <xs:documentation> the method name in the parent object's
+                        class that adds child to to its parent object. If not
+                        present, the default is 'put'. </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="java.lang.Object" name="keyType"
+                type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation> fully qualified type name of the
+                        key-parameter to the put-method. If not present, the
+                        default is java.lang.Object. </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="java.lang.Object" name="valueType"
+                type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation>fully qualified type name of the
+                        value-parameter to the put-method. If not present, the
+                        default is java.lang.Object. </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="mapEntry">
+        <xs:annotation>
+            <xs:documentation> Specified on an element or a complex type
+                definition that is bound to a map entry. jbxb:class and
+                jbxb:mapEntry are mutually exclusive, meanning an element or a
+                complex type cannot be annotated with both jbxb:class and
+                jbxb:mapEntry at the same time. Otherwise, it will result in an
+                exception during binding. </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="impl" type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation>an optional element that specifies a fully
+                        qualified name of the class that will represent map
+                        entry. If absent, a special class will be used by the
+                        framework internally.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="getKey" name="getKeyMethod" type="xs:NCName"
+                use="optional">
+                <xs:annotation>
+                    <xs:documentation>an optional attribute that specifies the
+                        name of the method that is used to get the key out of
+                        the object that represents a map
+                    entry.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="setKey" name="setKeyMethod" type="xs:NCName"
+                use="optional">
+                <xs:annotation>
+                    <xs:documentation>an optional attribute that specifies the
+                        name of the method that is used to set the key value on
+                        the object that represents a map
+                    entry.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="getValue" name="getValueMethod"
+                type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation>an optional element that specifies the
+                        name of the method that is used to get the value out of
+                        the object that represents a map entry. If absent and
+                        impl attribute is absent too, the default value is
+                        "getValue". If absent and impl attribute is present, the
+                        value will be the object that reprents the map entry
+                        itself.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="setValue" name="setValueMethod"
+                type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation>an optional element that specifies the
+                        name of the method that is used to set the value on the
+                        object that represents a map entry.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="valueType" type="xs:NCName" use="optional">
+                <xs:annotation>
+                    <xs:documentation>an optional attribute that specifies the
+                        type of the map entry value. Used when map entry value
+                        should be a parent for element/type's
+                    content.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute default="false" name="nonNullValue" type="xs:boolean"
+                use="optional">
+                <xs:annotation>
+                    <xs:documentation>If true, when a map entry is created, a
+                        non-null map entry value will also be created and set on
+                        the map entry. Otherwise, a map entry object is created
+                        with null value and the value will be created and set
+                        later when it is actually parsed. This attribute is used
+                        in combination with valueType.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="mapEntryKey">
+        <xs:annotation>
+            <xs:documentation>This element is a marker element that has no
+                attributes. It is specified on an element, attribute or inside
+                jbxb:characters to specify that the element, attribute or
+                characters should be used as the key in map
+            entry.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="mapEntryValue">
+        <xs:annotation>
+            <xs:documentation>This element is a marker element that has no
+                attributes. It is specified on an element, attribute or inside
+                jbxb:characters to specify that the element, attribute or
+                characters should be used as the value in map entry. Example:<![CDATA[
+         <xsd:element name="entry1">
+            <xsd:annotation>
+               <xsd:appinfo>
+                  <putMethod/>
+               </xsd:appinfo>
+            </xsd:annotation>
+            <xsd:complexType>
+               <xsd:annotation>
+                  <xsd:appinfo>
+                     <jbxb:mapEntry/>
+                  </xsd:appinfo>
+               </xsd:annotation>
+               <xsd:sequence>
+                  <xsd:element name="key1" type="xsd:string">
+                     <xsd:annotation>
+                        <xsd:appinfo>
+                           <jbxb:mapEntryKey/>
+                        </xsd:appinfo>
+                     </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="value1" type="xsd:string">
+                     <xsd:annotation>
+                        <xsd:appinfo>
+                           <jbxb:mapEntryValue/>
+                        </xsd:appinfo>
+                     </xsd:annotation>
+                  </xsd:element>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+                ]]></xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="skip">
+        <xs:annotation>
+            <xs:documentation>This element can be used on an element declaration
+                or a complex type definition. Unmarshaller will not try to
+                create new objects for elements (or elements of complex types)
+                that are annotated with jbxb:skip. Instead, the object that was
+                created for the parent of such elements will be propagated and
+                values of attributes, character contents and child elements of
+                such elements will be set on their parent's
+            object. Example:<![CDATA[
+              <xs:element name="authentication">
+                <xsd:annotation>
+                   <xsd:appinfo>
+                      <jbxb:skip/>
+                   </xsd:appinfo>
+                </xsd:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="jaas:login-module"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+                ]]>In the example above, login-modules will be added to the parent of authentication element.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+</xs:schema>

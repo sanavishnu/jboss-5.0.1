@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   The JMX Subsystem
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader><inject bean="jmx-classloader:0.0.0"/></classloader>
+
+   <classloader name="jmx-classloader" xmlns="urn:jboss:classloader:1.0" export-all="NON_EMPTY" import-all="true">
+      <root>${jboss.lib.url}jboss-j2se.jar</root>
+      <root>${jboss.lib.url}jboss-mbeans.jar</root>
+      <root>${jboss.lib.url}jboss-jmx.jar</root>
+      <root>${jboss.lib.url}jboss-system-jmx.jar</root>
+      <root>${jboss.lib.url}dom4j.jar</root>
+   </classloader>
+
+   <bean name="ServerInfo" class="org.jboss.system.server.ServerInfo">
+      <alias>jboss.system:type=ServerInfo</alias>
+   </bean>
+
+   <!-- The legacy JMX kernel -->
+   <bean name="JMXKernel" class="org.jboss.system.server.jmx.JMXKernel">
+      <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+      <property name="serverImpl"><inject bean="JBossServer"/></property>
+      <property name="serverInfo"><inject bean="ServerInfo"/></property>
+   </bean>
+   
+   <!-- Support for @JMX -->
+   <lifecycle-configure xmlns="urn:jboss:aop-beans:1.0"
+               name="JMXRegistrationAdvice"
+               class="org.jboss.system.microcontainer.jmx.ServiceControllerRegistrationLifecycleCallback"
+               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX"
+               manager-bean="AspectManager"
+               manager-property="aspectManager">
+      <property name="serviceController"><inject bean="JMXKernel" property="serviceController"/></property>
+   </lifecycle-configure>
+   <lifecycle-create xmlns="urn:jboss:aop-beans:1.0"
+               name="JMXCreateDestroyAdvice"
+               class="org.jboss.system.microcontainer.jmx.ServiceControllerCreateDestroyLifecycleCallback"
+               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX"
+               manager-bean="AspectManager"
+               manager-property="aspectManager">
+      <property name="serviceController"><inject bean="JMXKernel" property="serviceController"/></property>
+   </lifecycle-create>
+   <lifecycle-install xmlns="urn:jboss:aop-beans:1.0"
+               name="JMXStartStopAdvice"
+               class="org.jboss.system.microcontainer.jmx.ServiceControllerStartStopLifecycleCallback"
+               classes="@org.jboss.aop.microcontainer.aspects.jmx.JMX"
+               manager-bean="AspectManager"
+               manager-property="aspectManager">
+      <property name="serviceController"><inject bean="JMXKernel" property="serviceController"/></property>
+   </lifecycle-install>
+
+	<!-- MBean for making sure that the underlying AspectManagerService gets registered in JMX -->
+	<bean name="AspectManagerJMXRegistrar" class="org.jboss.aop.deployers.AspectManagerJMXRegistrar">
+	   <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+	   <property name="aspectManager"><inject bean="AspectManager" property="delegate"/></property>
+	</bean>
+
+</deployment>

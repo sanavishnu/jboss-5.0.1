@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ips
+Build-Jdk: 1.6.0_13
+Specification-Title: JBossAS 5.x Administration Console
+Specification-Version: 1.2.0.GA
+Specification-Vendor: JBoss, a division of Red Hat
+Implementation-Title: JBossAS 5.x Administration Console
+Implementation-Version: 1.2.0.GA
+Implementation-Vendor-Id: org.jboss.jopr
+Implementation-Vendor: JBoss, a division of Red Hat
+Build-Number: 457
+

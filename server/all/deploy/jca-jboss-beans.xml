@@ -1,0 +1,58 @@
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <!-- ==================================================================== -->
+  <!-- JBossCX setup, for J2EE connector architecture support               -->
+  <!-- ==================================================================== -->
+
+  <!-- THREAD POOL -->
+  <bean name="WorkManagerThreadPool" class="org.jboss.util.threadpool.BasicThreadPool">
+
+     <!-- Expose via JMX -->  
+     <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.jca:service=WorkManagerThreadPool", exposedInterface=org.jboss.util.threadpool.BasicThreadPoolMBean.class)</annotation>
+  
+     <!-- The name that appears in thread names -->
+     <property name="name">WorkManager</property>
+
+     <!-- The maximum amount of work in the queue -->
+     <property name="maximumQueueSize">1024</property>
+
+     <!-- The maximum number of active threads -->
+     <property name="maximumPoolSize">100</property>
+
+     <!-- How long to keep threads alive after their last work (default one minute) -->
+     <property name="keepAliveTime">60000</property>
+
+  </bean>
+
+  <!-- WORK MANAGER -->
+  <bean name="WorkManager" class="org.jboss.resource.work.JBossWorkManager">
+
+     <!-- Expose via JMX -->  
+     <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.jca:service=WorkManager", exposedInterface=org.jboss.resource.work.JBossWorkManagerMBean.class)</annotation>
+
+     <!-- The thread pool -->
+     <property name="threadPool"><inject bean="WorkManagerThreadPool"/></property>
+     
+     <!-- The xa terminator --> 
+     <property name="XATerminator"><inject bean="TransactionManager" property="XATerminator"/></property>
+  
+  </bean>
+
+  <!-- CACHED CONNECTION MANAGER --> 
+  <bean name="CachedConnectionManager" class="org.jboss.resource.connectionmanager.CachedConnectionManager"> 
+
+     <!-- Expose via JMX -->  
+     <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.jca:service=CachedConnectionManager", exposedInterface=org.jboss.resource.connectionmanager.CachedConnectionManagerMBean.class)</annotation>
+
+     <!-- Whether to track unclosed connections and close them -->
+     <property name="debug">true</property>
+
+     <!-- Whether to throw an error for unclosed connections (true) or just log a warning (false) -->
+     <property name="error">false</property>
+    
+     <!-- The transaction manager -->
+     <property name="transactionManager"><inject bean="TransactionManager" property="transactionManager"/></property>
+
+  </bean>
+
+</deployment>

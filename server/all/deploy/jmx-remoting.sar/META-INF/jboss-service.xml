@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ======================================================== -->
+<!-- Example JBoss JMX Remoting Service Configuration file        -->
+<!-- ======================================================== -->
+<server>
+
+   <mbean code="org.jboss.mx.remoting.service.JMXConnectorServerService"
+      name="jboss.remoting:service=JMXConnectorServer,protocol=rmi"
+      display-name="JMX Connector Server (RMI)">
+       	   <attribute name="BindAddress">
+               <!-- Get the port from the ServiceBindingManager -->
+               <value-factory bean="ServiceBindingManager" method="getStringBinding" 
+                  parameter="jboss.remoting:service=JMXConnectorServer,protocol=rmi"/>
+            </attribute>
+            <!-- if comment this out, will use 1099 as default and will conflict -->
+            <!-- with default JNP (JNDI) port. -->
+            <attribute name="RegistryPort">
+               <!-- Get the port from the ServiceBindingManager -->
+               <value-factory bean="ServiceBindingManager" method="getIntBinding" 
+                  parameter="jboss.remoting:service=JMXConnectorServer,protocol=rmi"/>
+            </attribute>
+            <!-- the path to which will be bound in rmi registry -->
+            <!-- the commented value below is the default. -->
+            <!-- <attribute name="JndiPath ">/jmxconnector</attribute> -->
+   </mbean>
+
+</server>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE faces-config
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN"
+        "http://java.sun.com/dtd/web-facesconfig_1_0.dtd">
+<faces-config>
+    <navigation-rule>
+        <!--<navigation-case>
+           <from-outcome>gotoCreateAction</from-outcome>
+           <to-view-id>/secure/resourceCreatePage1.xhtml</to-view-id>
+           <redirect/>
+        </navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{summaryAction.view}</from-action>-->
+        <!--<from-outcome>repeatNav</from-outcome>-->
+        <!--<to-view-id>/repeatNav.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{summaryAction.view2}</from-action>-->
+        <!--<from-outcome>table</from-outcome>-->
+        <!--<to-view-id>/categorySummary.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{summaryAction.view}</from-action>-->
+        <!--<from-outcome>root</from-outcome>-->
+        <!--<to-view-id>/rootSummary.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{summaryAction.view}</from-action>-->
+        <!--<from-outcome>resourceSummary</from-outcome>-->
+        <!--<to-view-id>/resourceTypeSummary.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{summaryAction.view}</from-action>-->
+        <!--<from-outcome>resourceSingle</from-outcome>-->
+        <!--<to-view-id>/resourceSingleSummary.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{summaryAction.view2}</from-action>-->
+        <!--<from-outcome>resourceInstance</from-outcome>-->
+        <!--<to-view-id>/resourceInstanceSummary.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.getTemplateDropDownEntries()}</from-action>-->
+        <!--<from-outcome>selectTemplate</from-outcome>-->
+        <!--<to-view-id>/secure/resourceCreatePage1.xhtml</to-view-id>-->
+        <!-- dont make this a redirect to try to maintain event based selectedTemplate variable -->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.selectTemplateByResourceType()}</from-action>-->
+        <!--<from-outcome>selectTemplate</from-outcome>-->
+        <!--<to-view-id>/secure/resourceCreatePage1.xhtml</to-view-id>-->
+        <!-- dont make this a redirect to try to maintain event based selectedTemplate variable -->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>
+           <from-action>#{resourceCRUDAction.populateFromTemplate}</from-action>
+           <from-outcome>createResource</from-outcome>
+           <to-view-id>/secure/resourceCreatePage2.xhtml</to-view-id>
+           <redirect/>
+        </navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.createResourceAction}</from-action>-->
+        <!--<from-outcome>success</from-outcome>-->
+        <!--<to-view-id>/resourceList.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.createResourceAction}</from-action>-->
+        <!--<from-outcome>failure</from-outcome>-->
+        <!--<to-view-id>/dataSourceCreatePage2.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceAction.cancelResourceAction}</from-action>-->
+        <!--<from-outcome>cancel</from-outcome>-->
+        <!--<to-view-id>/resourceList.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.removeResourceAction(resourceItem.resource)}</from-action>-->
+        <!--<from-outcome>success</from-outcome>-->
+        <!--<to-view-id>/resourceList.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!-- TODO test what happens if remove fails -->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.viewResourceAction(resourceItem.resource)}</from-action>-->
+        <!--<from-outcome>success</from-outcome>-->
+        <!--<to-view-id>/resourceInstanceConfig.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!-- TODO test what happens if view fails -->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.updateResourceAction}</from-action>-->
+        <!--<from-outcome>failure</from-outcome>-->
+        <!--<to-view-id>/resourceInstanceConfig.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{resourceCRUDAction.updateResourceAction}</from-action>-->
+        <!--<from-outcome>success</from-outcome>-->
+        <!--<to-view-id>/resourceList.xhtml</to-view-id>-->
+        <!--<redirect/>-->
+        <!--</navigation-case>-->
+        <!--<navigation-case>-->
+        <!--<from-action>#{metricAction.view}</from-action>-->
+        <!--<from-outcome>success</from-outcome>-->
+        <!--<to-view-id>/resourceInstanceMetrics.xhtml</to-view-id>-->
+        <!--</navigation-case>-->
+
+    </navigation-rule>
+
+</faces-config>

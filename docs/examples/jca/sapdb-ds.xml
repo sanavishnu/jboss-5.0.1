@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- New ConnectionManager setup for Sapdb using the sapdbc driver         -->
+<!-- Thanks to Kasper Nielsen <news@kav.dk>                                -->
+<!-- See http://www.sapdb.org/sap_db_jdbc.htm for details                  -->
+<!-- This is a minimal example.  See the generic example for other stuff   -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: sapdb-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>SapdbDS</jndi-name>
+    <connection-url>jdbc:sapdb://127.0.0.1/DB_NAME</connection-url>
+    <driver-class>com.sap.dbtech.jdbc.DriverSapDB</driver-class>
+    <user-name>x</user-name>
+    <password>y</password>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>SapDB</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+
+</datasources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template configuration that produces an XSLT used to remove an 
+  MBean descriptor.
+  
+  Documentation for the deployment service can be found at: 
+  http://www.jboss.org/wiki/Wiki.jsp?page=DeploymentService
+-->
+<template-config template="vm/mbean-remove.xslt.vm">
+
+  <property-list>
+    <!-- No properties are needed, hence none are provided here -->
+  </property-list>
+
+</template-config>

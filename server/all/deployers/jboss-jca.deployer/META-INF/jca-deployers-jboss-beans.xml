@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    JCA Deployers
+    $Id: jca-deployers-jboss-beans.xml 88716 2009-05-12 13:19:55Z emuckenhuber $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="JCAMetaDataRepository" class="org.jboss.resource.metadata.repository.DefaultJCAMetaDataRepository"/>
+            
+   <!-- RAR Deployment -->
+   <bean name="RARParserDeployer" class="org.jboss.resource.deployers.RARParserDeployer">
+      <property name="metaDataRepository"><inject bean="JCAMetaDataRepository"/></property>
+   </bean>
+   
+   <bean name="RARDeployer" class="org.jboss.resource.deployers.RARDeployer">
+      <property name="workManagerName">jboss.jca:service=WorkManager</property>
+      <property name="XATerminatorName">jboss:service=TransactionManager</property>
+   </bean>
+   
+   
+   <!-- Legacy MCF loader-repository support -->  
+   <bean name="MCFClassLoaderDeployer" class="org.jboss.resource.deployers.ManagedConnectionFactoryClassLoaderDeployer"/>
+   
+   <!-- ConnectionFactory Deployment - ->  
+   
+   <bean name="ConnectionFactoryDeployer" class="org.jboss.system.deployers.ServiceXSLDeployer">
+      <property name="suffix">-ds.xml</property>
+      <property name="XSLPath">stylesheets/ConnectionFactoryTemplate.xsl</property>
+   </bean>
+   
+   -->
+
+   <bean name="MCFBuilder" class="org.jboss.resource.deployers.builder.ManagedConnectionFactoryBuilder">
+      <property name="metaDataRepository"><inject bean="JCAMetaDataRepository"/></property>
+   </bean>   
+   
+   <bean name="PoolBuilder" class="org.jboss.resource.deployers.builder.ManagedConnectionPoolBuilder"/>
+   <bean name="ConnectionManagerBuilder" class="org.jboss.resource.deployers.builder.ConnectionManagerBuilder"/>
+   <bean name="ConnectionFactoryBindingBuilder" class="org.jboss.resource.deployers.builder.ConnectionFactoryBindingBuilder"/>
+   <bean name="MetaDataTypeMappingBuilder" class="org.jboss.resource.deployers.builder.MetaDataTypeMappingBuilder"/>
+
+   <!-- The InstanceClassFactorys -->
+   <bean name="LocalDSInstanceClassFactory"
+      class="org.jboss.resource.deployers.management.LocalDSInstanceClassFactory">
+      <constructor>
+         <parameter><inject bean="ManagedObjectFactory"/></parameter>
+      </constructor>
+   </bean>
+   <bean name="XADSInstanceClassFactory"
+      class="org.jboss.resource.deployers.management.XADSInstanceClassFactory">
+      <constructor>
+         <parameter><inject bean="ManagedObjectFactory"/></parameter>
+      </constructor>
+   </bean>
+   <bean name="NoTxInstanceClassFactory"
+      class="org.jboss.resource.deployers.management.NoTxInstanceClassFactory">
+      <constructor>
+         <parameter><inject bean="ManagedObjectFactory"/></parameter>
+      </constructor>
+   </bean>
+   <bean name="TxInstanceClassFactory"
+      class="org.jboss.resource.deployers.management.TxInstanceClassFactory">
+      <constructor>
+         <parameter><inject bean="ManagedObjectFactory"/></parameter>
+      </constructor>
+   </bean>
+   <bean name="NoTxCFInstanceClassFactory"
+      class="org.jboss.resource.deployers.management.NoTxCFInstanceClassFactory">
+      <constructor>
+         <parameter><inject bean="ManagedObjectFactory"/></parameter>
+      </constructor>
+   </bean>
+   
+   <!-- The *-ds.xml parsing deployer -->
+   <bean name="ManagedConnectionFactoryParserDeployer" class="org.jboss.resource.deployers.ManagedConnectionFactoryParserDeployer">
+      <install bean="ManagedDeploymentCreator" method="addAttachmentType">
+         <parameter>
+            <value>org.jboss.resource.metadata.mcf.ManagedConnectionFactoryDeploymentGroup</value>
+         </parameter>
+         <parameter>
+            <value>jca-ds</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeAttachmentType">
+         <parameter>
+            <value>org.jboss.resource.metadata.mcf.ManagedConnectionFactoryDeploymentGroup</value>
+         </parameter>
+      </uninstall>
+      <property name="repository"><inject bean="JCAMetaDataRepository"/></property>
+      <property name="suffix">-ds.xml</property>      
+   </bean>
+
+   <bean name="ManagedConnectionFactoryDeployer" class="org.jboss.resource.deployers.ManagedConnectionFactoryDeployer">      
+      <property name="repository"><inject bean="JCAMetaDataRepository"/></property>      
+      <property name="builders">
+         <list>
+            <inject bean="MCFBuilder"/>
+            <inject bean="PoolBuilder"/>
+            <inject bean="ConnectionManagerBuilder"/>
+            <inject bean="ConnectionFactoryBindingBuilder"/>
+            <inject bean="MetaDataTypeMappingBuilder"/>            
+         </list>            
+      </property>
+   </bean>
+
+   <bean name="DSDeploymentTemplateInfoFactory"
+      class="org.jboss.managed.plugins.factory.DeploymentTemplateInfoFactory"/>
+   <!-- The template for creating a datasource -->
+   <bean name="LocalTxDataSourceTemplate" class="org.jboss.resource.deployers.management.DsDataSourceTemplate">
+      <property name="info"><inject bean="LocalTxDataSourceTemplateInfo"/></property>
+   </bean>
+   <bean name="LocalTxDataSourceTemplateInfo"
+      class="org.jboss.resource.deployers.management.DsDataSourceTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.resource.deployers.management.DsDataSourceTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.resource.metadata.mcf.LocalDataSourceDeploymentMetaData</parameter>
+         <parameter class="java.lang.String">LocalTxDataSourceTemplate</parameter>
+         <parameter class="java.lang.String">A template for datasource *-ds.xml deployments</parameter>
+      </constructor>
+      <property name="connectionFactoryType">local-tx-datasource</property>
+   </bean>
+   <bean name="XADataSourceTemplate" class="org.jboss.resource.deployers.management.DsDataSourceTemplate">
+      <property name="info"><inject bean="XADataSourceTemplateInfo"/></property>
+   </bean>
+   <bean name="XADataSourceTemplateInfo"
+      class="org.jboss.resource.deployers.management.DsDataSourceTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.resource.deployers.management.DsDataSourceTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.resource.metadata.mcf.XADataSourceDeploymentMetaData</parameter>
+         <parameter class="java.lang.String">XADataSourceTemplate</parameter>
+         <parameter class="java.lang.String">A template for xa-datasource *-ds.xml deployments</parameter>
+      </constructor>
+      <property name="connectionFactoryType">xa-datasource</property>
+   </bean>
+   <bean name="NoTxDataSourceTemplate" class="org.jboss.resource.deployers.management.DsDataSourceTemplate">
+      <property name="info"><inject bean="NoTxDataSourceTemplateInfo"/></property>
+   </bean>
+   <bean name="NoTxDataSourceTemplateInfo"
+      class="org.jboss.resource.deployers.management.DsDataSourceTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.resource.deployers.management.DsDataSourceTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.resource.metadata.mcf.NoTxDataSourceDeploymentMetaData</parameter>
+         <parameter class="java.lang.String">NoTxDataSourceTemplate</parameter>
+         <parameter class="java.lang.String">A template for no-tx-datasource *-ds.xml deployments</parameter>
+      </constructor>
+      <property name="connectionFactoryType">no-tx-datasource</property>
+   </bean>
+   <bean name="TxConnectionFactoryTemplate" class="org.jboss.resource.deployers.management.DsDataSourceTemplate">
+      <property name="info"><inject bean="TxConnectionFactoryTemplateInfo"/></property>
+   </bean>
+   <bean name="TxConnectionFactoryTemplateInfo"
+      class="org.jboss.resource.deployers.management.DsDataSourceTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.resource.deployers.management.DsDataSourceTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.resource.metadata.mcf.TxConnectionFactoryDeploymentMetaData</parameter>
+         <parameter class="java.lang.String">TxConnectionFactoryTemplate</parameter>
+         <parameter class="java.lang.String">A template for tx-connection-factory *-ds.xml deployments</parameter>
+      </constructor>
+      <property name="connectionFactoryType">tx-connection-factory</property>
+   </bean>
+   <bean name="NoTxConnectionFactoryTemplate" class="org.jboss.resource.deployers.management.DsDataSourceTemplate">
+      <property name="info"><inject bean="NoTxConnectionFactoryTemplateInfo"/></property>
+   </bean>
+   <bean name="NoTxConnectionFactoryTemplateInfo"
+      class="org.jboss.resource.deployers.management.DsDataSourceTemplateInfo">
+      <constructor factoryMethod="createTemplateInfo">
+         <factory bean="DSDeploymentTemplateInfoFactory"/>
+         <parameter class="java.lang.Class">org.jboss.resource.deployers.management.DsDataSourceTemplateInfo</parameter>
+         <parameter class="java.lang.Class">org.jboss.resource.metadata.mcf.NoTxConnectionFactoryDeploymentMetaData</parameter>
+         <parameter class="java.lang.String">NoTxConnectionFactoryTemplate</parameter>
+         <parameter class="java.lang.String">A template for no-tx-connection-factory *-ds.xml deployments</parameter>
+      </constructor>
+      <property name="connectionFactoryType">no-tx-connection-factory</property>
+   </bean>
+   
+   <!-- The ManagedConnectionFactoryDeploymentGroup component mapper -->
+   <bean name="MCFDGComponentMapper" class="org.jboss.resource.deployers.management.MCFDGComponentMapper">
+   		<constructor><parameter><inject bean="PersistenceFactory" /></parameter></constructor>
+   </bean>
+
+</deployment>

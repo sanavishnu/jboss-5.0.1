@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fix for EMBJOPR-21: ignore the EJB3 related metadata -->
+<structure>
+    <context>
+        <path name=""/>
+        <metaDataPath>
+            <path name="WEB-INF"/>
+        </metaDataPath>
+        <classpath>
+            <path name="WEB-INF/classes"/>
+            <path name="WEB-INF/lib" suffixes=".jar"/>
+        </classpath>
+    </context>
+</structure>

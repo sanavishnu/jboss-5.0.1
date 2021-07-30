@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<pages xmlns="http://jboss.com/products/seam/pages"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.0.xsd"
+       login-view-id="/login.xhtml"
+       no-conversation-view-id="/index.xhtml">
+
+    <!-- TODO: we can add these attributes to the pages element above:-->
+    <!--no-conversation-view-id="/main.xhtml"-->
+    <!--login-view-id="/home.xhtml"-->
+
+    <!-- Fix for JBMANCON-353 -->
+    <page view-id="/login.xhtml">
+        <navigation>
+            <rule if="#{s:hasRole('JBossAdmin')}">
+                <redirect view-id="/secure/summary.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/*" login-required="true">
+        <restrict>#{s:hasRole('JBossAdmin')}</restrict>
+    </page>
+
+    <!-- summary.xhtml is a placeholder view-id, the page doesn't actually
+         exist. Instead the navigation rules below determine which actual page is rendered-->
+    <page view-id="/secure/summary.xhtml">
+        <!-- map the path request parameter to a session scoped variable -->
+        <param name="path" value="#{navigationAction.currentPath}"/>
+
+        <!-- run this method before rendering the page-->
+        <action execute="#{summaryAction.view()}"/>
+
+        <navigation from-action="#{summaryAction.view()}">
+            <rule if-outcome="repeatNav">
+                <render view-id="/secure/repeatNav.xhtml"/>
+            </rule>
+            <rule if-outcome="table">
+                <render view-id="/secure/categorySummary.xhtml"/>
+            </rule>
+            <rule if-outcome="root">
+                <render view-id="/secure/rootSummary.xhtml"/>
+            </rule>
+            <rule if-outcome="resourceSummary">
+                <render view-id="/secure/resourceTypeSummary.xhtml"/>
+            </rule>
+            <rule if-outcome="resourceInstance">
+                <render view-id="/secure/resourceInstanceSummary.xhtml"/>
+            </rule>
+            <rule if-outcome="error">
+                <redirect view-id="/secure/summary.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/resourceTypeSummary.xhtml">
+        <navigation from-action="#{createContentBackedResourceAction.init()}">
+            <rule if-outcome="success">
+                <redirect view-id="/secure/resourceContentCreate.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/resourceContentCreate.xhtml">
+        <navigation>
+            <rule if-outcome="success">
+                <redirect view-id="/secure/summary.xhtml"/>
+            </rule>
+            <rule if-outcome="failure">
+                <render view-id="/secure/resourceContentCreate.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/resourceInstanceConfig.xhtml">
+
+        <!--Do NOT try and put parenthesis in the add/edit/open map pages from action because the
+action on the form does not have a parenthesis and would not find its match
+in the map of navigation that Seam is holding for navigation-->
+        <navigation from-action="#{ConfigHelperUIBean.accessMap}">
+            <render view-id="/secure/editMap.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{ConfigHelperUIBean.addNewMap}">
+            <render view-id="/secure/addMap.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{ConfigHelperUIBean.addNewOpenMapMemberProperty}">
+            <render view-id="/secure/addSimple.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{resourceConfigurationUIBean.saveConfiguration()}">
+            <rule if-outcome="success">
+                <!-- after a successful update operation go back to the summary page
+        Seam takes care of submitting the path param -->
+                <redirect view-id="/secure/summary.xhtml"/>
+            </rule>
+            <rule if-outcome="failure">
+                <render view-id="/secure/resourceInstanceConfig.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/editMap.xhtml">
+        <navigation from-action="#{resourceConfigurationUIBean.editMap()}">
+            <render view-id="/secure/resourceInstanceConfig.xhtml"/>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/addMap.xhtml">
+        <navigation from-action="#{resourceConfigurationUIBean.addMap()}">
+            <render view-id="/secure/resourceInstanceConfig.xhtml"/>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/addSimple.xhtml">
+        <navigation from-action="#{addNewOpenMap.addProperty()}">
+            <render view-id="/secure/resourceInstanceConfig.xhtml"/>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/resourceInstanceOperation.xhtml">
+        <param name="path" value="#{navigationAction.currentPath}"/>
+
+        <!-- Run this method before rendering the page. -->
+        <action execute="#{operationAction.initOperationsAndHistory()}"/>
+
+        <navigation from-action="#{ConfigHelperUIBean.accessMap}">
+            <render view-id="/secure/viewResultsMap.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{operationAction.invokeOperation()}">
+            <rule if-outcome="missingParams">
+                <render view-id="/secure/operationParameters.xhtml"/>
+            </rule>
+            <rule if-outcome="success">
+                <redirect view-id="/secure/resourceInstanceOperation.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/operationParameters.xhtml">
+        <param name="path" value="#{navigationAction.currentPath}"/>
+
+        <navigation from-action="#{operationAction.invokeOperation()}">
+            <redirect view-id="/secure/resourceInstanceOperation.xhtml"/>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/resourceInstanceMetrics.xhtml">
+        <param name="path" value="#{navigationAction.currentPath}"/>
+
+        <!-- run this method before rendering the page-->
+        <action execute="#{metricAction.view()}"/>
+
+        <navigation from-action="#{metricAction.view()}">
+            <render view-id="/secure/resourceInstanceMetrics.xhtml"/>
+        </navigation>
+    </page>
+
+    <page view-id="/secure/resourceInstanceContent.xhtml">
+        <!-- Run this method before rendering the page. -->
+        <action execute="#{updateBackingContentAction.init()}"/>
+    </page>
+
+    <page view-id="*">
+        <action execute="#{debugAction.init()}"/>
+        <action execute="#{discoveryAction.checkAutodiscovery()}"/>
+
+        <!-- This is done to ensure that the login screen after logging out has a Conversation. -->
+        <navigation from-action="#{identity.logout}">
+            <redirect view-id="/index.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{resourceCRUDAction.removeResourceAction()}">
+            <redirect view-id="/secure/summary.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{templateDropDownPopulator.getTemplateDropDownEntriesByResourceType()}">
+            <render view-id="/secure/resourceCreatePage1.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{templateDropDownPopulator.getTemplateDropDownEntriesBySubCategory()}">
+            <render view-id="/secure/resourceCreatePage1.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{resourceConfigurationUIBean.resourceConfiguration()}">
+            <render view-id="/secure/resourceInstanceConfig.xhtml"/>
+        </navigation>
+
+        <navigation from-action="#{templateDropDownPopulator.populateFromTemplate()}">
+            <render view-id="/secure/resourceInstanceConfig.xhtml"/>
+        </navigation>
+    </page>
+
+</pages>

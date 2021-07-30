@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<connection-factories>
+ 
+  <!-- ==================================================================== -->
+  <!-- JMS Stuff                                                            -->
+  <!-- ==================================================================== -->
+
+  <!-- The JMS provider loader -->
+  <mbean code="org.jboss.jms.jndi.JMSProviderLoader"
+	 name="jboss.mq:service=JMSProviderLoader,name=HAJNDIJMSProvider">
+    <attribute name="ProviderName">DefaultJMSProvider</attribute>
+    <attribute name="ProviderAdapterClass">
+      org.jboss.jms.jndi.JNDIProviderAdapter
+    </attribute>
+    <!-- The combined connection factory -->
+    <attribute name="FactoryRef">XAConnectionFactory</attribute>
+    <!-- The queue connection factory -->
+    <attribute name="QueueFactoryRef">XAConnectionFactory</attribute>
+    <!-- The topic factory -->
+    <attribute name="TopicFactoryRef">XAConnectionFactory</attribute>
+    <!-- Access JMS via HAJNDI -->
+    <attribute name="Properties">
+       java.naming.factory.initial=org.jnp.interfaces.NamingContextFactory
+       java.naming.factory.url.pkgs=org.jboss.naming:org.jnp.interfaces
+       java.naming.provider.url=${jboss.bind.address:localhost}:1100
+       jnp.disableDiscovery=false
+       jnp.partitionName=${jboss.partition.name:DefaultPartition}
+       jnp.discoveryGroup=${jboss.partition.udpGroup:230.0.0.4}
+       jnp.discoveryPort=1102
+       jnp.discoveryTTL=16
+       jnp.discoveryTimeout=5000
+       jnp.maxRetries=1
+    </attribute>
+  </mbean>
+
+  <!-- JMS XA Resource adapter, use this to get transacted JMS in beans -->
+  <tx-connection-factory>
+    <jndi-name>JmsXA</jndi-name>
+    <xa-transaction/>
+    <rar-name>jms-ra.rar</rar-name>
+    <connection-definition>org.jboss.resource.adapter.jms.JmsConnectionFactory</connection-definition>
+    <config-property name="SessionDefaultType" type="java.lang.String">javax.jms.Topic</config-property>
+    <config-property name="JmsProviderAdapterJNDI" type="java.lang.String">java:/DefaultJMSProvider</config-property>
+    <max-pool-size>20</max-pool-size>
+    <security-domain-and-application>JmsXARealm</security-domain-and-application>
+  </tx-connection-factory>
+
+</connection-factories>

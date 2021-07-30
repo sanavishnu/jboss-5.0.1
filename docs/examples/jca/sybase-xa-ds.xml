@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!-- Thanks to kosulin in the forumns                                      -->
+<!-- ===================================================================== -->
+
+<!-- $Id: sybase-xa-ds.xml 85945 2009-03-16 19:45:12Z dimitris@jboss.org $ -->
+
+<datasources>
+
+   <!--
+      TODO: add driver name, version and download url here
+   -->
+
+   <!--
+      The example posted in the forums uses a security domain. What is the user/password xa-datasource-property?
+      try javap com.sybase.jdbc3.jdbc.SybXADataSource 
+      For the security domain. Add something like the following to conf/login-config.xml
+
+      <application-policy name = "SybaseXADSRealm">
+         <login-module code = "org.jboss.resource.security.SecureIdentityLoginModule" flag = "required">
+            <module-option name = "username">myuser</module-option>
+            <module-option name = "password">myhash</module-option>
+            <module-option name = "managedConnectionFactoryName">jboss.jca:service=XATxCM,name=SybaseXADS</module-option>
+         </login-module>
+      </application-policy>
+   -->
+
+   <xa-datasource>
+     <jndi-name>SybaseXADS</jndi-name>
+     <!-- uncomment to enable interleaving <interleaving/> -->
+     <xa-datasource-class>com.sybase.jdbc3.jdbc.SybXADataSource</xa-datasource-class>
+     <xa-datasource-property name="NetworkProtocol">Tds</xa-datasource-property>
+     <xa-datasource-property name="ServerName">myserver</xa-datasource-property>
+     <xa-datasource-property name="PortNumber">4100</xa-datasource-property>
+     <xa-datasource-property name="DatabaseName">mydatabase</xa-datasource-property>
+     <!-- Use the security domain defined in conf/login-config.xml -->
+     <security-domain>SybaseXADSRealm</security-domain>
+     <min-pool-size>1</min-pool-size>
+     <max-pool-size>20</max-pool-size>
+     <idle-timeout-minutes>15</idle-timeout-minutes>
+     <check-valid-connection-sql>select 1 from mytable</check-valid-connection-sql>
+     <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.SybaseExceptionSorter</exception-sorter-class-name>
+     <type-mapping>Sybase</type-mapping>
+
+   </xa-datasource>
+
+</datasources>

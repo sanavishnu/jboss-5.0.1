@@ -1,0 +1,797 @@
+/*
+ * Embedded Jopr Project
+ * Copyright (C) 2006-2009 Red Hat, Inc.
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+/* ----- JBoss Application Server Console ---------------  */
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;
+    font-size: .8em;
+    color: #454545;
+
+}
+
+/* -----------  MAIN LAYOUT COMPONENTS ------------ */
+
+#pageheader {
+    /*
+    background-image: url( ../images/hdr_bkg.gif );
+    background-repeat: repeat-x;
+    */
+    background-color: #2A3B4E;
+    /*
+    height: 4em;
+    */
+    height: 49px;
+    color: #dddddd;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#pageheader a {
+    color: #dddddd
+}
+
+#pageheader .login {
+    padding-top: 5px;
+    margin-right: 20px;
+    text-align: right;
+    font-size: 11px;
+    line-height: 160%;
+}
+
+#content {
+    margin-top: 46px;
+    margin-left: 20em;
+    margin-right: 0;
+    margin-bottom: 20px;
+    padding: 1em;
+    background: #FFFFFF;
+}
+
+#sidebar-left {
+    position: absolute;
+    top: 46px;
+    bottom: 31px; /* Operas 5 + 6 shouldn't see this property */
+    left: 0;
+    width: 20em;
+    overflow: auto;
+    background: #eff2f4;
+    border-right: 1px solid #dee6ee;
+
+}
+
+#footer {
+    position: absolute; /* Operas 5 + 6, need this to be relative */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 31px;
+    color: #dbe7ee;
+    font-size: 9px;
+    text-align: center;
+    background: #35485d;
+
+}
+
+/*\*/
+body>#pageheader, body>#sidebar-left, body>#footer {
+    position: fixed;
+}
+
+/* Exclude Mac IE5 from fixed - exclude for Opera 5 + 6 if needed */
+/* ]]> */
+
+/* ------- Common Elements ---------- */
+
+p {
+    margin: 0px;
+}
+
+a {
+    color: #527fa8;
+}
+
+hr {
+    border-top: 1px solid #a4b2b9;
+    border-right: 0px solid #a4b2b9;
+    border-left: 0px solid #a4b2b9;
+    border-bottom: 0px solid #a4b2b9;
+    margin-bottom: 3px;
+}
+
+img {
+    border: 0px;
+}
+
+h1 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #50667c;
+}
+
+h2 {
+    font-size: 12px;
+    font-weight: bold;
+    color: #32444d; /*	border-bottom: 1px solid #e6eaef;  */
+}
+
+h3 {
+    font-size: 11px;
+    font-weight: bold;
+    color: #32444d; /*	border-bottom: 1px solid #e6eaef;  */
+}
+
+h4 {
+}
+
+h5 {
+}
+
+h6 {
+}
+
+/* -------------------- this is the content container ----------------------------- */
+
+.headerText {
+    font-size: 24px;
+    font-weight: normal;
+}
+
+.tabmenubox {
+    font: 0.9em / 1.3em "Lucida Grand", Verdana, sans-serif;
+    text-align: left;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #5f6a6f;
+    border-top: 0px;
+    z-index: 2;
+    clear: both;
+}
+
+.notabmenubox {
+    font: 0.9em / 1.3em "Lucida Grand", Verdana, sans-serif;
+    text-align: left;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #5f6a6f;
+    z-index: 2;
+    clear: both;
+}
+
+.notabmenubox a {
+    text-decoration: none;
+}
+
+.noborderbox {
+    font: 0.9em / 1.3em "Lucida Grand", Verdana, sans-serif;
+    padding-top: 20px;
+    text-align: left;
+    z-index: 2;
+    clear: both;
+}
+
+/* ------------------------  Error page styles  -------------------------- */
+
+#errorbox {
+    margin-top: 80px;
+    margin-left: 100px;
+    margin-right: 100px;
+    background: #ffffff;
+    padding: 30px 60px 30px 150px;
+    border: 1px solid #5f6a6f;
+    background-image: url(../images/errorpage_icon.gif);
+    background-repeat: no-repeat;
+    background-position: 30px 40px;
+
+}
+
+#errorbox #codebox {
+    height: 250px;
+    overflow: auto;
+    background-color: #eff2f4;
+    padding: 10px;
+}
+
+/* ------------------------  Login styles  -------------------------- */
+
+.Loginbox {
+    text-align: left;
+    margin-top: 80px;
+    background: #ffffff;
+    padding: 10px 60px 30px 60px;
+    width: 180px;
+    border: 1px solid #5f6a6f;
+    clear: both;
+}
+
+.Loginbox h4 {
+    font-weight: bold;
+    color: #32444d;
+}
+
+.loginerror-msg {
+    width: 160px;
+    padding-top: 10px;
+    font-weight: bold;
+    color: #880000;
+}
+
+/* ------------------------ other stuff --------------------------- */
+
+.content2 a:hover {
+}
+
+/* ----------------------------- float styles --------------------------- */
+
+.floatright {
+    float: right;
+}
+
+.floatleft {
+    float: left;
+}
+
+/* --------- main page content ---------- */
+
+td {
+}
+
+td.key {
+    font-weight: bold;
+}
+
+ul.links {
+    padding-left: 15px;
+}
+
+ul.links li a {
+    color: #50667c;
+}
+
+ul.links li a:hover {
+    color: #aaa;
+    text-decoration: underline;
+}
+
+/* -----------------------------  Tab menu  ------------------------------------------  */
+
+#tabmenu {
+    font: bold 1em "Lucida Grand", Arial, sans-serif;
+    width: 100%;
+    background: url(../images/TabBkgUnderline.gif) repeat-x bottom;
+}
+
+#tabmenu ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: block;
+}
+
+#tabmenu li {
+    float: left;
+    display: inline;
+    background: url(../images/TabBkgLeft.gif) no-repeat top left;
+    margin: 0px;
+    padding: 0px 0px 0px 2px;
+
+}
+
+#tabmenu a {
+    display: block;
+    margin: 0px;
+    padding: 5px 15px 4px;
+    color: #3d5b75;
+    background: url(../images/TabBkgActive.gif) no-repeat top right;
+    text-decoration: none;
+    border-bottom: 1px solid #5f6a6f;
+}
+
+#tabmenu .active {
+    display: block;
+    margin: 0px;
+    padding: 5px 15px 4px;
+    color: #233346;
+    background: url(../images/TabBkgHighlight.gif) no-repeat top right;
+    text-decoration: none;
+    border-bottom: 1px solid #ffffff;
+}
+
+#tabmenu .disabled {
+    display: block;
+    margin: 0px;
+    padding: 5px 15px 4px;
+    color: #a3a4a4;
+    background: url(../images/TabBkgDisabled.gif) no-repeat top right;
+    text-decoration: none;
+    border-bottom: 1px solid #5f6a6f;
+}
+
+#tabmenu a:hover {
+    color: #7995ad;
+}
+
+#tabmenu span.active:hover {
+}
+
+#tabmenu .statusindicator {
+    text-align: right;
+    padding-right: 4px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+#tabmenu .statusindicator img {
+    vertical-align: bottom;
+    padding-left: 3px;
+}
+
+/* ----------------------- Messaging ------------------------------------------ */
+
+.messagingBox {
+    padding: 9px 15px;
+    margin-bottom: 10px;
+    border: 1px solid #d0a131;
+    background-color: #fceecf;
+    vertical-align: middle;
+    display: block;
+}
+
+.messagingBox ul {
+    padding: 0px 0px 0px 5px;
+    margin: 0px;
+}
+
+.messagingBox li {
+    list-style: none;
+}
+
+.messagingSuccess {
+    background-image: url(../images/ico_message_success.gif);
+    background-repeat: no-repeat;
+    background-position: left center;
+    color: #3b6b1b;
+    font-weight: bold;
+    padding: 6px 0px 6px 28px;
+}
+
+.messagingFail {
+    background-image: url(../images/ico_message_fail.gif);
+    background-repeat: no-repeat;
+    background-position: left center;
+    color: #cc0000;
+    font-weight: bold;
+    padding: 6px 0px 6px 28px;
+}
+
+/* -- Restart Warning  -- */
+
+#RestartWarning {
+    width: 100%;
+    font-size: 11px;
+    float: right;
+    text-align: right;
+    padding-right: 4px;
+    padding-bottom: 10px;
+    white-space: nowrap;
+}
+
+#RestartWarning span {
+
+    color: #CC0000;
+    font-weight: bold;
+    padding-right: 12px;
+}
+
+#RestartWarning img {
+    vertical-align: bottom;
+}
+
+.instructionalText {
+    margin-bottom: 10px;
+}
+
+/* -------------------  Control Tab Styles : Operations History Table styles ---------------------------- */
+
+.controlTriggerPanel {
+    padding: 5px 25px 0px 25px;
+    background-color: #eff2f4;
+    border-top: 1px solid #cdcfd3;
+    border-bottom: 1px solid #cdcfd3;
+    border-right: none;
+    border-left: none;
+}
+
+.controlTriggerPanel .internalTable {
+    border: none;
+}
+
+.controlTriggerPanel .internalTable TD {
+    border-bottom: 1px dotted #cdcfd3;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding: 15px 0px;
+    background-color: #eff2f4;
+}
+
+.controlTriggerPanelLast .internalTable TD {
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding: 15px 0px;
+    background-color: #eff2f4;
+}
+
+.controlTriggerPanel .buttonColumn {
+    width: 10%;
+}
+
+.controlTriggerPanel .descripColumn {
+    width: 90%;
+    white-space: inherit;
+}
+
+.controlTable {
+    width: 100%;
+    border: 0;
+}
+
+.failurePanel {
+    border-top-width: 0;
+    border-bottom-width: 0;
+    padding: 0px 10px;
+    margin: 0px;
+    position: center;
+    width: 100%;
+    background-color: #f7f3dc;
+    border-right: none;
+    border-left: none;
+}
+
+.operationNameColumn {
+    border-right: 1px solid #d9e0e3;
+    border-bottom: 1px solid #d9e0e3;
+    width: 25%;
+}
+
+.operationTimeColumn {
+    border-right: 1px solid #d9e0e3;
+    border-bottom: 1px solid #d9e0e3;
+    width: 25%;
+}
+
+.operationStatusColumn {
+    border-right: 1px solid #d9e0e3;
+    border-bottom: 1px solid #d9e0e3;
+    width: 50%;
+}
+
+.operationSuccess {
+    color: #008800;
+}
+
+.operationFailure {
+    color: #CC0000;
+    margin-right: 4px;
+}
+
+.operationFailure a, operationFailure a:visited {
+    color: #aa0000;
+    text-decoration: underline;
+}
+
+.operationInProgress {
+    color: indigo;
+}
+
+.operation-first-row {
+    font-weight: bold;
+}
+
+.properties-table .DarkRow {
+    background-color: #d2e1ea;
+}
+
+.selectedRow {
+    border: medium solid #FFF;
+    background-color: #777;
+}
+
+.detailPanel {
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-image: url(../images/detailpanel_bkg.gif);
+    background-repeat: repeat-x;
+    padding: 0px 10px;
+    margin: 0px;
+    position: center;
+    width: 100%;
+    background-color: white;
+    border-right: none;
+    border-left: none;
+}
+
+.detailPanel .properties-table .OddRow {
+    background-color: white;
+}
+
+.detailPanel .properties-table-header-cell {
+    background-color: #eef1f3;
+    background-image: none;
+    border-top: 1px solid #d9e0e3;
+    border-right: 1px solid #d9e0e3;
+    border-bottom: 1px solid #d9e0e3;
+    border-left: 1px solid #d9e0e3;
+}
+
+/* ---------------------------------- RichFaces DataScroller styles ------------------------------------- */
+.rich-datascr {
+    background-color: transparent;
+    border-style: none;
+}
+
+.rich-datascr-button, .rich-datascr-ctrls-separator {
+    background-color: transparent;
+    border-style: none;
+    width: auto;
+}
+
+.rich-datascr-ctrls-separator {
+    padding: 0px 7px 0px 7px;
+    color: #8f8f8f;
+    cursor: default;
+}
+
+.rich-dtascroller-table {
+    border-style: none;
+    white-space: nowrap;
+    width: 100px;
+}
+
+.rich-datascr-act {
+    color: #527fa8;
+    border-top-style: none;
+    font-weight: bold;
+    width: inherit;
+    padding: 0px 3px;
+}
+
+.rich-datascr-inact {
+    color: #527fa8;
+    border-top-style: none;
+    text-decoration: underline;
+    width: inherit;
+    padding: 0px 3px;
+}
+
+.rich-datascr-textdisabled {
+    color: #b3b3b3;
+    cursor: default;
+}
+
+.rich-datascr-textlinks {
+    color: #527fa8;
+    text-decoration: underline;
+}
+
+/* ----------------------------------------  Breadcrumb navigation --------------------------------- */
+
+#bread {
+    color: #636464;
+    padding-right: 3px;
+    margin-bottom: 10px;
+}
+
+#bread ul {
+    margin-left: 0;
+    padding-left: 0;
+    display: inline;
+    border: none;
+}
+
+#bread ul li {
+    margin-left: 0;
+    padding-left: 2px;
+    font-size: 10px;
+    border: none;
+    list-style: none;
+    display: inline;
+}
+
+/* ---------------------------- Resource Links "Second Navigation" ----------------------------------------- */
+
+.sectionalLinks {
+}
+
+.sectionalLinks ol {
+    list-style-image: url(../images/iconLinkArrowBlue.gif);
+    list-style-type: circle;
+
+}
+
+.sectionalLinks li {
+    padding: 4px 0px;
+}
+
+.sectionalLinks li a {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* ------  Tree Controls  from RichFaces ---------- */
+
+.rich-tree {
+
+}
+
+.rich-tree-node {
+    white-space: normal;
+}
+
+.rich-tree-node-selected {
+    font-weight: bold;
+    color: #40474b;
+}
+
+.rich-tree-node-highlighted {
+}
+
+.rich-tree-node-unavailable {
+    color: #6b4c4c;
+}
+
+/* ----------------- Default Table styles from RichFaces --- This is the Gradient header --------- */
+
+.rich-table {
+    border: 0px;
+}
+
+.rich-table-caption {
+}
+
+.rich-table-header {
+}
+
+.rich-table-headercell {
+    background-color: #d9e0e3;
+    background-image: url(../images/TablePrimary_Norm.gif);
+    background-position: top;
+    background-repeat: repeat-x;
+    font-size: 10px;
+    font-weight: bold;
+    color: #5f6a6f;
+    text-align: left;
+    border-top: 1px solid #e7eaed;
+    border-right: 1px solid #a4b2b9;
+    border-bottom: 1px solid #a4b2b9;
+    border-left: 1px solid #e7eaed;
+    padding: 0px 8px;
+}
+
+.rich-table-subheader {
+}
+
+.rich-table-subheadercell {
+}
+
+.rich-table-cell {
+    border-bottom: 1px solid #d9e0e3;
+    border-right: 1px solid #d9e0e3;
+    border-left: none;
+    padding-left: 8px;
+    padding-right: 30px;
+    white-space: nowrap;
+}
+
+.rich-table-row {
+}
+
+.rich-table-subfooter {
+}
+
+.rich-table-subfootercell {
+}
+
+.rich-table-footer {
+    height: 4px;
+    background-color: #d9e0e3;
+}
+
+.rich-table-footercell {
+    border: none;
+    padding: 0px;
+}
+
+.evenRow {
+    background-color: white;
+}
+
+.oddRow {
+    background-color: #eff4f7;
+}
+
+.errorRow {
+    background-color: #fceecf;
+}
+
+.errorRow td {
+    border-right: none;
+    border-bottom: none;
+}
+
+.categoryRow {
+    background-color: #c6d0d5;
+    font-weight: bold;
+    color: #40474b;
+    border-left: 1px solid #c6d0d5;
+
+}
+
+.link-unavailable {
+    padding-left: 18px;
+    color: #6b4c4c;
+    background-image: url(../images/iconLeafDisa.gif);
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    padding-bottom: 2px;
+}
+
+.link-available {
+    padding-left: 18px;
+    background-image: url(../images/iconLeafNorm.gif);
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    padding-bottom: 2px;
+}
+
+/* ------column width styles to force spacing --------  */
+
+.rich-table-cell-action {
+    border-right: none;
+    border-bottom: 1px solid #d9e0e3;
+    width: 100%;
+    white-space: normal;
+}
+
+/* ------Style for the action header used above the dataTable  */
+
+.actionHeader {
+    padding: 10px;
+    background-color: #a4b2b9;
+    color: white;
+}
+
+/* ----------------------- column style for Metrics Columns  -------------------------- */
+.standard-traitscolumn {
+    white-space: nowrap;
+    padding-right: 40px;
+    padding-bottom: 0px;
+    border: 0px;
+}

@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!-- The JBoss specific elements used to integrate the servlet 2.3 web.xml
+elements into a JBoss deployment. This version applies to the JBoss 3.2.x
+releases.
+
+DOCTYPE jboss-web
+    PUBLIC "-//JBoss//DTD Web Application 2.3V2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-web_3_2.dtd"
+-->
+
+<!-- The jboss-web element is the root element.
+-->
+<!ELEMENT jboss-web (class-loading?, security-domain?, context-root?,
+   virtual-host*, use-session-cookies?, replication-config?, resource-env-ref*,
+   resource-ref* , ejb-ref* , ejb-local-ref*, depends*)>
+
+<!-- The class-loading element allows one to override the default class
+loading behavior of the web container. You can specify the
+Examples:
+   <class-loading java2ClassLoadingCompliance='false'/>
+
+   <class-loading java2ClassLoadingCompliance='false'>
+      <loader-repository loaderRepositoryClass='dot.com.LoaderRepository'>
+         ...
+      </loader-repository>
+   </class-loading>
+-->
+<!ELEMENT class-loading (loader-repository?)>
+<!-- The java2ClassLoadingCompliance attribute indicates if the normal Java2
+parent first class loading model should be used over the servlet 2.3 web
+container first model.
+-->
+<!ATTLIST class-loading java2ClassLoadingCompliance CDATA #IMPLIED>
+
+<!-- The loader-repository specifies the name of the UnifiedLoaderRepository
+   MBean to use for the ear to provide ear level scoping of classes deployed
+   in the ear. It is a unique JMX ObjectName string. It may also specify
+   an arbitrary configuration by including a loader-repository-config element.
+
+Examples:
+   <class-loading>
+   <loader-repository>jboss.test:loader=cts-cmp2v1-sar.ear</loader-repository>
+   </class-loading>
+
+   <class-loading java2ClassLoadingCompliance='false'>
+   <loader-repository loaderRepositoryClass='dot.com.LoaderRepository'>
+      dot.com:loader=unique-archive-name
+      <loader-repository-config configParserClass='dot.com.LoaderParser'>
+         java2ParentDelegaton=true
+      </loader-repository-config>
+   </loader-repository>
+   </class-loading>
+-->
+<!ELEMENT loader-repository (#PCDATA | loader-repository-config)*>
+<!-- The loaderRepositoryClass attribute gives the classname of the
+org.jboss.mx.loading.LoaderRepository implementation.
+-->
+<!ATTLIST loader-repository loaderRepositoryClass CDATA #IMPLIED>
+
+<!-- The loader-repository-config element specifies any arbitrary configuration
+fragment for use in configuring the loader-repository instance. The actual
+content of this element is specific to the loaderRepositoryClass and the
+code parsing the element.
+-->
+<!ELEMENT loader-repository-config (#PCDATA)>
+<!-- The configParserClass attribute gives the classname of the
+org.jboss.mx.loading.LoaderRepositoryFactory.LoaderRepositoryConfigParser
+implementation to use to parse the loader-repository-config content.
+-->
+<!ATTLIST loader-repository-config configParserClass CDATA #IMPLIED>
+
+<!-- The context-root element specifies the context root of a web
+application. This is normally specified at the ear level using the standard
+J2EE application.xml descriptor, but it may be given here for standalone wars.
+This should not override the application.xml level specification.
+-->
+<!ELEMENT context-root (#PCDATA)>
+
+<!-- The security-domain element allows one to specify a module wide
+security manager domain. It specifies the JNDI name of the security
+manager that implements the org.jboss.security.AuthenticationManager and
+org.jboss.security.RealmMapping interfaces for the domain.
+-->
+<!ELEMENT security-domain (#PCDATA)>
+
+<!-- The flushOnSessionInvalidation attribute is a boolean indicating whether
+the associated security domain cache should be flushed when the web session is
+invalidated. If true, the security manager service 
+flushAuthenticationCache(String, java.security.Principal) is called when the
+session is seen to be invalid due to expiration or explicit invalidation.
+-->
+<!ATTLIST security-domain flushOnSessionInvalidation (true|false) 'false'>
+
+<!-- The virtual-host element allows one to specify which virtual host the war
+should be deployed to. Example, to specify that a war should be deployed to the
+www.jboss-store.org virtual host add the following virtual-host element:
+   <virtual-host>www.jboss-store.org</virtual-host>
+-->
+<!ELEMENT virtual-host (#PCDATA)>
+
+<!--The resource-env-ref element maps from the servlet ENC relative name
+of the resource-env-ref to the deployment environment JNDI name of
+the administered object resource.
+Example:
+    <resource-env-ref>
+        <resource-env-ref-name>jms/NewsTopic</resource-env-ref-name>
+        <jndi-name>topic/NewsTopic</jndi-name>
+    </resource-env-ref>
+-->
+<!ELEMENT resource-env-ref (resource-env-ref-name , jndi-name)>
+
+<!-- The resource-env-ref-name specifies the name of the web.xml
+resource-env-ref-name element which this mapping applies.
+-->
+<!ELEMENT resource-env-ref-name (#PCDATA)>
+
+<!--The resource-ref element maps from the servlet ENC relative name
+of the resource-ref to the deployment environment JNDI name of
+the resource manager connection factory.
+Example:
+    <resource-ref>
+        <res-ref-name>jdbc/TheDataSource</res-ref-name>
+        <jndi-name>java:/DefaultDS</jndi-name>
+    </resource-ref>
+
+    <resource-ref>
+        <res-ref-name>jdbc/TheDataSource</res-ref-name>
+        <res-url>http://x.y.z</res-url>
+    </resource-ref>
+-->
+<!ELEMENT resource-ref (res-ref-name , (jndi-name | res-url))>
+
+<!-- The res-ref-name specifies the name of the web.xml res-ref-name element
+which this mapping applies.
+-->
+<!ELEMENT res-ref-name (#PCDATA)>
+
+<!-- The ejb-ref element maps from the servlet ENC relative name
+of the ejb reference to the deployment environment JNDI name of
+the bean.
+Example:
+    <ejb-ref>
+        <ejb-ref-name>ejb/Bean0</ejb-ref-name>
+        <jndi-name>deployed/ejbs/Bean0</jndi-name>
+    </ejb-ref>
+-->
+<!ELEMENT ejb-ref (ejb-ref-name , jndi-name)>
+
+<!-- The ejb-local-ref element maps from the servlet ENC relative name
+of the ejb local reference to the deployment environment JNDI name of
+the bean.
+Example:
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/Bean0</ejb-ref-name>
+        <local-jndi-name>deployed/ejbs/Bean0</local-jndi-name>
+    </ejb-local-ref>
+-->
+<!ELEMENT ejb-local-ref (ejb-ref-name , (local-jndi-name|jndi-name))>
+
+<!-- The ejb-ref-name element gives the ENC relative name used
+in the web.xml ejb-ref-name element.
+
+Used in: ejb-ref
+-->
+<!ELEMENT ejb-ref-name (#PCDATA)>
+
+<!-- The jndi-name element specifies the JNDI name of the deployed
+object to which the servlet ENC binding will link to via a JNDI
+LinkRef.
+
+Used in: resource-ref, resource-env-ref, ejb-ref
+-->
+<!ELEMENT jndi-name (#PCDATA)>
+
+<!--
+  The JNDI name under with the local home interface should be bound
+
+  Used in: ejb-local-ref
+-->
+<!ELEMENT local-jndi-name (#PCDATA)>
+
+<!-- The res-url element value is url a URL string.
+
+   Used in: resource-ref
+-->
+<!ELEMENT res-url (#PCDATA)>
+
+<!-- The depends element gives a JMX ObjectName of a service on which the
+container or ejb depends.
+-->
+<!ELEMENT depends (#PCDATA)>
+
+<!-- The use-session-cookies element controls wether this context uses session cookies
+     or not.
+
+Example:
+     <use-session-cookies>true</use-session-cookies>
+-->
+<!ELEMENT use-session-cookies (#PCDATA)>
+
+<!--
+   HTTP Session clustering configuration (optional tags)
+-->
+<!ELEMENT replication-config (replication-trigger?, replication-type?, replication-granularity?)>
+
+<!--
+   Clustering only: Determines when the container should consider that a session
+                    must be replicated accross the cluster.
+                    Possible values are:
+                    1 - "ACCESS"
+                    2 - "SET_AND_GET"
+                    3 - "SET_AND_NON_PRIMITIVE_GET" (default value)
+                    4 - "SET"
+
+   The first option is conservative but not optimal (performance-wise): it will replicate the
+   session after each http request since the access time stamp is updated.
+   
+   The second option is less restrictive but still not optimal since it will replicate even
+   if its content has not been modified but simply accessed (through get attribute operation).
+   There is no deterministic way to know if the content of an attribute is not itself modified.
+   Consequently, by default, no hypothesis can be done. It is up to the developer to tell us
+   if we can trust this policy.
+   
+   The third option is conservative but will only replicate if a non-primitive Object has been
+   accessed (Integer, Long, String, etc. which are immutables). It is the default value.
+   
+   The fourth option considers that the developer will explicitely call setAttribute on the
+   session if it has to be replicated.
+
+Examples:
+         <replication-trigger>ACCESS</replication-trigger>
+      or
+         <replication-trigger>SET_AND_GET</replication-trigger>
+      or
+         <replication-trigger>SET_AND_NON_PRIMITIVE_GET</replication-trigger>
+      or
+         <replication-trigger>SET</replication-trigger>
+-->
+<!ELEMENT replication-trigger (#PCDATA)>
+
+<!--
+   Deprecated since 3.2.6! The mode is configured cluster-wide in tc5-cluster-service.xml
+   (through the CacheMode attribute).
+
+   Clustering only: Determines how the container will replicate your sessions.
+                    Possible values are:
+                    1 - "SYNC" (default)
+                    2 - "ASYNC"
+
+    The first option will make sure that the session is actually copied to other nodes of the cluster
+    before finishing returning the HTTP request. The session removal and expiration are
+    an exception to this rule.
+    
+    The second option will asynchronously replicate sessions to the other nodes. This is more
+    efficient (better scalability and performance) but in case of failover you cannot be sure the
+    session has actually arrive on the other node(s).
+
+Examples:
+         <replication-type>SYNC</replication-type>
+      or
+         <replication-type>ASYNC</replication-type>
+-->
+<!ELEMENT replication-type (#PCDATA)>
+
+<!--
+   Clustering only: Determines the session replication granularity level.
+                    Possible values are:
+                    1 - "SESSION" (default)
+                    2 - "ATTRIBUTE"
+                    3 - "FIELD" (not yet supported)
+
+    The first option indicates that replication is done per session instance, i.e. when
+    the session is considered modified, the whole session object will be serialized
+    and replicated. This is the preferred policy when the sessions are generally small.
+
+    The second option indicates that replication is performed only for the the dirty
+    attributes in the session, plus some session data, like lastAccessTime. For sessions
+    carrying large amounts of data, parts of which are infrequently accessed,
+    this option can increase replication performance.
+    
+Examples:
+         <replication-granularity>SESSION</replication-granularity>
+      or
+         <replication-granularity>ATTRIBUTE</replication-granularity>
+-->
+<!ELEMENT replication-granularity (#PCDATA)>

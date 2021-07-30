@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Clustering-related deployers
+$Id: clustering-deployer-jboss-beans.xml 85945 2009-03-16 19:45:12Z dimitris@jboss.org $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   
+   <!-- Policy for converting HAPartition names into MC dependency names -->
+   <bean name="HAPartitionDependencyCreator" 
+         class="org.jboss.ha.framework.server.deployers.DefaultHAPartitionDependencyCreator"/>
+         
+   <!--  Adds a dependency on the appropriate HAPartition to clustered EJB2 beans. -->
+   <bean name="Ejb2HAPartitionDependencyDeployer" 
+         class="org.jboss.ha.framework.server.deployers.Ejb2HAPartitionDependencyDeployer">         
+      <property name="haPartitionDependencyCreator"><inject bean="HAPartitionDependencyCreator"/></property>
+   </bean>
+   
+   <!--  Adds a dependency on the appropriate HAPartition to clustered EJB3 beans. -->
+   <bean name="Ejb3HAPartitionDependencyDeployer" 
+         class="org.jboss.ha.framework.server.deployers.Ejb3HAPartitionDependencyDeployer">         
+      <property name="haPartitionDependencyCreator"><inject bean="HAPartitionDependencyCreator"/></property>
+   </bean>  
+    
+   <!-- 
+      Adds to distributable webapps a dependency on needed clustering services.
+      
+      With this deployer in place, webapps marked <distributable/> will not 
+      deploy completely in the absence of needed clustering support services.
+      
+      If desired, this deployer can be commented out in a non-clustered AS 
+      configuration (e.g. 'default') in which case a <distributable/> webapp 
+      will still deploy after logging a WARN about the missing clustering 
+      services. The webapp's sessions will not be clustered. This was the 
+      behavior of distributable webapps in the 'default' config in AS 4.x.
+      
+      Conversely, this deployer can be uncommented in a non-clustered AS configuration
+      in order to trigger a deployment failure if a <distributable/> webapp 
+      is deployed.
+   -->
+   <bean name="WebAppClusteringDependencyDeployer" 
+         class="org.jboss.web.tomcat.service.deployers.ClusteringDependencyDeployer">
+      
+      <!-- Clustered webapps get their cache from this service -->
+      <property name="clusterCacheDependency">jboss.cache:service=CacheManager</property>
+      
+   </bean> 
+
+</deployment>

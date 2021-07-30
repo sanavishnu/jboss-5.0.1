@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:onc="http://jboss.org/on/component">
+
+THIS TEXT WILL BE REMOVED.
+
+<ui:composition template="/layout.xhtml">
+
+    THIS TEXT WILL BE REMOVED AS WELL.
+
+    <ui:param name="pageTitle" value="'#{resource.resource.name}' - Edit Map - #{param.listName}[#{param.listIndex}]"/>
+
+    <ui:define name="body">
+
+        <p>
+            Any values changed here will not be persisted until you hit the Save button on the Resource's main Edit
+            Configuration page.
+        </p>
+        <h:form id="resourceConfigurationForm" onsubmit="prepareInputsForSubmission(this)">
+
+            <onc:config configurationDefinition="#{resourceConfigurationUIBean.configurationDefinition}"
+                        configuration="#{resourceConfigurationUIBean.configuration}"
+                        listName="#{param.listName}"
+                        listIndex="#{param.listIndex}"/>
+
+            <h:panelGrid columns="2" styleClass="buttons-table" columnClasses="button-cell">
+                <h:commandButton value="#{messages['resource.configuration.map.button.ok']}"
+                                 action="#{resourceConfigurationUIBean.editMap()}"
+                                 styleClass="buttonmed"/>
+                <s:button value="#{messages['resource.configuration.map.button.cancel']}"
+                          view="/secure/resourceInstanceConfig.xhtml"
+                          styleClass="buttonmed"/>
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+THIS TEXT WILL BE REMOVED AS WELL.
+
+</html>

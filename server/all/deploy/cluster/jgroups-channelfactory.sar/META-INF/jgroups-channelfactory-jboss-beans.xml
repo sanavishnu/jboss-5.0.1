@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+    <!-- The pojo ChannelFactory.  We use a JBoss AS subclass of the standard
+         JGroups JChannelFactory in order to ensure additional_data is set
+         on any shared channel -->
+	<bean name="JChannelFactory" class="org.jboss.ha.framework.server.JChannelFactory">
+	
+		  <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.jgroups:service=ChannelFactory", exposedInterface=org.jboss.ha.framework.server.JChannelFactoryMBean.class, registerDirectly=false)</annotation>
+        
+        <property name="multiplexerConfig">META-INF/jgroups-channelfactory-stacks.xml</property>
+        
+        <!--  JMX Registration of channels and protocols -->
+        <property name="server"><inject bean="JMXKernel" property="mbeanServer"/></property>
+        <property name="domain">jboss.jgroups</property>
+        <property name="exposeChannels">true</property>
+        <property name="exposeProtocols">true</property>
+        
+        <property name="manageNewThreadClassLoader">true</property>        
+        <property name="manageReleasedThreadClassLoader">false</property>
+
+        <!-- Whether or not to assign a unique name to nodes -->        
+        <property name="assignLogicalAddresses">true</property> 
+        
+        <!-- The address used to determine the node name  -->
+        <property name="nodeAddress">${jboss.bind.address}</property>
+        
+        <!-- Naming Service Port is used to generate a unique node name -->
+        <property name="namingServicePort"><inject bean="jboss:service=Naming" property="Port"/></property>
+        
+	</bean>
+   
+</deployment>

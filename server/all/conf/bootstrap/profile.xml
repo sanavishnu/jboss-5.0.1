@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   The profile service
+   $Id: profile.xml 86351 2009-03-25 14:30:08Z scott.stark@jboss.org $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+	<classloader><inject bean="profile-classloader:0.0.0" /></classloader>
+
+	<classloader name="profile-classloader" xmlns="urn:jboss:classloader:1.0" export-all="NON_EMPTY" import-all="true">
+		<root>${jboss.lib.url}jboss-profileservice-spi.jar</root>
+	</classloader>
+
+   <!-- 
+      The profile configuration
+      This contains required properties:
+         The uri to jboss-service.xml.
+         The uri to the deployers folder.
+         A list of uris to deploy folders. -->
+   <bean name="BootstrapProfileFactory" class="org.jboss.system.server.profileservice.StaticClusteredProfileFactory">
+      <property name="bindingsURI">${jboss.server.home.url}conf/bindingservice.beans</property>
+      <property name="bootstrapURI">${jboss.server.home.url}conf/jboss-service.xml</property>
+      <property name="deployersURI">${jboss.server.home.url}deployers</property>
+      <property name="applicationURIs">
+         <list elementClass="java.net.URI">
+            <value>${jboss.server.home.url}deploy</value>
+         </list>
+      </property>
+      <!-- Optional list of URIs that will be kept in sync across the cluster.
+           Requires deploy/cluster/farm-deployment-jboss-beans.xml to be
+           deployed as well.
+      -->
+      <property name="farmURIs">
+         <list elementClass="java.net.URI">
+            <value>${jboss.server.home.url}farm</value>
+         </list>
+      </property>
+      <property name="attachmentStoreRoot">${jboss.server.data.dir}/attachments</property>
+      <property name="profileFactory"><inject bean="ProfileFactory" /></property>
+   </bean>
+	
+	<!--  The default profile key -->
+	<bean name="DefaultProfileKey" class="org.jboss.profileservice.spi.ProfileKey">
+		<constructor><parameter>${jboss.server.name}</parameter></constructor>
+	</bean>
+
+	<!-- The ProfileService -->
+	<bean name="ProfileService" class="org.jboss.system.server.profileservice.repository.AbstractProfileService">
+		<constructor><parameter><inject bean="jboss.kernel:service=KernelController" /></parameter></constructor>
+		<property name="deployer"><inject bean="ProfileServiceDeployer" /></property>
+		<property name="defaultProfile"><inject bean="DefaultProfileKey" /></property>
+	</bean>
+
+	<!-- The Bootstrap implementation that loads the Profile from the ProfileService -->
+	<bean name="ProfileServiceBootstrap" class="org.jboss.system.server.profileservice.ProfileServiceBootstrap">
+		<property name="profileKey"><inject bean="DefaultProfileKey" /></property>
+		<property name="mainDeployer"><inject bean="MainDeployer" /></property>
+		<property name="profileService"><inject bean="ProfileService" /></property>
+		<property name="mof"><inject bean="ManagedObjectFactory" /></property>
+		<property name="mgtDeploymentCreator"><inject bean="ManagedDeploymentCreator" /></property>
+		<property name="bootstrapProfileFactory"><inject bean="BootstrapProfileFactory" /></property>
+		<property name="configurator"><inject bean="jboss.kernel:service=Kernel" property="configurator"/></property>
+	</bean>
+
+	<!-- The profile factory -->
+	<bean name="ProfileFactory" class="org.jboss.system.server.profileservice.repository.TypedProfileFactory">
+		<!-- Accept any AbstractprofileFactory -->
+		<incallback method="addProfileFactory" />
+		<uncallback method="removeProfileFactory" />
+	</bean>
+
+	<!-- The profile repository factory -->
+	<bean name="ProfileRepositoryFactory" class="org.jboss.system.server.profileservice.repository.TypedProfileRepository">
+		<!-- Accept any DeploymentRepositoryFactory -->
+		<incallback method="addRepositoryFactory" />
+		<uncallback method="removeRepositoryFactory" />
+	</bean>
+
+  <!-- The structure modification cache and checker -->
+  <bean name="StructureModCache" class="org.jboss.deployers.vfs.spi.structure.modified.DefaultStructureCache">
+    <destroy method="flush"/>
+  </bean>
+
+  <!-- This just checks metadata locations -->
+  <bean name="MetaDataStructureModificationChecker" class="org.jboss.deployers.vfs.spi.structure.modified.MetaDataStructureModificationChecker">
+    <constructor>
+      <parameter><inject bean="MainDeployer" /></parameter>
+    </constructor>
+    <property name="cache"><inject bean="StructureModCache" /></property>
+    <property name="filter"><bean class="org.jboss.system.server.profile.basic.XmlIncludeVirtualFileFilter" /></property>
+  </bean>
+
+  <!-- Synchs modifed files -->
+  <bean name="SynchAdapter" class="org.jboss.deployers.vfs.spi.structure.modified.OverrideSynchAdapter"/>
+
+  <!-- We just visit wars, but exclude classes, lib, dev dirs -->
+  <bean name="WebVisitorAttributes" class="org.jboss.system.server.profile.basic.IncludeExcludeVisitorAttributes">
+    <constructor>
+      <parameter>
+        <set>
+          <value>.war</value>
+        </set>
+      </parameter>
+      <parameter>
+        <set>
+          <value>WEB-INF/classes</value>
+          <value>WEB-INF/lib</value>
+          <value>WEB-INF/dev</value>
+        </set>
+      </parameter>
+    </constructor>
+  </bean>
+
+  <bean name="StructureModificationChecker" class="org.jboss.deployers.vfs.spi.structure.modified.SynchWrapperModificationChecker">
+    <constructor>
+      <parameter><inject bean="MetaDataStructureModificationChecker"/></parameter>
+      <parameter><inject bean="SynchAdapter"/></parameter>
+    </constructor>
+    <property name="originalAttributes"><inject bean="WebVisitorAttributes"/></property>
+    <property name="tempAttributes"><inject bean="WebVisitorAttributes"/></property>
+  </bean>
+
+	<bean name="BasicProfileFactory" class="org.jboss.system.server.profileservice.repository.BasicProfileFactory">
+		<property name="profileRepository"><inject bean="ProfileRepositoryFactory" /></property>
+	</bean>
+	<bean name="FilteredProfileFactory" class="org.jboss.system.server.profileservice.repository.FilteredProfileFactory"/>
+
+	<!-- The default deployment repository factory -->
+	<bean name="DefaultDeploymentRepositoryFactory" class="org.jboss.system.server.profileservice.repository.DefaultDeploymentRepositoryFactory">
+		<property name="deploymentFilter"><inject bean="DeploymentFilter" /></property>
+		<property name="checker"><inject bean="StructureModificationChecker" /></property>
+	</bean>
+
+   <!-- The clustered deployment repository factory -->
+   <bean name="ClusteredDeploymentRepositoryFactory" class="org.jboss.system.server.profileservice.repository.clustered.ClusteredDeploymentRepositoryFactory">
+      <property name="deploymentFilter"><inject bean="DeploymentFilter" /></property>
+      <property name="checker"><inject bean="StructureModificationChecker" /></property>
+      <!-- Accept any RepositoryClusteringHandler -->
+      <incallback method="addRepositoryClusteringHandler" />
+      <uncallback method="removeRepositoryClusteringHandler" />
+      <!-- Accept any LocalContentManagerFactory -->
+      <incallback method="addLocalContentManagerFactory" />
+      <uncallback method="removeLocalContentManagerFactory" />
+   </bean>
+   
+   <!--  Handles persistence of metadata about clustered DeploymentRepository content -->
+   <bean name="ClusteredDeploymentRepositoryMetadataPersister"
+         class="org.jboss.system.server.profileservice.repository.clustered.local.JAXBRepositoryContentMetadataPersister">
+      <constructor>
+         <!-- Here we use the constructor version that takes the Server impl and 
+              uses it to find the data dir. You could alternatively use a version 
+              that takes a URI or a File. -->
+         <parameter class="org.jboss.bootstrap.spi.Server"><inject bean="JBossServer"/></parameter>
+      </constructor>
+   </bean>
+         
+   <!--  Factory for manager of local persistence of clustered DeploymentRepository content -->
+   <bean name="FilesystemLocalContentManagerFactory" 
+         class="org.jboss.system.server.profileservice.repository.clustered.local.file.FilesystemLocalContentManagerFactory">
+      <property name="metadataPersister"><inject bean="ClusteredDeploymentRepositoryMetadataPersister"/></property>
+      <property name="tempDirURI">${jboss.server.home.url}temp${/}cluster-repo</property>
+   </bean>
+
+	<!-- A persistence factory for creating the persisted format of ManagedComponents -->
+	<bean name="PersistenceFactory" class="org.jboss.system.server.profileservice.persistence.AbstractPersistenceFactory">
+		<constructor><parameter><inject bean="ManagedObjectFactory" /></parameter></constructor>
+		<!-- Accept any ComponentMapper -->
+		<incallback method="addComponentMapper" />
+		<uncallback method="removeComponentMapper" />
+		<!-- Accept any ManagedObjectPersistencePlugin -->
+		<incallback method="addPersistencePlugin" />
+		<uncallback method="removePersistencePlugin" />
+	</bean>
+
+	<!-- The attachment store -->	
+	<bean name="AttachmentStore" class="org.jboss.system.server.profileservice.repository.AbstractAttachmentStore">
+		<constructor><parameter><inject bean="BootstrapProfileFactory" property="attachmentStoreRoot" /></parameter></constructor>
+		<property name="mainDeployer"><inject bean="MainDeployer" /></property>
+		<property name="serializer"><inject bean="AttachmentsSerializer" /></property>
+		<property name="persistenceFactory"><inject bean="PersistenceFactory" /></property>
+	</bean>
+
+	<bean name="AttachmentsSerializer" class="org.jboss.system.server.profileservice.repository.JAXBAttachmentSerializer">
+		<constructor><parameter><inject bean="BootstrapProfileFactory" property="attachmentStoreRoot" /></parameter></constructor>
+	</bean>
+
+	<bean name="ProfileServiceDeployer" class="org.jboss.system.server.profileservice.repository.MainDeployerAdapter">
+		<property name="mainDeployer"><inject bean="MainDeployer" /></property>
+		<property name="attachmentStore"><inject bean="AttachmentStore" /></property>
+	</bean>
+
+   <bean name="ProfileServicePersistenceDeployer" class="org.jboss.system.server.profileservice.persistence.deployer.ProfileServicePersistenceDeployer">
+   		<property name="persistenceFactory"><inject bean="PersistenceFactory" /></property>
+   		<property name="attachmentStore"><inject bean="AttachmentStore" /></property>
+   </bean>
+   
+   <bean name="KernelDeploymentComponentMapper" class="org.jboss.deployers.plugins.managed.KernelDeploymentComponentMapper">
+   		<constructor><parameter><inject bean="PersistenceFactory" /></parameter></constructor>
+   </bean>
+   <bean name="ServiceDeploymentComponentMapper" class="org.jboss.system.deployers.managed.ServiceDeploymentComponentMapper">
+   		<constructor><parameter><inject bean="PersistenceFactory" /></parameter></constructor>
+   </bean>
+
+	<!-- A filter for excluding files from the scanner -->
+	<bean name="DeploymentFilter" class="org.jboss.virtual.plugins.vfs.helpers.ExtensibleFilter">
+		<!-- Files starting with theses strings are ignored -->
+		<property name="prefixes">#,%,\,,.,_$</property>
+		<!-- Files ending with theses strings are ignored -->
+		<property name="suffixes">#,$,%,~,\,v,.BAK,.bak,.old,.orig,.tmp,.rej,.sh</property>
+		<!-- Files matching with theses strings are ignored -->
+		<property name="matches">.make.state,.nse_depinfo,CVS,CVS.admin,RCS,RCSLOG,SCCS,TAGS,core,tags</property>
+	</bean>
+
+</deployment>

@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transaction-service>
+    <properties name="documentation">
+        <!--
+        This is the JBossTS configuration file. Note that starting with JBossTS 4.6
+        the names jbossjta-properties.xml and jbossjts-properties.xml are obsolete.
+        
+        Both the JTA and JTS versions of JBossTS now read their configuration from
+        jbossts-properties.xml, although the contents of the file differs between
+        the JTA and JTS. Care should be taken to use the correct version of the file.
+        
+        ***************************
+        
+        Property values may be literals or be tokens of the form ${p1[,p2][:v]}
+        in which case the token values are substituted for the values of the corresponding system
+        properties as follows:
+ 
+        - Any occurance of ${p} with the System.getProperty(p) value.
+        If there is no such property p defined, then the ${p} reference will remain unchanged.
+
+        - If the property reference is of the form ${p:v} and there is no such property p,
+        then the default value v will be returned.
+
+        - If the property reference is of the form ${p1,p2} or ${p1,p2:v} then
+        the primary and the secondary properties will be tried in turn, before
+        returning either the unchanged input, or the default value.
+        
+        The property ${/} is replaced with System.getProperty("file.separator")
+        value and the property ${:} is replaced with System.getProperty("path.separator").
+        
+        Note this substitution applies to property values only at the point they are read from
+        the config file. Tokens in system properties won't be substituted.
+        -->
+    </properties>
+    <properties depends="common" name="arjuna">
+        <!--
+        Transaction Reaper Timeout (default is 120000 ms).
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.coordinator.txReaperTimeout" value="120000"/>
+        <!--
+        Transaction Reaper Mode, can be: PERIODIC or DYNAMIC. Default is DYNAMIC.
+      -->
+        <property name="com.arjuna.ats.arjuna.coordinator.txReaperMode" value="DYNAMIC"/>
+        <!--
+        Transaction Reaper Cancel Wait Period (default is 500 ms, min is 10 msecs).
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.coordinator.txReaperCancelWaitPeriod" value="500"/>
+        <!--
+        Transaction Reaper Cancel Fail Wait Period (default is 500 ms, min is 10 msecs).
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.coordinator.txReaperCancelFailWaitPeriod" value="500"/>
+        <!--
+        Transaction Reaper Zombie Max (default is 8).
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.coordinator.txReaperZombieMax" value="8"/>
+        <!--
+        (default is NO)
+      -->
+        <property name="com.arjuna.ats.arjuna.coordinator.asyncCommit" value="NO"/>
+        <!--
+        (default is NO)
+      -->
+        <property name="com.arjuna.ats.arjuna.coordinator.asyncPrepare" value="NO"/>
+        <!--
+        (default is YES)
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.coordinator.commitOnePhase" value="YES"/>
+        <!--
+        (default is defaultStore)
+      -->
+        <property name="com.arjuna.ats.arjuna.objectstore.localOSRoot" value="defaultStore"/>
+        <!--
+        default is under user.home - must be writeable!)
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.objectstore.objectStoreDir" value="PutObjectStoreDirHere"/>
+        <!--
+        (default is ON)
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.objectstore.objectStoreSync" value="ON"/>
+        <!--
+        (default is ShadowNoFileLockStore)
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.objectstore.objectStoreType" value="ShadowNoFileLockStore"/>
+        <!--
+        (default is 255)
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.objectstore.hashedDirectories" value="255"/>
+        <!--
+        (default is ON)
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.objectstore.transactionSync" value="ON"/>
+        <!--
+        (Must be unique across all Arjuna instances.)
+      -->
+        <property name="com.arjuna.ats.arjuna.xa.nodeIdentifier" value="1"/>
+        <!--
+        Base port number for determining a unique number to associate with an instance of the transaction service
+        (which is needed in order to support multiple instances on the same machine).
+        Use the value 0 to allow the system to select the first available port number.
+        If the port number is non-zero and the port is in use then the value will be incremented until either a successful binding
+        to the loopback address is created or until the the maximum number of ports (specified by the
+        com.arjuna.ats.internal.arjuna.utils.SocketProcessIdMaxPorts property) have been tried or until the port number
+        reaches the maximum possible port number.
+      -->
+        <property
+            name="com.arjuna.ats.internal.arjuna.utils.SocketProcessIdPort" value="0"/>
+        <!--
+        The maximum number of ports to try starting from the value specified by the property
+        com.arjuna.ats.internal.arjuna.utils.SocketProcessIdPort. Any non-numeric or value less than 1 will
+        defautl to 1.
+      -->
+        <property
+            name="com.arjuna.ats.internal.arjuna.utils.SocketProcessIdMaxPorts" value="1"/>
+        <!--
+        Run the TransactionStatusManager to allow out-of-process recovery managers to query
+        the status of transactions owned by this coordinator.  Default is YES.
+        This can be set to NO in cases where an ObjectStore is used only by one transaction manager
+        and the recovery manager for that store is in the same JVM. In any other cases disabling the
+        TransactionStatusManager may cause crash recovery to misbehave.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.coordinator.transactionStatusManagerEnable" value="YES"/>
+        <!-- property
+        name="com.arjuna.ats.arjuna.coordinator.actionStore"
+		value="HashedActionStore"
+		value="JDBCActionStore"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.objectstore.jdbcTxDbAccess"
+		value="JDBCAccess"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.objectstore.objectStoreType"
+		value="ShadowNoFileLockStore"
+		value="JDBCStore"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.objectstore.jdbcUserDbAccess"
+		value="JDBCAccess"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.objectstore.jdbcPoolSizeInitial"
+		value="1"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.objectstore.jdbcPoolSizeMaximum"
+		value="1"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.objectstore.jdbcPoolPutConnections"
+		value="false"
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.internal.arjuna.objectstore.cacheStore.size"
+		value=""
+      -->
+        <!-- property
+        name="com.arjuna.ats.arjuna.internal.arjuna.objectstore.cacheStore.period"
+		value=""
+      -->
+        <!--
+        The location for creating temporary files, e.g., Uids.
+        Default is under user.home.
+        IMPORTANT: make sure the directory is lockable, e.g., /tmp on Unix
+        may not be!
+      -->
+        <!--
+        <property
+          name="com.arjuna.ats.arjuna.common.varDir"
+          value="var"/>
+      -->
+        <!-- Should beforeCompletion synchronizations be fired even when it is known the
+             transaction can't commit e.g. is marked rollbackOnly? (default NO).
+             Note that turning this on still does not guarantee the syncronizations will run in all cases
+             e.g. explicit rollback() calls. JTS users should also take into account the supportRollbackSync
+             property which affects both beforeCompletion and afterCompletion syncs. -->
+        <!--
+      <property name="com.arjuna.ats.coordinator.beforeCompletionWhenRollbackOnly" value="NO"/>
+      -->
+    </properties>
+    <properties name="common">
+        <!-- CLF 2.0 properties -->
+        <property name="com.arjuna.common.util.logging.DebugLevel"
+            type="System" value="0x00000000"/>
+        <property name="com.arjuna.common.util.logging.FacilityLevel"
+            type="System" value="0xffffffff"/>
+        <property name="com.arjuna.common.util.logging.VisibilityLevel"
+            type="System" value="0xffffffff"/>
+        <property name="com.arjuna.common.util.logger" type="System" value="log4j"/>
+    </properties>
+    <properties depends="arjuna" name="txoj">
+        <!--
+        (default is LockStore of installation - must be writeable!)
+      -->
+        <!--
+        <property
+          name="com.arjuna.ats.txoj.lockstore.lockStoreDir"
+          value="LockStore"/>
+      -->
+        <!--
+        (default is BasicLockStore)
+      -->
+        <property name="com.arjuna.ats.txoj.lockstore.lockStoreType" value="BasicLockStore"/>
+        <!--
+        (default is NO)
+      -->
+        <property name="com.arjuna.ats.txoj.lockstore.multipleLockStore" value="NO"/>
+        <!--
+        (default is YES)
+      -->
+        <property name="com.arjuna.ats.txoj.lockstore.singleLockStore" value="YES"/>
+        <!--
+        (default is YES)
+      -->
+        <property
+            name="com.arjuna.ats.txoj.lockstore.allowNestedLocking" value="YES"/>
+    </properties>
+    <properties depends="arjuna" name="jta">
+        <!--
+        Support subtransactions in the JTA layer?
+        Default is NO.
+      -->
+        <property name="com.arjuna.ats.jta.supportSubtransactions" value="NO"/>
+        <property name="com.arjuna.ats.jta.jtaTMImplementation" value="com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple"/>
+        <!--
+			com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple
+			-->
+        <property name="com.arjuna.ats.jta.jtaUTImplementation" value="com.arjuna.ats.internal.jta.transaction.arjunacore.UserTransactionImple"/>
+        <!--
+			com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple
+			-->
+    </properties>
+    <properties depends="arjuna,txoj,jta" name="recoverymanager">
+        <!--
+        Properties used only by the RecoveryManager.
+      -->
+        <!--
+        Periodic recovery settings.
+        Time values in this section are in seconds.
+      -->
+        <!--
+        Interval in seconds between initiating the periodic recovery modules.
+        Default is 120 seconds.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.periodicRecoveryPeriod" value="120"/>
+        <!--
+        Interval in seconds between first and second pass of periodic recovery.
+        Default is 10 seconds.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.recoveryBackoffPeriod" value="10"/>
+        <!--
+        The port number on which the recovery manager listens.
+      -->
+        <property name="com.arjuna.ats.arjuna.recovery.recoveryPort" value="4712"/>
+        <!--
+        The address on which the recovery manager listens.
+        If running within an AS then the address the AS is bound to (jboss.bind.address) takes precedence
+      -->
+        <property name="com.arjuna.ats.arjuna.recovery.recoveryAddress" value=""/>
+        <!--
+        Periodic recovery modules to use.  Invoked in sort-order of names.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.recoveryExtension1" value="com.arjuna.ats.internal.arjuna.recovery.AtomicActionRecoveryModule"/>
+        <property
+            name="com.arjuna.ats.arjuna.recovery.recoveryExtension2" value="com.arjuna.ats.internal.txoj.recovery.TORecoveryModule"/>
+        <property
+            name="com.arjuna.ats.arjuna.recovery.recoveryExtension3" value="com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule"/>
+        <!--
+        Expired entry removal
+      -->
+        <!--
+        Expiry scanners to use (order of invocation is random).
+        Names must begin with "com.arjuna.ats.arjuna.recovery.expiryScanner"
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.expiryScannerTransactionStatusManager" value="com.arjuna.ats.internal.arjuna.recovery.ExpiredTransactionStatusManagerScanner"/>
+        <!--
+        Interval, in hours, between running the expiry scanners.
+        This can be quite long. The absolute value determines the interval -
+        if the value is negative, the scan will NOT be run until after one
+        interval has elapsed. If positive the first scan will be immediately
+        after startup. Zero will prevent any scanning.
+        Default  = 12 = run immediately, then every 12 hours.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.expiryScanInterval" value="12"/>
+        <!--
+        This is the interval, in hours, after which a process that cannot be contacted will be considered dead.
+        It should be long enough to avoid accidentally removing valid entries due to short lived
+        transient errors such as network downtime. Zero = Never removed.  Default is 12.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.transactionStatusManagerExpiryTime" value="12"/>
+        <!--
+        Use this to fix the port on which the TransactionStatusManager listens,
+        The default behaviour is to use any free port.
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.transactionStatusManagerPort" value="0"/>
+        <!--
+        Use this to fix the address on which the TransactionStatusManager binds,
+        The default behaviour is to use the loopback address (ie localhost).
+        If running within an AS then the address the AS is bound to (jboss.bind.address) takes precedence
+      -->
+        <property
+            name="com.arjuna.ats.arjuna.recovery.transactionStatusManagerAddress" value=""/>
+        <!--
+          For cases where the recovery manager is in process with the transaction manager and nothing else uses
+          the ObjectStore, it is possible to disable the socket based recovery listener by setting this to NO.
+          Caution: use of this property can allow multiple recovery processes to run on the same ObjectStore
+          if you are not careful. That in turn can lead to incorrect transaction processing. Use with care.
+        -->
+        <property name="com.arjuna.ats.arjuna.recovery.recoveryListener" value="YES"/>
+    </properties>
+    <properties depends="jta" name="jdbc">
+        <!--
+           property name="com.arjuna.ats.jdbc.isolationLevel" value="TRANSACTION_SERIALIZABLE"/>
+        -->
+    </properties>
+</transaction-service>

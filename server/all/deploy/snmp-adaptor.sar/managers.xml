@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+  $Id: managers.xml 44604 2006-05-06 23:24:39Z dimitris $
+  
+  This file is used to configure the SNMP managers to which the generated
+  SNMP traps should be forwarded.
+  
+  Each entry must specify:
+    - the manager's address (IP address or host name)
+    - the listening port
+    - the local binding address (optional)
+    - the local binding port (optional)
+    - the SNMP version to use (1 or 2)
+    
+  More than one managers may be specified.
+  
+  Note that traps are sent inside independent UDP packets so there is a
+  possibility to be re-ordered or completely lost. Also, even if the 
+  forwarding IP address does not exist or nobody is listening on that
+  particular port, the trap will still be sent (however, nobody will
+  receive it); this is normal behaviour.
+-->
+<manager-list>
+  <!--
+    A default test manager to forward traps. It is controlled by the
+    "jboss.jmx:name=SnmpAgent,service=trapd,type=logger" MBean that
+    simply outputs received traps as log4j DEBUG messages
+  -->
+  <manager>
+    <address>localhost</address>
+    <port>1162</port>
+    <local-address></local-address>
+    <local-port></local-port>
+    <version>1</version>
+  </manager>
+</manager-list>

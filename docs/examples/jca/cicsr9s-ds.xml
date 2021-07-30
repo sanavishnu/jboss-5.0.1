@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!--  CICSR9S provided by chen_comp in the forums                          -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: cicsr9s-ds.xml 22595 2004-08-02 19:24:08Z ejort $ -->
+
+<connection-factories> 
+
+   <tx-connection-factory> 
+
+      <jndi-name>ra/cicsr9s</jndi-name> 
+
+      <rar-name>cicsr9s.rar</rar-name> 
+      <connection-definition>javax.resource.cci.ConnectionFactory</connection-definition> 
+
+      <config-property name="ConnectionURL" type="java.lang.String">tcp://arno</config-property> 
+      <config-property name="PortNumber" type="java.lang.String">2006</config-property> 
+      <config-property name="ServerName" type="java.lang.String">CICSR9S</config-property> 
+      <config-property name="UserName" type="java.lang.String">CICSUSER</config-property> 
+
+      <max-pool-size>50</max-pool-size> 
+
+   </tx-connection-factory> 
+
+</connection-factories> 

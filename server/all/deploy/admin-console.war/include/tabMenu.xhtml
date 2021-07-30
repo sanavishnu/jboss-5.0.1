@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+        >
+
+<!-- USAGE:
+         <ui:include src="/include/tabMenu.xhtml">
+             <ui:param name="activeTab" value="operation"/>
+         </ui:include>
+
+         valid 'activeTab' values are: summary, configuration, operation, metric and content
+-->
+
+<body>
+<ui:composition>
+    <!-- don't need to specify the 'path' param on these links because Seam will take care
+of adding it because its specified as a page param in pages.xml -->
+    <div id="tabmenu">
+        <ul>
+            <!-- ======================= SUMMARY TAB ======================== -->
+            <h:panelGroup layout="block">
+                <!-- ACTIVE panel  (currently being viewed) -->
+                <h:panelGroup layout="block" rendered="#{activeTab eq 'summary'}">
+                    <li>
+                        <span id="summaryTab" class="active">#{messages['tab.menu.summary']}</span>
+                    </li>
+                </h:panelGroup>
+                <!-- ENABLED panel (can be viewed) -->
+                <h:panelGroup layout="block" rendered="#{activeTab ne 'summary'}">
+                    <li>
+                        <s:link id="summaryTab" styleClass="" view="/secure/summary.xhtml" propagation="end">
+                            #{messages['tab.menu.summary']}
+                        </s:link>
+                    </li>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- ======================= CONFIGURATION TAB ======================== -->
+            <h:panelGroup layout="block">
+                <!-- ACTIVE panel  (currently being viewed) -->
+                <h:panelGroup layout="block" rendered="#{activeTab eq 'configuration'}">
+                    <li>
+                        <span id="configurationTab" class="active">#{messages['tab.menu.configuration']}</span>
+                    </li>
+                </h:panelGroup>
+                <!-- ENABLED panel (can be viewed) -->
+                <h:panelGroup layout="block"
+                              rendered="#{activeTab ne 'configuration' and navigationAction.enabledTabs['configuration']}">
+                    <li>
+                        <s:link id="configurationTab" styleClass=""
+                                action="#{resourceConfigurationUIBean.resourceConfiguration()}" propagation="end">
+                            #{messages['tab.menu.configuration']}
+                        </s:link>
+                    </li>
+                </h:panelGroup>
+                <!-- DISABLED panel (can not be viewed) -->
+                <h:panelGroup layout="block" rendered="#{!navigationAction.enabledTabs['configuration']}">
+                    <li>
+                        <span id="configurationTab" class="disabled">#{messages['tab.menu.configuration']}</span>
+                    </li>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- ======================= METRICS TAB ======================== -->
+            <h:panelGroup layout="block">
+                <!-- ACTIVE panel  (currently being viewed) -->
+                <h:panelGroup layout="block" rendered="#{activeTab eq 'metric'}">
+                    <li>
+                        <span id="metricsTab" class="active">#{messages['tab.menu.metrics']}</span>
+                    </li>
+                </h:panelGroup>
+                <!-- ENABLED panel (can be viewed) -->
+                <h:panelGroup layout="block"
+                              rendered="#{activeTab ne 'metric' and navigationAction.enabledTabs['metric']}">
+                    <li>
+                        <s:link id="metricsTab" styleClass="" view="/secure/resourceInstanceMetrics.xhtml"
+                                propagation="end">
+                            #{messages['tab.menu.metrics']}
+                        </s:link>
+                    </li>
+                </h:panelGroup>
+                <!-- DISABLED panel (can not be viewed) -->
+                <h:panelGroup layout="block" rendered="#{!navigationAction.enabledTabs['metric']}">
+                    <li>
+                        <span id="metricsTab" class="disabled">#{messages['tab.menu.metrics']}</span>
+                    </li>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- ======================= CONTROL TAB ======================== -->
+            <h:panelGroup layout="block">
+                <!-- ACTIVE panel  (currently being viewed) -->
+                <h:panelGroup layout="block" rendered="#{activeTab eq 'operation'}">
+                    <li>
+                        <span id="controlTab" class="active">#{messages['tab.menu.control']}</span>
+                    </li>
+                </h:panelGroup>
+                <!-- ENABLED panel (can be viewed) -->
+                <h:panelGroup layout="block"
+                              rendered="#{activeTab ne 'operation' and navigationAction.enabledTabs['operation']}">
+                    <li>
+                        <s:link id="controlTab" styleClass="" view="/secure/resourceInstanceOperation.xhtml"
+                                propagation="end">
+                            #{messages['tab.menu.control']}
+                        </s:link>
+                    </li>
+                </h:panelGroup>
+                <!-- DISABLED panel (can not be viewed) -->
+                <h:panelGroup layout="block" rendered="#{!navigationAction.enabledTabs['operation']}">
+                    <li>
+                        <span id="controlTab" class="disabled">#{messages['tab.menu.control']}</span>
+                    </li>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- ======================= CONTENT TAB ======================== -->
+            <h:panelGroup layout="block">
+                <!-- ACTIVE panel  (currently being viewed) -->
+                <h:panelGroup layout="block" rendered="#{activeTab eq 'content'}">
+                    <li>
+                        <span id="contentTab" class="active">#{messages['tab.menu.content']}</span>
+                    </li>
+                </h:panelGroup>
+                <!-- ENABLED panel (can be viewed) -->
+                <h:panelGroup layout="block"
+                              rendered="#{activeTab ne 'content' and navigationAction.enabledTabs['content']}">
+                    <li>
+                        <s:link id="contentTab" styleClass="" view="/secure/resourceInstanceContent.xhtml"
+                                propagation="end">
+                            #{messages['tab.menu.content']}
+                        </s:link>
+                    </li>
+                </h:panelGroup>
+                <!-- DISABLED panel (can not be viewed) -->
+                <h:panelGroup layout="block" rendered="#{!navigationAction.enabledTabs['content']}">
+                    <li>
+                        <span id="contentTab" class="disabled">#{messages['tab.menu.content']}</span>
+                    </li>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </ul>
+        <div class="statusindicator">
+            <h:panelGroup rendered="#{navigationAction.availableStatus ne 'SUMMARY'}">
+                <strong>Status:</strong>
+                <h:panelGroup rendered="#{navigationAction.availableStatus eq 'UP'}">
+                    <h:graphicImage value="images/iconStatusAvailable.gif"/>Available
+                </h:panelGroup>
+                <h:panelGroup rendered="#{navigationAction.availableStatus eq 'DOWN'}">
+                    <h:graphicImage value="images/iconStatusUnavailable.gif"/>Unavailable
+                </h:panelGroup>
+                <h:panelGroup rendered="#{navigationAction.availableStatus eq 'UNKNOWN'}">
+                    <h:graphicImage value="images/iconStatusUnknown.gif"/>Unknown
+                </h:panelGroup>
+            </h:panelGroup>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+</ui:composition>
+
+</body>
+</html>

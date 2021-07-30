@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!-- DataSource config for ELWIS  application -->
+<datasources>
+	
+	 <local-tx-datasource>
+        <jndi-name>elwisDS</jndi-name>
+        <connection-url>jdbc:mysql://192.168.0.101:3306/elwis2hh?useUnicode=true&amp;characterEncoding=UTF-8</connection-url>
+        <driver-class>com.mysql.jdbc.Driver</driver-class>
+        <user-name>admin</user-name>
+        <password>.admin.</password>
+        <min-pool-size>5</min-pool-size>
+        <max-pool-size>100</max-pool-size>
+        <blocking-timeout-millis>5000</blocking-timeout-millis>
+        <idle-timeout-minutes>30</idle-timeout-minutes>
+        <valid-connection-checker-class-name>com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker
+        </valid-connection-checker-class-name>
+        <exception-sorter-class-name>com.mysql.jdbc.integration.jboss.ExtendedMysqlExceptionSorter
+        </exception-sorter-class-name>
+        <metadata>
+            <type-mapping>mySQL</type-mapping>
+        </metadata>
+    </local-tx-datasource>
+
+</datasources>

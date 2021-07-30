@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+        >
+<f:view>
+    <ui:composition template="/layout.xhtml">
+
+        <!-- page title -->
+        <ui:define name="pagetitle">#{messages['resource.add.pageTitlePrefix']} #{resourceType.name}</ui:define>
+
+        <!-- body -->
+        <ui:define name="body">
+            <div class="notabmenubox">
+                <ui:include src="../include/displayGlobalMessages.xhtml"/>
+
+                <hr/>
+                <h:form id="resourceCreateForm">
+                    <h:panelGrid styleClass="formstyle">
+
+                        <ui:include src="/include/formDropDownComponent.xhtml">
+                            <ui:param name="identifier" value="selectedTemplate"/>
+                            <ui:param name="label" value="#{messages['resource.template.select']}"/>
+                            <ui:param name="beanValue" value="#{templateDropDownPopulator.selectedTemplate}"/>
+                            <ui:param name="itemValues" value="#{templateMap}"/>
+                            <ui:param name="desc" value="#{messages['resource.template.desc']}"/>
+                            <ui:param name="rendered" value="true"/>
+                            <ui:param name="required" value="true"/>
+                        </ui:include>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" styleClass="buttons-table" columnClasses="button-cell">
+                        <h:commandButton id="addButton"
+                                         value="#{messages['resource.add.button.continue']}"
+                                         action="#{templateDropDownPopulator.populateFromTemplate()}"
+                                         styleClass="buttonmed"/>
+                        <s:button value="#{messages['resource.add.button.cancel']}"
+                                  view="/secure/summary.xhtml"
+                                  styleClass="buttonmed"
+                                  propagation="end"/>
+                    </h:panelGrid>
+                </h:form>
+            </div>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</html>

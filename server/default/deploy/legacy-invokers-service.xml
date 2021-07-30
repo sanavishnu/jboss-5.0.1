@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: legacy-invokers-service.xml 88391 2009-05-08 03:48:50Z bstansberry@jboss.com $ -->
+
+<!-- ======================================================================= -->
+<!-- Legacy invokers to the JMX node                                         -->
+<!-- ======================================================================= -->
+<server>
+
+   <!-- RMI/JRMP invoker -->
+   <mbean code="org.jboss.invocation.jrmp.server.JRMPInvoker"
+      name="jboss:service=invoker,type=jrmp">
+      <attribute name="RMIObjectPort">
+         <value-factory bean="ServiceBindingManager" method="getIntBinding" parameter="jboss:service=invoker,type=jrmp"/>
+      </attribute>
+      <attribute name="ServerAddress">
+         <value-factory bean="ServiceBindingManager" method="getStringBinding" parameter="jboss:service=invoker,type=jrmp"/>
+      </attribute>
+      <!--
+      <attribute name="RMIClientSocketFactory">custom</attribute>
+      <attribute name="RMIServerSocketFactory">custom</attribute>
+      <attribute name="RMIServerSocketAddr">custom</attribute>
+      <attribute name="SecurityDomain">ssl-domain-name</attribute>
+      -->
+      <depends>jboss:service=TransactionManager</depends>
+   </mbean>
+
+   <mbean code="org.jboss.invocation.local.LocalInvoker"
+      name="jboss:service=invoker,type=local">
+
+      <depends>jboss:service=TransactionManager</depends>
+   </mbean>
+
+   <mbean code="org.jboss.invocation.pooled.server.PooledInvoker"
+      name="jboss:service=invoker,type=pooled">
+      <attribute name="NumAcceptThreads">1</attribute>
+      <attribute name="MaxPoolSize">300</attribute>
+      <attribute name="ClientMaxPoolSize">300</attribute>
+      <attribute name="SocketTimeout">300000</attribute>
+      <attribute name="ServerBindAddress">
+         <value-factory bean="ServiceBindingManager" method="getStringBinding" parameter="jboss:service=invoker,type=pooled"/>
+      </attribute>
+      <attribute name="ServerBindPort">
+         <value-factory bean="ServiceBindingManager" method="getIntBinding" parameter="jboss:service=invoker,type=pooled"/>
+      </attribute>
+      <attribute name="ClientConnectAddress">
+         <value-factory bean="ServiceBindingManager" method="getStringBinding" parameter="jboss:service=invoker,type=pooled"/>
+      </attribute>
+      <attribute name="ClientConnectPort">0</attribute>
+      <attribute name="ClientRetryCount">1</attribute>
+      <attribute name="EnableTcpNoDelay">false</attribute>
+
+      <!-- Customized socket factory attributes
+      <attribute name="ClientSocketFactoryName">custom.client.factory</attribute>
+      <attribute name="ServerSocketFactoryName">custom.server.factory</attribute>
+      <attribute name="SslDomain">java:/jaas/pooledInvoker</attribute>
+      -->
+      <depends optional-attribute-name="TransactionManagerService">jboss:service=TransactionManager</depends>
+   </mbean>
+
+</server>

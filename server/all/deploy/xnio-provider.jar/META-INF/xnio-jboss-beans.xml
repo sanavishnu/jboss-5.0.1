@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <threads xmlns="urn:jboss:threads:1.0">
+      <thread-group name="XnioThreadGroup" group-name="xnio"/>
+      <thread-group name="XnioSelectorThreadGroup" group-name="selector" parent="XnioThreadGroup"/>
+      <thread-factory name="XnioThreadFactory" group="XnioThreadGroup" thread-name-pattern="xnio-pool%f-%t"/>
+      <direct-executor name="XnioHandlerExecutor"/>
+   </threads>
+
+   <bean mode="On Demand" name="XnioProvider" class="org.jboss.xnio.Xnio">
+      <constructor factoryClass="org.jboss.xnio.nio.NioXnio" factoryMethod="create">
+         <parameter class="org.jboss.xnio.nio.NioXnioConfiguration">
+            <bean mode="On Demand" name="XnioProviderConfiguration" class="org.jboss.xnio.nio.NioXnioConfiguration">
+               <property name="name">XnioProvider</property>
+               <property name="MBeanServers">
+                  <list>
+                     <inject bean="JMXKernel" property="mbeanServer"/>
+                  </list>
+               </property>
+               <property name="executor">
+                  <inject bean="XnioHandlerExecutor"/>
+               </property>
+               <property name="selectorThreadFactory">
+                  <inject bean="XnioThreadFactory"/>
+               </property>
+               <property name="connectSelectorThreads">1</property>
+               <property name="readSelectorThreads">3</property>
+               <property name="writeSelectorThreads">1</property>
+               <property name="selectorCacheSize">25</property>
+            </bean>
+         </parameter>
+      </constructor>
+   </bean>
+</deployment>

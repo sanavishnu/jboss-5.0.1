@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: oracle-xa-ds.xml 77479 2008-08-26 10:33:09Z alex.loubyansky@jboss.com $ -->
+
+<!-- ===================================================================== -->
+<!-- ATTENTION:  DO NOT FORGET TO SET Pad=true IN transaction-service.xml  -->
+<!-- ===================================================================== -->
+
+<datasources>
+  <xa-datasource>
+    <jndi-name>XAOracleDS</jndi-name>
+    <!-- uncomment to enable interleaving <interleaving/> -->
+    <isSameRM-override-value>false</isSameRM-override-value>
+    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+    <xa-datasource-property name="URL">jdbc:oracle:oci8:@tc</xa-datasource-property>
+    <xa-datasource-property name="User">scott</xa-datasource-property>
+    <xa-datasource-property name="Password">tiger</xa-datasource-property>
+    <!-- Uses the pingDatabase method to check a connection is still valid before handing it out from the pool -->
+    <!--valid-connection-checker-class-name>org.jboss.resource.adapter.jdbc.vendor.OracleValidConnectionChecker</valid-connection-checker-class-name-->
+    <!-- Checks the Oracle error codes and messages for fatal errors -->
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.OracleExceptionSorter</exception-sorter-class-name>
+    <!-- Oracles XA datasource cannot reuse a connection outside a transaction once enlisted in a global transaction and vice-versa -->
+    <no-tx-separate-pools/>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>Oracle9i</type-mapping>
+      </metadata>
+  </xa-datasource>
+
+  <mbean code="org.jboss.resource.adapter.jdbc.vendor.OracleXAExceptionFormatter" 
+         name="jboss.jca:service=OracleXAExceptionFormatter">
+    <depends optional-attribute-name="TransactionManagerService">jboss:service=TransactionManager</depends>
+  </mbean>
+
+</datasources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   
+   <bean name="FarmProfileRepositoryClusteringHandler"
+         class="org.jboss.profileservice.cluster.repository.DefaultRepositoryClusteringHandler">
+         
+      <property name="partition"><inject bean="HAPartition"/></property>
+      <property name="profileName">farm</property>
+      <property name="synchronizationPolicy"><inject bean="FarmProfileSynchronizationPolicy"/></property>
+   </bean>
+   
+   <bean name="FarmProfileSynchronizationPolicy" 
+         class="org.jboss.profileservice.cluster.repository.DefaultSynchronizationPolicy">
+      <property name="timestampService"><inject bean="TimestampDiscrepancyService"/></property>
+   </bean>
+
+</deployment>

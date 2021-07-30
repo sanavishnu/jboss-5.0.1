@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="VFSCacheStatistics" class="org.jboss.deployment.vfs.VFSCacheStatistics">
+    <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss.vfs:service=VFSCacheStatistics", exposedInterface=org.jboss.deployment.vfs.VFSCacheStatisticsMBean.class, registerDirectly=true)</annotation>
+  </bean>
+
+</deployment>

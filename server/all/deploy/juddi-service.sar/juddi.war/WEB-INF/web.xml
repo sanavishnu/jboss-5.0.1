@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+    <servlet>
+        <servlet-name>JUDDIServlet</servlet-name>
+        <servlet-class>org.jboss.jaxr.juddi.JUDDIServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>jUDDIRegistryServlet</servlet-name>
+        <servlet-class>org.apache.juddi.registry.RegistryServlet</servlet-class>
+        <init-param>
+            <param-name>juddi.propertiesFile</param-name>
+            <param-value>/WEB-INF/juddi.properties</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+     <servlet-mapping>
+     <servlet-name>JUDDIServlet</servlet-name>
+     <url-pattern>/inquiry</url-pattern>
+     </servlet-mapping>
+
+      <servlet-mapping>
+        <servlet-name>JUDDIServlet</servlet-name>
+       <url-pattern>/publish</url-pattern>
+      </servlet-mapping> 
+
+   <!-- ENABLE When Jboss Saaj implementation is not based on axis
+    <servlet>
+        <servlet-name>jUDDIAdminService</servlet-name>
+        <display-name>jUDDI Admin Service</display-name>
+        <servlet-class>org.apache.juddi.registry.AdminService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UDDIV2InquiryService</servlet-name>
+        <display-name>UDDI Version 2.0 Inquiry Service</display-name>
+        <servlet-class>org.apache.juddi.registry.InquiryService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UDDIV2PublishService</servlet-name>
+        <display-name>UDDI Version 2.0 Publish Service</display-name>
+        <servlet-class>org.apache.juddi.registry.PublishService</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jUDDIAdminService</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UDDIV2InquiryService</servlet-name>
+        <url-pattern>/inquiry</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UDDIV2PublishService</servlet-name>
+        <url-pattern>/publish</url-pattern>
+    </servlet-mapping>  -->
+
+    <resource-ref>
+        <description>jUDDI DataSource</description>
+        <res-ref-name>jdbc/juddiDB</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+</web-app>

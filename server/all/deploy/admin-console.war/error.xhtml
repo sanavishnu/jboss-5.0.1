@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+<f:view>
+    <ui:composition template="/errorLayout.xhtml">
+        <!-- body -->
+        <ui:define name="body">
+            <div id="errorbox">
+                <h1>#{messages['exception.heading']}</h1>
+
+                <p>#{messages['exception.paragraph1']}</p>
+
+                <p>#{messages['exception.paragraph2a']} <a href="index.html">#{messages['exception.paragraph2b']}</a>
+                    #{messages['exception.paragraph2c']}</p>
+
+                <h3 style="padding-top: 12px; border-bottom: 1px solid #e6eaef;">Error details:</h3>
+
+                <div id="codebox">
+                    <a4j:repeat value="#{exceptionAction.causes}" var="cause" rowKeyVar="rowKey">
+                        <div style="margin-bottom: 15px">
+                            <b><h:outputLabel rendered="#{rowKey ne 0}">Caused by: </h:outputLabel>#{cause}</b><br/>
+
+                            <div style="margin-left: 20px">
+                                <ui:repeat value="#{cause.stackTrace}" var="stackElement">
+                                    at #{stackElement}<br/>
+                                </ui:repeat>
+                            </div>
+                        </div>
+                    </a4j:repeat>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</html>

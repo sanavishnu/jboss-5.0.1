@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   The core classloading system
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <classloader><inject bean="bootstrap-classloader:0.0.0"/></classloader>
+
+   <!--
+      The classloader implementation
+   -->
+   <bean name="ClassLoaderSystem" class="org.jboss.classloader.spi.ClassLoaderSystem">
+      <classloader><null/></classloader>
+      <constructor factoryClass="org.jboss.classloader.spi.ClassLoaderSystem" factoryMethod="getInstance"/>
+   </bean>
+
+   <!-- 
+      ClassLoader management and resolution
+   -->
+   <bean name="ClassLoading" class="org.jboss.classloading.spi.dependency.ClassLoading">
+      <classloader><null/></classloader>
+      <incallback method="addModule" state="Configured"/>
+      <uncallback method="removeModule" state="Configured"/>
+   </bean>
+
+   <classloader name="bootstrap-classloader" xmlns="urn:jboss:classloader:1.0" export-all="NON_EMPTY" import-all="true">
+      <!-- System -->
+      <root>${jboss.lib.url}jboss-system.jar</root>
+   </classloader>
+   
+</deployment>

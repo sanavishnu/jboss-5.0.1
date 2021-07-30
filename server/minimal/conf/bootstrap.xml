@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   The list of URLs for mc beans to load during bootstrap.
+   $Id: bootstrap.xml 87078 2009-04-09 14:23:47Z bstansberry@jboss.com $
+-->
+<bootstrap xmlns="urn:jboss:bootstrap:1.0">
+
+   <url>bootstrap/classloader.xml</url>
+   <url>bootstrap/aop.xml</url>
+   <url>bootstrap/jmx.xml</url>
+   <url>bootstrap/deployers.xml</url>
+   <url>bootstrap/profile.xml</url>
+
+</bootstrap>

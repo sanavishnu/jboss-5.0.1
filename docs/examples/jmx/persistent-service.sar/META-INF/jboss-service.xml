@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: jboss-service.xml 23704 2004-09-14 20:29:40Z andd $ -->
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Example Service using "external" XMBean persistence                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<server>
+   <mbean code="org.jboss.jmx.examples.persistence.PersistentServiceExample"
+          name="jboss.jmx:service=PersistentServiceExample"
+          xmbean-dd="">
+
+      <!-- Inline xmbean descriptor
+      
+      This is a normal XMBean descriptor, the only different being the
+      specification of the DelegatingPersistenceManager as a persistence-manager.
+      
+      This persistence manager will invoke a factory operations
+      (by default apmCreate()) on an external MBean service 
+      (by default jboss:service=AttributePersistenceService),
+      in order to get a reference to an AttributePersistenceManager
+      implementation.
+      
+      The actual AttributePersistenceManager implementation is instantiated
+      by the AttributePersistenceService and shared by many
+      DelegatingPersistenceManagers. By default an XMLAttributePersistenceManager
+      is instantiated, but other implementations are possible.
+      
+      The external AttributePersistenceService can be use to manage at runtime
+      the AttributePersistenceManager implementation, i.e. list persisted ids,
+      remove persisted images, or specify a particular 'version-tag' for all
+      saved information.
+      
+      It is important that the external AttributePersistenceService is
+      operational when the XMBean that uses it is instantiated. This will
+      normally not be a problem since the AttributePersistenceService is most
+      probably started by conf/jboss-service.xml
+      -->
+      <xmbean>
+         <description>PersistentServiceExample</description>
+         <descriptors>
+            <persistence persistPolicy="OnUpdate"/>
+                    <!-- persistLocation is ignored
+                    
+                         persistName="PersistentServiceExample"
+                         
+                         an alternative persistent id may be specified with
+                         persistName; by default the ObjectName will used -->
+            
+            <!-- THIS IS IMPORTANT -->             
+            <persistence-manager value="org.jboss.mx.persistence.DelegatingPersistenceManager"/>
+             
+            <!-- May use a different external AttributePersistenceService; default should be ok.           
+            <descriptor name="attribute-persistence-service" value="jboss:service=AttributePersistenceService"/>
+            <descriptor name="attribute-persistence-operation" value="apmCreate"/>
+            -->
+         </descriptors>
+         <class>org.jboss.jmx.examples.persistence.PersistentServiceExample</class>
+         
+         <!-- Attributes -->
+         
+         <attribute access="read-write" getMethod="getSomeBigDecimal" setMethod="setSomeBigDecimal">
+            <name>SomeBigDecimal</name>
+            <type>java.math.BigDecimal</type>
+         </attribute>
+         
+         <attribute access="read-write" getMethod="isSomeBoolean" setMethod="setSomeBoolean">
+            <name>SomeBoolean</name>
+            <type>boolean</type>
+         </attribute>
+         
+         <!-- This is an XML element -->
+         <attribute access="read-write" getMethod="getSomeElement" setMethod="setSomeElement">
+            <name>SomeElement</name>
+            <type>org.w3c.dom.Element</type>
+         </attribute>
+         
+         <!-- We can specify that an attribute is never persisted
+              If we remove the "persistPolicy" - "Never" descriptor we'll
+              probably get a warning since the java.io.FileDescriptor 
+              cannot be persisted. Try it! -->
+         <attribute access="read-write" getMethod="getSomeFileDescriptor" setMethod="setSomeFileDescriptor">
+            <name>SomeFileDescriptor</name>
+            <type>java.io.FileDescriptor</type>
+            <descriptors>
+               <descriptor name="persistPolicy" value="Never"/>
+            </descriptors>           
+         </attribute>
+         
+         <!-- primitive types (e.g. int) are boxed during persistence 
+              (e.g java.lang.Integer) -->
+         <attribute access="read-write" getMethod="getSomeInt" setMethod="setSomeInt">
+            <name>SomeInt</name>
+            <type>int</type>
+         </attribute>
+         
+         <attribute access="read-write" getMethod="getSomeInteger" setMethod="setSomeInteger">
+            <name>SomeInteger</name>
+            <type>java.lang.Integer</type>
+         </attribute>
+   
+         <attribute access="read-write" getMethod="getSomeString" setMethod="setSomeString">
+            <name>SomeString</name>
+            <type>java.lang.String</type>
+         </attribute>
+         
+         <attribute access="read-write" getMethod="getSomeTimestamp" setMethod="setSomeTimestamp">
+            <name>SomeTimestamp</name>
+            <type>java.sql.Timestamp</type>
+            <descriptors>
+               <descriptor name="currencyTimeLimit" value="10"/>
+            </descriptors>                
+         </attribute>
+         
+         <attribute access="read-write" getMethod="getSomeNullObject" setMethod="setSomeNullObject">
+            <name>SomeNullObject</name>
+            <type>java.lang.Object</type>
+         </attribute>
+         
+         <!-- Again, although the java.util.ArrayList is Serializable,
+              it cannot be persisted in this case because it contains
+              non-serializable content -->
+         <attribute access="read-write" getMethod="getSomeArrayList" setMethod="setSomeArrayList">
+            <name>SomeArrayList</name>
+            <type>java.util.ArrayList</type>
+            <descriptors>
+               <descriptor name="persistPolicy" value="Never"/>
+            </descriptors>               
+         </attribute>
+         
+      </xmbean>
+      <!-- XMBean Descriptor END -->
+   
+      <!-- Normal Attribute Overrides Here, for Example: -->
+      <attribute name="SomeElement">
+        <some-message>Welcome to the Athens 2004, Olympic Games!</some-message>
+      </attribute>
+      
+   </mbean>
+</server>

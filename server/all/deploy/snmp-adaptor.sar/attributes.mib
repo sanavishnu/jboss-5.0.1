@@ -1,0 +1,72 @@
+--
+-- Example MIB for the delivered attributes.xml
+-- $Revision: 44604 $
+-- 
+
+JBOSS-AS-MIB DEFINITIONS ::=BEGIN
+
+-- Tree roots
+org	OBJECT IDENTIFIER ::= { iso 2 } -- "iso" = 1
+jboss	OBJECT IDENTIFIER ::= { org 3 }
+as	OBJECT IDENTIFIER ::= { jboss 4 }
+system	OBJECT IDENTIFIER ::= { as 1 }  -- .1.2.3.4.1
+mgmt 	OBJECT IDENTIFIER ::= { as 5 }
+snmp	OBJECT IDENTIFIER ::= { mgmt 6 }
+agent 	OBJECT IDENTIFIER ::= { snmp 7 }
+
+-- system parameters
+activeThreadCount OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only 
+	DESCRIPTION
+		"The number of active Threads in the system"
+	::= { system 1 } -- .1.2.3.4.1.1
+freeMemory OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"The free memory of the VM"
+	::= {system 2} -- .1.2.3.4.1.2
+maxMemory OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"The max memory of the VM"
+	::= {system 3} -- .1.2.3.4.1.3
+threadPoolQueueSize OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"The size of the thread pool queue"
+	::= {system 4 }
+requestCount8080 OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"Number of requests served on port 8080"
+	::= {system 5}
+txCommitCount OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"Number of commited transactions"
+	::= {system 6 }
+txRollbackCount OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"Number of transactions rolled back"
+	::= {system 7 }
+txActiveCount OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCESS read-only
+	DESCRIPTION
+		"The number of currently active transactions"
+	::= {system 8 }
+dbInUseCount OBJECT-TYPE
+	SYNTAX INTEGER
+	ACCES read-only
+	DESCRIPTION
+		"The number of db connections currently in use"
+	::= { system 9 }
+END

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    BSH  Deployer
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!-- BSH parser -->
+   <bean name="BSHParserDeployer" class="org.jboss.varia.deployment.LegacyBeanShellDeployer" />
+
+   <!-- BSH script deployer -->
+   <bean name="BSHScriptDeployer" class="org.jboss.varia.deployment.LegacyBeanShellScriptDeployer">
+   	<constructor><parameter><inject bean="JMXKernel" property="serviceController"/></parameter></constructor>
+   </bean>
+
+<!--
+   <bean name="BSHScriptClient" class="org.jboss.varia.deployment.LegacyBeanShellScriptClient">
+      <constructor><parameter><inject bean="MainDeployer"/></parameter></constructor>
+   </bean>
+-->
+
+</deployment>

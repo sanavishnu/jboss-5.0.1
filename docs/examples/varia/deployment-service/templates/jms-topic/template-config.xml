@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example template configuration that produces a JBoss messaging 
+  topic deployment descriptor.
+  
+  Documentation for the deployment service can be found at: 
+  http://www.jboss.org/wiki/Wiki.jsp?page=DeploymentService
+-->
+<template-config template="vm/jms-topic.xml.vm" extension="-service.xml">
+
+  <property-list>
+      <!-- if type not specified, java.lang.String is assumed -->
+      <!-- a value must be supplied at runtime, or an exception will be thrown -->
+      <property name="Name"/>
+      
+      <property name="JNDIName" type="java.lang.String" optional="true"/>
+      
+      <property name="DLQ" type="java.lang.String" optional="true"/>
+      
+      <property name="ExpiryQueue" type="java.lang.String" optional="true"/>
+      
+      <property name="RedeliveryDelay" type="java.lang.Long" optional="true"/>       
+      
+      <property name="MaxSize" type="java.lang.Integer" optional="true">       
+        <default-value>-1</default-value>
+      </property>
+      
+      <property name="FullSize" type="java.lang.Integer" optional="true">       
+        <default-value>75000</default-value>
+      </property>
+      
+      <property name="PageSize" type="java.lang.Integer" optional="true">       
+        <default-value>2000</default-value>
+      </property>
+      
+      <property name="DownCacheSize" type="java.lang.Integer" optional="true">       
+        <default-value>2000</default-value>
+      </property>
+      
+      <property name="Clustered" type="java.lang.Boolean" optional="true"/>
+      
+      <property name="MessageCounterHistoryDayLimit" type="java.lang.Integer" optional="true">       
+        <default-value>-1</default-value>
+      </property>
+      
+      <!-- arrays and generally any valid java/user class is permitted -->
+      <property name="SecurityRoles" type="[Ljava.lang.String;" optional="true"/>
+  
+  </property-list>
+  
+</template-config>

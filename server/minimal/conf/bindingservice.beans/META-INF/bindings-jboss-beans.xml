@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <!--  In the minimal config, bindings-jboss-beans.xml is just a placeholder
+         we use to avoid having to exclude it from conf/profile.xml -->
+
+</deployment>

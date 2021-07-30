@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     MS SQL Server persistence deployment descriptor.
+
+     Tested with SQL Server 2005
+
+     $Id$
+ -->
+
+<server>
+
+   <!-- Persistence Manager MBean configuration
+       ======================================== -->
+
+   <mbean code="org.jboss.messaging.core.jmx.JDBCPersistenceManagerService"
+      name="jboss.messaging:service=PersistenceManager"
+      xmbean-dd="xmdesc/JDBCPersistenceManager-xmbean.xml">
+
+      <depends>jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
+
+      <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+
+      <!-- The datasource to use for the persistence manager -->
+
+      <attribute name="DataSource">java:/DefaultDS</attribute>
+
+      <!-- If true will attempt to create tables and indexes on every start-up -->
+
+      <attribute name="CreateTablesOnStartup">true</attribute>
+
+      <!-- If true then we will automatically detect and reject duplicate messages sent during failover -->
+
+      <attribute name="DetectDuplicates">true</attribute>
+
+      <!-- The size of the id cache to use when detecting duplicate messages -->
+
+      <attribute name="IDCacheSize">500</attribute>
+
+      <attribute name="SqlProperties"><![CDATA[
+   CREATE_DUAL=CREATE TABLE JBM_DUAL (DUMMY INTEGER, PRIMARY KEY (DUMMY))
+   CREATE_MESSAGE_REFERENCE=CREATE TABLE JBM_MSG_REF (MESSAGE_ID BIGINT, CHANNEL_ID BIGINT, TRANSACTION_ID BIGINT, STATE CHAR(1), ORD BIGINT, PAGE_ORD BIGINT, DELIVERY_COUNT INT, SCHED_DELIVERY BIGINT, PRIMARY KEY(MESSAGE_ID, CHANNEL_ID))
+   CREATE_IDX_MESSAGE_REF_TX=CREATE INDEX JBM_MSG_REF_TX ON JBM_MSG_REF (TRANSACTION_ID, STATE)
+   CREATE_MESSAGE=CREATE TABLE JBM_MSG (MESSAGE_ID BIGINT, RELIABLE CHAR(1), EXPIRATION BIGINT, TIMESTAMP BIGINT, PRIORITY TINYINT, TYPE TINYINT, HEADERS IMAGE, PAYLOAD IMAGE, PRIMARY KEY (MESSAGE_ID))
+   CREATE_TRANSACTION=CREATE TABLE JBM_TX (NODE_ID INTEGER, TRANSACTION_ID BIGINT, BRANCH_QUAL VARBINARY(254), FORMAT_ID INT, GLOBAL_TXID VARBINARY(254), PRIMARY KEY (TRANSACTION_ID))
+   CREATE_COUNTER=CREATE TABLE JBM_COUNTER (NAME VARCHAR(255), NEXT_ID BIGINT, PRIMARY KEY(NAME))
+   CREATE_ID_CACHE=CREATE TABLE JBM_ID_CACHE (NODE_ID INTEGER, CNTR INTEGER, JBM_ID VARCHAR(255), PRIMARY KEY(NODE_ID, CNTR))
+   INSERT_DUAL=INSERT INTO JBM_DUAL VALUES (1)
+   CHECK_DUAL=SELECT 1 FROM JBM_DUAL
+   INSERT_MESSAGE_REF=INSERT INTO JBM_MSG_REF (CHANNEL_ID, MESSAGE_ID, TRANSACTION_ID, STATE, ORD, PAGE_ORD, DELIVERY_COUNT, SCHED_DELIVERY) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+   DELETE_MESSAGE_REF=DELETE FROM JBM_MSG_REF WHERE MESSAGE_ID=? AND CHANNEL_ID=? AND STATE='C'
+   UPDATE_MESSAGE_REF=UPDATE JBM_MSG_REF SET TRANSACTION_ID=?, STATE='-' WHERE MESSAGE_ID=? AND CHANNEL_ID=? AND STATE='C'
+   UPDATE_PAGE_ORDER=UPDATE JBM_MSG_REF SET PAGE_ORD = ? WHERE MESSAGE_ID=? AND CHANNEL_ID=?
+   COMMIT_MESSAGE_REF1=UPDATE JBM_MSG_REF SET STATE='C', TRANSACTION_ID = NULL WHERE TRANSACTION_ID=? AND STATE='+'
+   COMMIT_MESSAGE_REF2=DELETE FROM JBM_MSG_REF WHERE TRANSACTION_ID=? AND STATE='-'
+   ROLLBACK_MESSAGE_REF1=DELETE FROM JBM_MSG_REF WHERE TRANSACTION_ID=? AND STATE='+'
+   ROLLBACK_MESSAGE_REF2=UPDATE JBM_MSG_REF SET STATE='C', TRANSACTION_ID = NULL WHERE TRANSACTION_ID=? AND STATE='-'
+   LOAD_PAGED_REFS=SELECT MESSAGE_ID, DELIVERY_COUNT, PAGE_ORD, SCHED_DELIVERY FROM JBM_MSG_REF WHERE CHANNEL_ID = ? AND PAGE_ORD BETWEEN ? AND ? ORDER BY PAGE_ORD
+   LOAD_UNPAGED_REFS=SELECT MESSAGE_ID, DELIVERY_COUNT, SCHED_DELIVERY FROM JBM_MSG_REF WHERE STATE = 'C' AND CHANNEL_ID = ? AND PAGE_ORD IS NULL ORDER BY ORD
+   LOAD_REFS=SELECT MESSAGE_ID, DELIVERY_COUNT, SCHED_DELIVERY FROM JBM_MSG_REF WHERE STATE = 'C' AND CHANNEL_ID = ? ORDER BY ORD
+   UPDATE_REFS_NOT_PAGED=UPDATE JBM_MSG_REF SET PAGE_ORD = NULL WHERE PAGE_ORD BETWEEN ? AND ? AND CHANNEL_ID=?
+   SELECT_MIN_MAX_PAGE_ORD=SELECT MIN(PAGE_ORD), MAX(PAGE_ORD) FROM JBM_MSG_REF WHERE CHANNEL_ID = ?
+   UPDATE_DELIVERY_COUNT=UPDATE JBM_MSG_REF SET DELIVERY_COUNT = ? WHERE MESSAGE_ID = ? AND CHANNEL_ID = ?
+   UPDATE_CHANNEL_ID=UPDATE JBM_MSG_REF SET CHANNEL_ID = ? WHERE CHANNEL_ID = ?
+   MOVE_REFERENCE=UPDATE JBM_MSG_REF SET CHANNEL_ID = ? WHERE MESSAGE_ID = ? AND CHANNEL_ID = ?
+   LOAD_MESSAGES=SELECT MESSAGE_ID, RELIABLE, EXPIRATION, TIMESTAMP, PRIORITY, HEADERS, PAYLOAD, TYPE FROM JBM_MSG
+   INSERT_MESSAGE=INSERT INTO JBM_MSG (MESSAGE_ID, RELIABLE, EXPIRATION, TIMESTAMP, PRIORITY, TYPE, HEADERS, PAYLOAD) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+   INSERT_MESSAGE_CONDITIONAL=INSERT INTO JBM_MSG (MESSAGE_ID, RELIABLE, EXPIRATION, TIMESTAMP, PRIORITY, TYPE) SELECT ?, ?, ?, ?, ?, ? FROM JBM_DUAL WHERE NOT EXISTS (SELECT MESSAGE_ID FROM JBM_MSG WHERE MESSAGE_ID = ?)
+   UPDATE_MESSAGE_4CONDITIONAL=UPDATE JBM_MSG SET HEADERS=?, PAYLOAD=? WHERE MESSAGE_ID=?
+   INSERT_MESSAGE_CONDITIONAL_FULL=INSERT INTO JBM_MSG (MESSAGE_ID, RELIABLE, EXPIRATION, TIMESTAMP, PRIORITY, TYPE, HEADERS, PAYLOAD) SELECT ?, ?, ?, ?, ?, ?, ?, ? FROM JBM_DUAL WHERE NOT EXISTS (SELECT MESSAGE_ID FROM JBM_MSG WHERE MESSAGE_ID = ?)
+   MESSAGE_ID_COLUMN=MESSAGE_ID
+   DELETE_MESSAGE=DELETE FROM JBM_MSG WHERE MESSAGE_ID = ? AND NOT EXISTS (SELECT JBM_MSG_REF.MESSAGE_ID FROM JBM_MSG_REF WHERE JBM_MSG_REF.MESSAGE_ID = ?)
+   INSERT_TRANSACTION=INSERT INTO JBM_TX (NODE_ID, TRANSACTION_ID, BRANCH_QUAL, FORMAT_ID, GLOBAL_TXID) VALUES(?, ?, ?, ?, ?)
+   DELETE_TRANSACTION=DELETE FROM JBM_TX WHERE NODE_ID = ? AND TRANSACTION_ID = ?
+   SELECT_PREPARED_TRANSACTIONS=SELECT TRANSACTION_ID, BRANCH_QUAL, FORMAT_ID, GLOBAL_TXID FROM JBM_TX WHERE NODE_ID = ?
+   SELECT_MESSAGE_ID_FOR_REF=SELECT MESSAGE_ID, CHANNEL_ID FROM JBM_MSG_REF WHERE TRANSACTION_ID = ? AND STATE = '+' ORDER BY ORD
+   SELECT_MESSAGE_ID_FOR_ACK=SELECT MESSAGE_ID, CHANNEL_ID FROM JBM_MSG_REF WHERE TRANSACTION_ID = ? AND STATE = '-' ORDER BY ORD
+   UPDATE_COUNTER=UPDATE JBM_COUNTER SET NEXT_ID = ? WHERE NAME=?
+   SELECT_COUNTER=SELECT NEXT_ID FROM JBM_COUNTER WITH (HOLDLOCK, ROWLOCK) WHERE NAME=?
+   INSERT_COUNTER=INSERT INTO JBM_COUNTER (NAME, NEXT_ID) VALUES (?, ?)
+   SELECT_ALL_CHANNELS=SELECT DISTINCT(CHANNEL_ID) FROM JBM_MSG_REF
+   UPDATE_TX=UPDATE JBM_TX SET NODE_ID=? WHERE NODE_ID=?
+   UPDATE_ID_IN_CACHE=UPDATE JBM_ID_CACHE SET JBM_ID = ? WHERE NODE_ID = ? AND CNTR = ?
+   INSERT_ID_IN_CACHE=INSERT INTO JBM_ID_CACHE (NODE_ID, CNTR, JBM_ID) VALUES (?, ?, ?)
+   LOAD_ID_CACHE=SELECT CNTR, JBM_ID FROM JBM_ID_CACHE WHERE NODE_ID = ?
+      ]]></attribute>
+
+      <!-- The maximum number of parameters to include in a prepared statement -->
+
+      <attribute name="MaxParams">500</attribute>
+
+   </mbean>
+
+   <!-- Messaging Post Office MBean configuration
+        ========================================= -->
+
+   <mbean code="org.jboss.messaging.core.jmx.MessagingPostOfficeService"
+      name="jboss.messaging:service=PostOffice"
+      xmbean-dd="xmdesc/MessagingPostOffice-xmbean.xml">
+
+      <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+
+      <depends>jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
+
+      <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+
+      <!-- The name of the post office -->
+
+      <attribute name="PostOfficeName">JMS post office</attribute>
+
+      <!-- The datasource used by the post office to access it's binding information -->
+
+      <attribute name="DataSource">java:/DefaultDS</attribute>
+
+      <!-- If true will attempt to create tables and indexes on every start-up -->
+
+      <attribute name="CreateTablesOnStartup">true</attribute>
+
+      <attribute name="SqlProperties"><![CDATA[
+CREATE_POSTOFFICE_TABLE=CREATE TABLE JBM_POSTOFFICE (POSTOFFICE_NAME VARCHAR(255), NODE_ID SMALLINT, QUEUE_NAME VARCHAR(255), COND VARCHAR(1023), SELECTOR VARCHAR(1023), CHANNEL_ID INTEGER, CLSTERED CHAR(1), ALL_NODES CHAR(1), PRIMARY KEY(POSTOFFICE_NAME, NODE_ID, QUEUE_NAME))
+INSERT_BINDING=INSERT INTO JBM_POSTOFFICE (POSTOFFICE_NAME, NODE_ID, QUEUE_NAME, COND, SELECTOR, CHANNEL_ID, CLSTERED, ALL_NODES) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+DELETE_BINDING=DELETE FROM JBM_POSTOFFICE WHERE POSTOFFICE_NAME=? AND NODE_ID=? AND QUEUE_NAME=?
+LOAD_BINDINGS=SELECT QUEUE_NAME, COND, SELECTOR, CHANNEL_ID, CLSTERED, ALL_NODES FROM JBM_POSTOFFICE WHERE POSTOFFICE_NAME=? AND NODE_ID=?
+      ]]></attribute>
+
+      <!-- This post office is non clustered. If you want a clustered post office then set to true -->
+      
+      <attribute name="Clustered">false</attribute>
+
+      <!-- All the remaining properties only have to be specified if the post office is clustered.
+           You can safely comment them out if your post office is non clustered -->
+
+      <!-- The JGroups group name that the post office will use -->
+
+      <attribute name="GroupName">${jboss.messaging.groupname:MessagingPostOffice}</attribute>
+
+      <!-- Max time to wait for state to arrive when the post office joins the cluster -->
+
+      <attribute name="StateTimeout">30000</attribute>
+
+      <!-- Max time to wait for a synchronous call to node members using the MessageDispatcher -->
+
+      <attribute name="CastTimeout">30000</attribute>
+      
+      <!-- Set this to true if you want failover of connections to occur when a node is shut down -->
+      
+      <attribute name="FailoverOnNodeLeave">false</attribute>
+      
+      <depends optional-attribute-name="ChannelFactoryName">jboss.jgroups:service=ChannelFactory</depends>
+      <attribute name="ControlChannelName">jbm-control</attribute>
+      <attribute name="DataChannelName">jbm-data</attribute>
+      <attribute name="ChannelPartitionName">${jboss.partition.name:DefaultPartition}-JMS</attribute>
+   </mbean>
+
+   <!-- Messaging JMS User Manager MBean config
+        ======================================= -->
+
+   <mbean code="org.jboss.jms.server.plugin.JDBCJMSUserManagerService"
+      name="jboss.messaging:service=JMSUserManager"
+      xmbean-dd="xmdesc/JMSUserManager-xmbean.xml">
+
+      <depends>jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
+
+      <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+
+      <attribute name="DataSource">java:/DefaultDS</attribute>
+
+      <attribute name="CreateTablesOnStartup">true</attribute>
+
+      <attribute name="SqlProperties"><![CDATA[
+CREATE_USER_TABLE=CREATE TABLE JBM_USER (USER_ID VARCHAR(32) NOT NULL, PASSWD VARCHAR(32) NOT NULL, CLIENTID VARCHAR(128), PRIMARY KEY(USER_ID))
+CREATE_ROLE_TABLE=CREATE TABLE JBM_ROLE (ROLE_ID VARCHAR(32) NOT NULL, USER_ID VARCHAR(32) NOT NULL, PRIMARY KEY(USER_ID, ROLE_ID))
+SELECT_PRECONF_CLIENTID=SELECT CLIENTID FROM JBM_USER WHERE USER_ID=?
+POPULATE.TABLES.1  = INSERT INTO JBM_USER (USER_ID, PASSWD) VALUES ('guest', 'guest')
+POPULATE.TABLES.2  = INSERT INTO JBM_USER (USER_ID, PASSWD) VALUES ('j2ee', 'j2ee')
+POPULATE.TABLES.3  = INSERT INTO JBM_USER (USER_ID, PASSWD, CLIENTID) VALUES ('john', 'needle', 'DurableSubscriberExample')
+POPULATE.TABLES.4  = INSERT INTO JBM_USER (USER_ID, PASSWD) VALUES ('nobody', 'nobody')
+POPULATE.TABLES.5  = INSERT INTO JBM_USER (USER_ID, PASSWD) VALUES ('dynsub', 'dynsub')
+POPULATE.TABLES.6  = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('guest','guest')
+POPULATE.TABLES.7  = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('j2ee','guest')
+POPULATE.TABLES.8  = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('john','guest')
+POPULATE.TABLES.9  = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('subscriber','john')
+POPULATE.TABLES.10 = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('publisher','john')
+POPULATE.TABLES.11 = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('publisher','dynsub')
+POPULATE.TABLES.12 = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('durpublisher','john')
+POPULATE.TABLES.13 = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('durpublisher','dynsub')
+POPULATE.TABLES.14 = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('noacc','nobody')
+      ]]></attribute>
+   </mbean>
+
+</server>

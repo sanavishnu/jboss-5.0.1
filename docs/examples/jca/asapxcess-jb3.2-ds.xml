@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- configuration for aSAPXcess SAP adapter for jboss 3.2 -->
+<!-- ==================================================================== -->
+<!-- aSAPXcess adapter configuration for SAP R3                           -->
+<!-- Contact: aif_support@asapsolutions.com                               -->
+<!--                                                                      -->
+<!-- ==================================================================== -->
+<connection-factories>
+    <!-- mbean for adding license in the classpath. Add absolute path for the folder containing the aSAPXcessLicense.txt file 
+         i.e. file:D:/aSAPXCess_Jboss3.2/properties/ for windows    
+          i.e. file:/usr/home/aSAPXCess_Jboss3.2/properties/ for linux/solaris  
+    -->
+    <mbean code="org.jboss.deployment.ClasspathExtension" name="jboss.aSAPXcess:service=license">
+        <attribute name="MetadataURL">file:<add_properties_folder_path_here/></attribute>
+    </mbean>
+
+    <tx-connection-factory>
+        <depends>jboss.aSAPXcess:service=license</depends>    
+        <jndi-name>aSAPXcess</jndi-name>
+        <local-transaction/>
+        <adapter-display-name>aSAPXcess</adapter-display-name>
+        <config-property name="LogConfigFile" type="java.lang.String">ASAP_SAP_1_0.xml</config-property>
+        <config-property name="RootLogContext" type="java.lang.String">ASAP_SAP_1_0</config-property>
+        <config-property name="LogLevel" type="java.lang.String">WARN</config-property>
+        <config-property name="MessageBundleBase" type="java.lang.String">ASAP_SAP_1_0</config-property>
+        <config-property name="LanguageCode" type="java.lang.String">en</config-property>
+        <config-property name="CountryCode" type="java.lang.String">US</config-property>
+        <config-property name="UserName" type="java.lang.String"></config-property>
+        <config-property name="Password" type="java.lang.String"></config-property>
+        <config-property name="ClientNumber" type="java.lang.String"></config-property>
+        <config-property name="ServerName" type="java.lang.String"></config-property>
+        <config-property name="SystemNumber" type="java.lang.String"></config-property>
+        <config-property name="GatewayServerName" type="java.lang.String"></config-property>
+        <config-property name="GatewayServiceNumber" type="java.lang.String"></config-property>
+        <config-property name="SystemName" type="java.lang.String"></config-property>
+        <config-property name="MessageServerName" type="java.lang.String"></config-property>
+        <config-property name="GroupName" type="java.lang.String"></config-property>
+        <config-property name="ConnectionURL" type="java.lang.String"></config-property>
+
+        <min-pool-size>0</min-pool-size>
+        <max-pool-size>64</max-pool-size>
+            
+        <blocking-timeout-millis>5000</blocking-timeout-millis>
+        <idle-timeout-minutes>15</idle-timeout-minutes>
+
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+
+        <!-- pooling criteria.  USE AT MOST ONE-->
+        <!--  If you don't use JAAS login modules or explicit login 
+         getConnection(usr,pw) but rely on user/pw specified above, 
+         don't specify anything here -->
+
+        <!-- If you supply the usr/pw from a JAAS login module 
+        <security-domain>MySecurityDomain</security-domain>
+        -->
+        <!-- if your app supplies the usr/pw explicitly getConnection(usr, pw) 
+        <application-managed-security/>
+        -->
+    </tx-connection-factory>
+</connection-factories>
+

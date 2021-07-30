@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   The JBossVFS initializer configuration.
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <bean name="VFSCache">
+    <constructor factoryClass="org.jboss.virtual.spi.cache.VFSCacheFactory" factoryMethod="getInstance">
+      <!-- Use the CombinedVFSCache implementation -->
+      <parameter>org.jboss.virtual.plugins.cache.CombinedVFSCache</parameter>
+    </constructor>
+    <start ignored="true"/>
+    <property name="permanentRoots">
+      <map keyClass="java.net.URL" valueClass="org.jboss.virtual.spi.ExceptionHandler">
+        <entry>
+          <key>${jboss.lib.url}</key>
+          <value><null/></value>
+        </entry>
+        <entry>
+          <key>${jboss.common.lib.url}</key>
+          <value><inject bean="VfsNamesExceptionHandler"/></value>
+        </entry>
+        <entry>
+          <key>${jboss.server.lib.url}</key>
+          <value><inject bean="VfsNamesExceptionHandler"/></value>
+        </entry>
+        <entry>
+          <key>${jboss.server.home.url}deploy</key>
+          <value><inject bean="VfsNamesExceptionHandler"/></value>
+        </entry>
+      </map>
+    </property>
+    <property name="realCache">
+      <bean class="org.jboss.virtual.plugins.cache.IterableTimedVFSCache"/>
+    </property>
+  </bean>
+
+  <bean name="VfsNamesExceptionHandler" class="org.jboss.virtual.plugins.context.helpers.NamesExceptionHandler">
+    <constructor>
+      <parameter class="java.lang.String">sqljdbc.jar</parameter>
+    </constructor>
+  </bean>
+
+</deployment>

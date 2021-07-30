@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==================================================================== -->
+<!-- Core HAParition Service Used for intra-cluster group RPCs            -->
+<!-- ==================================================================== -->
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+   
+   <!-- ==================================================================== -->
+   <!-- Cluster Partition: defines cluster                                   -->
+   <!-- ==================================================================== -->
+
+   <!-- 
+      HA services use a Cache for state management; this bean shields
+      HAPartition from having to directly use the JBoss Cache API.
+    -->
+   <bean name="HAPartitionCacheHandler"
+         class="org.jboss.ha.framework.server.HAPartitionCacheHandlerImpl">
+         <property name="cacheManager"><inject bean="CacheManager"/></property>
+         <property name="cacheConfigName">ha-partition</property>
+   </bean>
+   
+   <bean name="HAPartition"
+   		 class="org.jboss.ha.framework.server.ClusterPartition">     
+
+      <depends>jboss:service=Naming</depends>
+    	 
+      <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=HAPartition,partition=${jboss.partition.name:DefaultPartition}", exposedInterface=org.jboss.ha.framework.server.ClusterPartitionMBean.class, registerDirectly=true)</annotation>
+      
+   	<!-- ClusterPartition requires a Cache for state management -->
+      <property name="cacheHandler"><inject bean="HAPartitionCacheHandler"/></property>
+               
+      <!-- Name of the partition being built -->
+      <property name="partitionName">${jboss.partition.name:DefaultPartition}</property>
+         
+      <!-- The address used to determine the node name -->
+      <property name="nodeAddress">${jboss.bind.address}</property>
+              
+      <!-- Max time (in ms) to wait for state transfer to complete. Increase for large states -->
+      <property name="stateTransferTimeout">30000</property>
+              
+      <!-- Max time (in ms) to wait for RPC calls to complete. -->
+      <property name="methodCallTimeout">60000</property>
+      
+      <!-- Optionally provide a thread source to allow async connect of our channel -->
+      <property name="threadPool"><inject bean="jboss.system:service=ThreadPool"/></property>
+      
+      <property name="distributedStateImpl">
+	      <bean name="DistributedState"
+	   		 class="org.jboss.ha.framework.server.DistributedStateImpl">	      
+	      	<annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=DistributedState,partitionName=${jboss.partition.name:DefaultPartition}", exposedInterface=org.jboss.ha.framework.server.DistributedStateImplMBean.class, registerDirectly=true)</annotation>
+	      	<property name="cacheHandler"><inject bean="HAPartitionCacheHandler"/></property>	               
+   		</bean>
+      </property>
+      
+   </bean>
+   
+   <!--  Expose the DRM for management -->
+   <bean name="DistributedReplicantManager"
+         class="org.jboss.ha.framework.server.DistributedReplicantManagerImpl">      
+       <annotation>@org.jboss.aop.microcontainer.aspects.jmx.JMX(name="jboss:service=DistributedReplicantManager,partitionName=${jboss.partition.name:DefaultPartition}", exposedInterface=org.jboss.ha.framework.server.DistributedReplicantManagerImplMBean.class, registerDirectly=true)</annotation>
+       <constructor factoryMethod="getDistributedReplicantManagerImpl">
+          <factory bean="HAPartition"/>
+       </constructor>
+   </bean>
+   
+</deployment>

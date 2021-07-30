@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Log Bridge support beans
+-->
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+    <!-- JMX notifier to trigger a resync with JDK log levels when the log4j config changes-->
+
+    <bean name="LogBridgeNotifier" class="org.jboss.logbridge.LogNotificationListener">
+        <property name="logBridgeHandler"><inject bean="LogBridgeHandler"/></property>
+        <property name="MBeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+        <property name="loggingMBeanName">jboss.system:service=Logging,type=Log4jService</property>
+        <depends>jboss.system:service=Logging,type=Log4jService</depends>
+    </bean>
+</deployment>

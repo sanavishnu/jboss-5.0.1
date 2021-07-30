@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   XML Schema used by DeploymentManager
+   when loading configuration templates
+   
+   $Revision: 28076 $
+   
+   Authors
+      <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
+-->
+<xsd:schema
+   targetNamespace="http://www.jboss.org/" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns="http://www.w3.org/2001/XMLSchema">
+
+   <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+         XML Schema used by DeploymentManager
+         when loading configuration templates.
+      </xsd:documentation>
+   </xsd:annotation>
+
+   <xsd:element name="template-config">
+      <xsd:complexType>
+        <xsd:sequence>
+          
+          <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+
+          <xsd:element name="property-list" minOccurs="0" maxOccurs="1">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="property" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:complexType>
+                    <xsd:sequence>                  
+                      <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                      <xsd:element name="default-value" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="name" type="string" use="required"/>
+                    <xsd:attribute name="type" type="string" use="optional" default="java.lang.String"/>
+                    <xsd:attribute name="optional" type="string" use="optional"/>                    
+                  </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+
+          <xsd:element name="template-list" minOccurs="0" maxOccurs="1">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="template" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:complexType>
+                    <xsd:attribute name="input" type="string" use="required"/>
+                    <xsd:attribute name="output" type="string" use="required"/>
+                  </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+
+        </xsd:sequence>                  
+        <xsd:attribute name="template"  type="string" use="optional"/>
+        <xsd:attribute name="copydir"   type="string" use="optional"/>
+        <xsd:attribute name="extension" type="string" use="optional"/>          
+      </xsd:complexType>
+      
+   </xsd:element>
+
+</xsd:schema>

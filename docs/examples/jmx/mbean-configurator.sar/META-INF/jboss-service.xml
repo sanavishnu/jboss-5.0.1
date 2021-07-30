@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: jboss-service.xml 77027 2008-08-13 19:02:27Z bstansberry@jboss.com $ -->
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  MBeanConfigurator will listen for any mbeans to be registered                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<server>
+   <mbean code="org.jboss.jmx.examples.configuration.SampleMBeanConfigurator"
+      name="jboss.jmx:service=MBeanConfigurator">
+      
+      <attribute name="ServiceBindingManager"><inject bean="ServiceBindingManager"/></attribute>
+      <attribute name="SampleServiceObjectName">sample:name=SampleConfig</attribute>
+      
+   </mbean>
+
+   <!-- Sample service mbean whose only task is to create another -->
+   <!-- sample mbean (not a service) and register it with the     -->
+   <!-- mbean server, which is referenced in the                  -->
+   <!-- sample-binding.xml, and thus it's attribute set.          -->
+   <mbean code="org.jboss.jmx.examples.configuration.SampleService"
+      name="sample:service=SampleService">
+      <depends>jboss.jmx:service=MBeanConfigurator</depends>
+   </mbean>
+
+
+</server>

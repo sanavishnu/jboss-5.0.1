@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!--
+  $Id: notifications.xml 44604 2006-05-06 23:24:39Z dimitris $
+  
+  This configuration file controls the mapping of JMX notification
+  onto SNMP traps. The key for the mapping is considered to be the
+  notification type. The mapping concerns:
+  
+  1. Generic trap id
+  2. Specific trap id
+  3. Enterprise OID
+  4. The trap payload comprised of notification variables
+     mapped to specific OIDs.
+     
+  Notification extractor classes may be used to extract info from
+  arbitrary notification subclasses.
+  
+  This is the most complex part of the SNMP adaptor configuration.
+  
+  For more information on using or extending this mechanism, 
+  please consult the jboss documentation or the source code.
+-->
+<notification-map-list>
+   
+  <mapping>
+    <notification-type>jboss.snmp.agent.heartbeat</notification-type>
+    <generic>3</generic>
+    <specific>0</specific>
+    <enterprise>1.2.3.4.5.6.7</enterprise>
+    <var-bind-list wrapper-class="org.jboss.jmx.adaptor.snmp.agent.NotificationWrapperSupport">
+      <var-bind>
+        <tag>a:uptime</tag>
+        <oid>1.2.3.4.5.6.7.5</oid>
+      </var-bind>
+      <var-bind>
+        <tag>a:trapCount</tag>
+        <oid>1.2.3.4.5.6.7.6</oid>
+      </var-bind>
+      <var-bind>
+        <tag>n:message</tag>
+        <oid>1.2.3.4.5.6.7.7</oid>
+      </var-bind>
+      <var-bind>
+        <tag>n:sequenceNumber</tag>
+        <oid>1.2.3.4.5.6.7.8</oid>
+      </var-bind>
+    </var-bind-list>               
+  </mapping>        
+        
+  <mapping>
+    <notification-type>jboss.snmp.agent.coldstart</notification-type>
+    <generic>0</generic>
+    <specific>0</specific>
+    <enterprise>1.2.3.4.5.6.7</enterprise>
+    <var-bind-list wrapper-class="org.jboss.jmx.adaptor.snmp.agent.NotificationWrapperSupport">
+      <var-bind>
+        <tag>a:startTime</tag>
+        <oid>1.2.3.4.5.6.7.9</oid>
+      </var-bind>
+      <var-bind>
+        <tag>a:trapCount</tag>
+        <oid>1.2.3.4.5.6.7.6</oid>
+      </var-bind>
+    </var-bind-list>               
+  </mapping>
+
+</notification-map-list>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jaxrpc-config xmlns="urn:jboss:jaxrpc-config:2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:j2ee="http://java.sun.com/xml/ns/j2ee"
+  xsi:schemaLocation="urn:jboss:jaxrpc-config:2.0 schema/jaxrpc-config_2_0.xsd">
+  
+  <client-config>
+    <config-name>Standard Client</config-name>
+  </client-config>
+  
+  <client-config>
+    <config-name>Standard MTOM client</config-name>
+    <feature>http://org.jboss.ws/mtom</feature>
+  </client-config>
+  
+  <client-config>
+    <config-name>Standard WSAddressing Client</config-name>
+    <post-handler-chain>
+      <handler-chain-name>WSAddressing Handlers</handler-chain-name>
+      <handler>
+        <j2ee:handler-name>WSAddressingClientHandler</j2ee:handler-name>
+        <j2ee:handler-class>org.jboss.ws.extensions.addressing.jaxrpc.WSAddressingClientHandler</j2ee:handler-class>
+      </handler>
+    </post-handler-chain>
+  </client-config>
+  
+  <client-config>
+    <config-name>Standard WSSecurity Client</config-name>
+    <post-handler-chain>
+      <handler-chain-name>WSSecurity Handlers</handler-chain-name>
+      <handler>
+        <j2ee:handler-name>WSSecurityHandlerOutbound</j2ee:handler-name>
+        <j2ee:handler-class>org.jboss.ws.extensions.security.jaxrpc.WSSecurityHandlerOutbound</j2ee:handler-class>
+      </handler>
+    </post-handler-chain>
+  </client-config>
+  
+</jaxrpc-config>

@@ -1,0 +1,85 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  
+  <system systemId="http://java.sun.com/xml/ns/j2ee/application_1_4.xsd" uri="../../../docs/schema/application_1_4.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/j2ee/application-client_1_4.xsd" uri="../../../docs/schema/application-client_1_4.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd" uri="../../../docs/schema/connector_1_5.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd" uri="../../../docs/schema/ejb-jar_2_1.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/j2ee/j2ee_1_4.xsd" uri="../../../docs/schema/j2ee_1_4.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" uri="../../../docs/schema/web-app_2_4.xsd"/>
+  <system systemId="http://schemas.xmlsoap.org/soap/encoding/" uri="../../../docs/schema/soap-encoding_1_1.xsd"/>
+  <system systemId="http://www.ibm.com/webservices/xsd/j2ee_web_services_client_1_1.xsd" uri="../../../docs/schema/j2ee_web_services_client_1_1.xsd"/>
+  <system systemId="http://www.ibm.com/webservices/xsd/j2ee_web_services_1_1.xsd" uri="../../../docs/schema/j2ee_web_services_1_1.xsd"/>
+  <system systemId="http://www.ibm.com/webservices/xsd/j2ee_jaxrpc_mapping_1_1.xsd" uri="../../../docs/schema/j2ee_jaxrpc_mapping_1_1.xsd"/>
+  <system systemId="http://www.w3.org/2001/xml.xsd" uri="../../../docs/schema/xml.xsd"/>
+  <system systemId="http://www.w3.org/2005/05/xmlmime" uri="../../../docs/schema/xml-media-types.xsd"/>
+  
+  <!--  ejb related -->
+  <public publicId="-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN" uri="../../../docs/dtd/ejb-jar.dtd"/>
+  <public publicId="-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" uri="../../../docs/dtd/ejb-jar_2_0.dtd"/>
+  <!--  ear stuff -->
+  <public publicId="-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN" uri="../../../docs/dtd/application_1_2.dtd"/>
+  <public publicId="-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN" uri="../../../docs/dtd/application_1_3.dtd"/>
+  <public publicId="-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.3//EN" uri="../../../docs/dtd/application-client_1_3.dtd"/>
+  <!--  connector descriptors -->
+  <public publicId="-//Sun Microsystems, Inc.//DTD Connector 1.0//EN" uri="../../../docs/dtd/connector_1_0.dtd"/>
+  <!--  war meta-data -->
+  <public publicId="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" uri="../../../docs/dtd/web-app_2_2.dtd"/>
+  <public publicId="-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" uri="../../../docs/dtd/web-app_2_3.dtd"/>
+  <!--  jboss-specific -->
+  <public publicId="-//JBoss//DTD J2EE Application 1.3//EN" uri="../../../docs/dtd/jboss-app_3_0.dtd"/>
+  <public publicId="-//JBoss//DTD J2EE Application 1.3V2//EN" uri="../../../docs/dtd/jboss-app_3_2.dtd"/>
+  <public publicId="-//JBoss//DTD J2EE Application 1.4//EN" uri="../../../docs/dtd/jboss-app_4_0.dtd"/>
+  <public publicId="-//JBoss//DTD JAWS//EN" uri="../../../docs/dtd/jaws.dtd"/>
+  <public publicId="-//JBoss//DTD JAWS 2.4//EN" uri="../../../docs/dtd/jaws_2_4.dtd"/>
+  <public publicId="-//JBoss//DTD JAWS 3.0//EN" uri="../../../docs/dtd/jaws_3_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS//EN" uri="../../../docs/dtd/jboss.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS 2.4//EN" uri="../../../docs/dtd/jboss_2_4.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS 3.0//EN" uri="../../../docs/dtd/jboss_3_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS 3.2//EN" uri="../../../docs/dtd/jboss_3_2.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS 4.0//EN" uri="../../../docs/dtd/jboss_4_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS 5.0//EN" uri="../../../docs/dtd/jboss_5_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSSCMP-JDBC 3.0//EN" uri="../../../docs/dtd/jbosscmp-jdbc_3_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSSCMP-JDBC 3.2//EN" uri="../../../docs/dtd/jbosscmp-jdbc_3_2.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSSCMP-JDBC 4.0//EN" uri="../../../docs/dtd/jbosscmp-jdbc_4_0.dtd"/>
+  <public publicId="-//JBoss//DTD Web Application 2.2//EN" uri="../../../docs/dtd/jboss-web.dtd"/>
+  <public publicId="-//JBoss//DTD Web Application 2.3//EN" uri="../../../docs/dtd/jboss-web_3_0.dtd"/>
+  <public publicId="-//JBoss//DTD Web Application 2.3V2//EN" uri="../../../docs/dtd/jboss-web_3_2.dtd"/>
+  <public publicId="-//JBoss//DTD Web Application 2.4//EN" uri="../../../docs/dtd/jboss-web_4_0.dtd"/>
+  <public publicId="-//JBoss//DTD Web Application 5.0//EN" uri="../../../docs/dtd/jboss-web_5_0.dtd"/>
+  <public publicId="-//JBoss//DTD Application Client 3.2//EN" uri="../../../docs/dtd/jboss-client_3_2.dtd"/>
+  <public publicId="-//JBoss//DTD Application Client 4.0//EN" uri="../../../docs/dtd/jboss-client_4_0.dtd"/>
+  <public publicId="-//JBoss//DTD Application Client 5.0//EN" uri="../../../docs/dtd/jboss-client_5_0.dtd"/>
+  <public publicId="-//JBoss//DTD MBean Service 3.2//EN" uri="../../../docs/dtd/jboss-service_3_2.dtd"/>
+  <public publicId="-//JBoss//DTD MBean Service 4.0//EN" uri="../../../docs/dtd/jboss-service_4_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS XMBEAN 1.0//EN" uri="../../../docs/dtd/jboss_xmbean_1_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS XMBEAN 1.1//EN" uri="../../../docs/dtd/jboss_xmbean_1_1.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS XMBEAN 1.2//EN" uri="../../../docs/dtd/jboss_xmbean_1_2.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS Security Config 3.0//EN" uri="../../../docs/dtd/security_config.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS JCA Config 1.0//EN" uri="../../../docs/dtd/jboss-ds_1_0.dtd"/>
+  <public publicId="-//JBoss//DTD JBOSS JCA Config 1.5//EN" uri="../../../docs/dtd/jboss-ds_1_5.dtd"/>
+  <system systemId="http://www.jboss.org/j2ee/schema/security-config_4_0.xsd" uri="../../../docs/schema/security-config_4_0.xsd"/>
+  <system systemId="urn:jboss:aop-deployer" uri="../../../docs/schema/aop-deployer_1_1.xsd"/>
+  <system systemId="urn:jboss:aop-beans:1.0" uri="../../../docs/schema/aop-beans_1_0.xsd"/>
+  <system systemId="urn:jboss:bean-deployer" uri="../../../docs/schema/bean-deployer_1_0.xsd"/>
+  <system systemId="urn:jboss:bean-deployer:2.0" uri="../../../docs/schema/bean-deployer_2_0.xsd"/>
+  <system systemId="urn:jboss:javabean:1.0" uri="../../../docs/schema/javabean_1_0.xsd"/>
+  <system systemId="urn:jboss:security-config:4.1" uri="../../../docs/schema/security-config_4_1.xsd"/>
+  <system systemId="urn:jboss:security-config:5.0" uri="../../../docs/schema/security-config_5_0.xsd"/>
+  <system systemId="urn:jboss:jndi-binding-service:1.0" uri="../../../docs/schema/jndi-binding-service_1_0.xsd"/>
+  <system systemId="urn:jboss:jbossws-config:5.0" uri="../../../docs/schema/jbossws-config_1_0.xsd"/>
+  <system systemId="urn:jboss:user-roles:1.0" uri="../../../docs/schema/user-roles_1_0.xsd"/>
+  <!-- xml -->
+  <public publicId="-//W3C//DTD/XMLSCHEMA 200102//EN" uri="../../../docs/dtd/XMLSchema.dtd"/>
+  <system systemId="http://www.w3.org/2001/XMLSchema.dtd" uri="../../../docs/dtd/XMLSchema.dtd"/>
+  <!-- // This dtd doesn't have a publicId - see XMLSchema.dtd -->
+  <system systemId="datatypes" uri="../../../docs/dtd/datatypes.dtd"/>
+  <system systemId="http://www.w3.org/XML/1998/namespace" uri="../../../docs/schema/xml.xsd"/>
+  
+  <!-- ejb3 + jee5 related-->
+  <system systemId="http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" uri="../../../docs/schema/ejb-jar_3_0.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/javaee/javaee_web_services_client_1_2.xsd" uri="../../../docs/schema/javaee_web_services_client_1_2.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/javaee/javaee_5.xsd" uri="../../../docs/schema/javaee_5.xsd"/>
+  <system systemId="http://www.jboss.org/j2ee/schema/jboss_5_0.xsd" uri="../../../docs/schema/jboss_5_0.xsd"/>
+  <system systemId="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" uri="../../../docs/schema/web-app_2_5.xsd"/>
+  
+</catalog>

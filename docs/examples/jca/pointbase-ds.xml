@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example of the pointbase 4.8 datasource configuration -->
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: pointbase-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+
+<datasources>
+   <local-tx-datasource>
+      <jndi-name>DefaultDS</jndi-name>
+      <connection-url>jdbc:pointbase:server://@pointbase.server@:@pointbase.port/pointbase.dbName@,new</connection-url>
+      <driver-class>com.pointbase.jdbc.jdbcUniversalDriver</driver-class>
+      <user-name>@pointbase.user@</user-name>
+      <password>@pointbase.passwd@</password>
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+      <metadata>
+         <type-mapping>PointBase</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+
+</datasources>

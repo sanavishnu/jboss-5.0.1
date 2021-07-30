@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<!-- DataSource config for JBoss application -->
+<datasources>
+
+    <local-tx-datasource>
+        <jndi-name>DefaultDS</jndi-name>
+        <connection-url>jdbc:mysql://192.168.0.101:3306/jbossdbdev?useUnicode=true&amp;characterEncoding=UTF-8</connection-url>
+        <driver-class>com.mysql.jdbc.Driver</driver-class>
+        <user-name>admin</user-name>
+        <password>.admin.</password>
+        <min-pool-size>5</min-pool-size>
+        <max-pool-size>50</max-pool-size>
+        <blocking-timeout-millis>5000</blocking-timeout-millis>
+        <idle-timeout-minutes>30</idle-timeout-minutes>
+		<transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
+        <valid-connection-checker-class-name>com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker
+        </valid-connection-checker-class-name>
+        <exception-sorter-class-name>com.mysql.jdbc.integration.jboss.ExtendedMysqlExceptionSorter
+        </exception-sorter-class-name>
+        <metadata>
+            <type-mapping>mySQL</type-mapping>
+        </metadata>
+    </local-tx-datasource>
+
+</datasources>

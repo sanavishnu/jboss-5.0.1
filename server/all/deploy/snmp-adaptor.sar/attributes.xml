@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+  $Id: attributes.xml 46153 2006-07-10 14:15:29Z pilhuhn $
+  
+  This configuration file controls the mapping of JMX mbean attributes
+  to SNMP OIDs accessible through the snmp-adapter.
+  
+  For each MBean listed, you can add an oid-prefix, that will be
+  prepended to the attribute oid. If no oid-prefix is defined,
+  the attribute oid is used literally.
+-->  
+<attribute-mappings>
+   
+   <!-- basic system information -->
+   <mbean name="jboss.system:type=ServerInfo" oid-prefix=".1.2.3.4.1">
+      <attribute name="ActiveThreadCount" oid=".1"/>
+      <attribute name="FreeMemory" oid=".2"/>
+      <attribute name="MaxMemory" oid=".3"/>
+   </mbean>
+
+   <mbean name="jboss.system:service=ThreadPool">
+      <attribute name="QueueSize" oid=".1.2.3.4.1.4"/>
+   </mbean>
+   
+   <!-- tomcat global http request processing -->
+   <mbean name="jboss.web:name=http-0.0.0.0-8080,type=GlobalRequestProcessor">
+      <attribute name="requestCount" oid=".1.2.3.4.1.5"/>
+   </mbean>
+   
+   <!-- Tx Manager statistics -->
+   <mbean name="jboss:service=TransactionManager">
+      <attribute name="CommitCount" oid=".1.2.3.4.1.6"/>
+      <attribute name="RollbackCount" oid=".1.2.3.4.1.7"/>
+      <attribute name="TransactionCount" oid=".1.2.3.4.1.8"/>
+   </mbean>
+   
+   <!-- DefaultDS statistics -->
+   <mbean name="jboss.jca:name=DefaultDS,service=ManagedConnectionPool" oid-prefix=".1.2.3.4.1">
+      <attribute name="InUseConnectionCount" oid=".9"/>
+	  <attribute name="MaxConnectionsInUseCount" oid=".10"/>
+   </mbean>
+
+   <!-- system information group see RFC-1213 -->
+   <mbean name="jboss.jmx:name=SnmpAgent,service=MIB2SystemGroup" oid-prefix=".1.3.6.1.2.1.1">
+      <attribute name="SysDescr" oid=".1" mode="rw"/> <!-- can be modified over snmp -->
+      <attribute name="SysObjectId" oid=".2"/>
+      <attribute name="SysUpTime" oid=".3"/>
+	  <attribute name="SysContact" oid=".4"/>
+	  <attribute name="SysName" oid=".5"/>
+	  <attribute name="SysLocation" oid=".6"/>
+	  <attribute name="SysServices" oid=".7"/>
+   </mbean>
+   
+</attribute-mappings>

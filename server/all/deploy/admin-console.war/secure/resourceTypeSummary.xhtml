@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Embedded Jopr Project
+  ~ Copyright (C) 2006-2009 Red Hat, Inc.
+  ~ All rights reserved.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:s="http://jboss.com/products/seam/taglib"
+        xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+        >
+
+<body>
+<f:view>
+    <ui:composition template="/layout.xhtml">
+
+        <ui:define name="pagetitle">#{resourceType.name}</ui:define>
+
+        <ui:define name="tabmenu">
+            <ui:include src="/include/tabMenu.xhtml">
+                <ui:param name="activeTab" value="summary"/>
+            </ui:include>
+        </ui:define>
+
+        <ui:define name="body">
+
+            <div class="tabmenubox">
+
+                <ui:include src="../include/displayGlobalMessages.xhtml"/>
+
+                <div class="instructionalText">
+                    #{resourceType.description}
+                </div>
+                <div class="actionHeader">
+                    <h:form id="actionHeaderForm" rendered="#{resourceType.creatable}" style="text-align: right;">
+                        <s:button rendered="#{resourceType.creationDataType ne 'CONTENT'}"
+                                  id="addNewNotContent"
+                                  action="#{templateDropDownPopulator.getTemplateDropDownEntriesByResourceType()}"
+                                  value="#{messages['summary.resourceType.addNew']}" styleClass="buttonmed">
+                            <f:param name="selectedResourceTypeName" value="#{resourceType.name}"/>
+                        </s:button>
+
+                        <s:button rendered="#{resourceType.creationDataType eq 'CONTENT'}"
+                                  id="addNewContent"
+                                  action="#{createContentBackedResourceAction.init()}"
+                                  value="#{messages['summary.resourceType.addNew']}" styleClass="buttonmed"/>
+                    </h:form>
+                    <h:outputLabel rendered="#{!resourceType.creatable}"
+                                   value="#{messages['resourcetype.no.action']}"/>
+                </div>
+                <h:form id="resourceSummaryForm">
+                    <!-- TODO: need to add checkboxes and addNew / Delete actions -->
+                    <rich:dataTable
+                            id="dataTable"
+                            rows="#{tableManager.numRows}"
+                            value="#{resources}"
+                            var="resourceItem"
+                            styleClass="controlTable"
+                            rowClasses="oddRow,evenRow"
+                            columnClasses="rich-table-cell, rich-table-cell, rich-table-cell-action">
+                        <f:facet name="header">
+                            <rich:columnGroup>
+                                <rich:column>
+                                    <h:outputText value="Name"/>
+                                </rich:column>
+                                <rich:column>
+                                    <h:outputText value="Status"/>
+                                </rich:column>
+                                <rich:column>
+                                    <h:outputText value="Actions"/>
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                        <rich:column>
+                            <!-- TODO: style should be either link-avilable or link-unavailable -->
+                            <s:link id="resourceName"
+                                    value="#{resourceItem.name}"
+                                    view="/secure/summary.xhtml"
+                                    styleClass="link-available">
+                                <f:param name="path"
+                                         value="#{navigationAction.getResourcePath(resourceItem.resource.id)}"/>
+                            </s:link>
+                        </rich:column>
+                        <!-- TODO:  need to figure out what other columns to add that are specific to this resourceType -->
+                        <rich:column>
+                            <h:outputText id="availability" value="#{resourceItem.availability}"/>
+                        </rich:column>
+                        <rich:column>
+                            <ui:param name="confirmDeleteMessage"
+                                      value="#{messages['summary.resourceType.confirmDelete']}"/>
+                            <s:button id="removeButton"
+                                      action="#{resourceCRUDAction.removeResourceAction()}" value="Delete"
+                                      onclick="if (!confirm('#{confirmDeleteMessage}')) return false;"
+                                      rendered="#{resourceItem.resource.resourceType.deletable}"
+                                      styleClass="buttonsmall">
+                                <f:param name="resourceId" value="#{resourceItem.resource.id}"/>
+                            </s:button>
+                        </rich:column>
+                        <f:facet name="footer"><h:graphicImage value="images/spacer.gif"/>
+                        </f:facet>
+                    </rich:dataTable>
+
+                    <ui:param name="paginationDataModel" value="#{resources}"/>
+                    <ui:param name="paginationDataTableName" value="dataTable"/>
+                    <ui:include src="../include/resourceDataScroller.xhtml"/>
+                </h:form>
+
+            </div>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</body>
+</html>

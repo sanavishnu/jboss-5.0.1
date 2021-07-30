@@ -1,0 +1,198 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.jopr</groupId>
+        <artifactId>jopr-embedded-parent</artifactId>
+        <version>1.2.0.GA</version>
+    </parent>
+
+    <groupId>org.jboss.jopr</groupId>
+    <artifactId>jopr-embedded-jbas5</artifactId>
+    <packaging>war</packaging>
+    <name>JBossAS 5.x Administration Console</name>
+
+    <scm>
+        <connection>scm:svn:http://anonsvn.jboss.org/repos/embjopr/tags/EmbJopr_1_2_0_GA/jbas5</connection>
+        <developerConnection>scm:svn:https://svn.jboss.org/repos/embjopr/tags/EmbJopr_1_2_0_GA/jbas5</developerConnection>
+    </scm>
+
+    <properties>
+        <warDir>${basedir}/target/${project.build.finalName}</warDir>
+        <warFile>${warDir}.war</warFile>
+        <contextRoot>admin-console</contextRoot>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.jopr</groupId>
+            <artifactId>jopr-embedded-core</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${jbas5.finalName}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dist-plugins</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${warDir}/plugins</outputDirectory>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${jopr.groupId}</groupId>
+                                    <artifactId>jopr-jboss-as-5-plugin</artifactId>
+                                    <version>${jopr.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>
+                                ${basedir}/src/main/webapp
+                            </directory>
+                        </resource>
+                    </webResources>
+                    <overlays>
+                        <overlay>
+                            <!-- empty groupId/artifactId detected as the current build.
+                  earlier overlays win over later overlays, so put ourselves first. -->
+                        </overlay>
+                        <overlay>
+                            <groupId>org.jboss.jopr</groupId>
+                            <artifactId>jopr-embedded-core</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                 <artifactId>maven-antrun-plugin</artifactId>
+                 <executions>
+                    <execution>
+                       <phase>package</phase>
+                       <configuration>
+                          <tasks>                             
+                             <echo>*** Overlaying messages...</echo>
+                             <replaceregexp file="${warDir}/WEB-INF/classes/messages.properties" match="product.name=(.*)" replace="product.name=JBoss AS Administration Console" byline="true" />
+                             <replaceregexp file="${warDir}/WEB-INF/classes/messages.properties" match="default.windowTitle=(.*)" replace="default.windowTitle=JBoss AS Administration Console" byline="true" />                                            
+                             <zip destfile="${warFile}" basedir="${warDir}" includes="WEB-INF/classes/messages.properties" update="true" />                             
+                          </tasks>
+                       </configuration>
+                       <goals>
+                           <goal>run</goal>
+                       </goals>
+                    </execution>                    
+                 </executions>
+                 <dependencies>
+                    <dependency>
+                      <groupId>org.apache.ant</groupId>
+                      <artifactId>ant-nodeps</artifactId>
+                      <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.apache.ant</groupId>
+                      <artifactId>ant-apache-regexp</artifactId>
+                      <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                      <artifactId>jakarta-regexp</artifactId>
+                      <groupId>jakarta-regexp</groupId>
+                      <version>1.4</version>
+                    </dependency>
+                 </dependencies>                      
+             </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+
+            <properties>
+                <warDeployDir>${jbas5.configDir}/deploy/${project.build.finalName}.war</warDeployDir>
+            </properties>
+
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+
+                            <execution>
+                                <id>deploy</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <tasks>
+                                        <property name="deployment.dir" location="${warDeployDir}" />
+                                        <echo>*** Copying updated files from
+                                            target${file.separator}${project.build.finalName} to &lt;warDir&gt;...
+                                        </echo>
+                                        <touch file="${basedir}/target/${project.build.finalName}/WEB-INF/classes/messages.properties" />
+                                        <copy todir="${deployment.dir}" verbose="${embedded.verbose}">
+                                            <fileset dir="${basedir}/target/${project.build.finalName}" />
+                                        </copy>
+                                        <unjar src="${project.build.directory}/${project.build.finalName}.war" dest="${deployment.dir}">
+                                            <patternset>
+                                                <include name="META-INF/**" />
+                                            </patternset>
+                                        </unjar>
+
+                                        <!--
+                                        <echo>*** Touching &lt;warDir&gt;/WEB-INF/web.xml to force redeploy...</echo>
+                                        <touch file="${deployment.dir}/WEB-INF/web.xml" />
+                                        -->
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>undeploy</id>
+                                <phase>clean</phase>
+                                <configuration>
+                                    <tasks>
+                                        <property name="deployment.dir" location="${warDeployDir}" />
+                                        <echo>*** Deleting ${deployment.dir}${file.separator}...</echo>
+                                        <delete dir="${deployment.dir}" />
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

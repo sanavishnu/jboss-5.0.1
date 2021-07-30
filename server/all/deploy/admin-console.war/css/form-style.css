@@ -1,0 +1,532 @@
+/*
+ * Embedded Jopr Project
+ * Copyright (C) 2006-2009 Red Hat, Inc.
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+/* ---------------------  configuration screen specific styles  ----------------------- */
+
+/* --------------------- link arrows for the expand all / collapse all feature  --------------- */
+
+.ExpandAllLink {
+    background-image: url(../images/ico_trigger_grey_expand.gif);
+    background-repeat: no-repeat;
+    background-position: 3px 3px;
+    padding-left: 12px;
+}
+
+.CollapseAllLink {
+    background-image: url(../images/ico_trigger_grey_collapse.gif);
+    background-repeat: no-repeat;
+    background-position: 3px 3px;
+    padding-left: 12px;
+}
+
+/* BLOCK & LIST */
+.ListTitle, .BlockTitle {
+    font-size: 1.1em;
+    color: white;
+    font-weight: bold;
+    background-color: #a4b2b9;
+    padding: 12px 0px 10px 10px;
+    border-bottom: 1px solid #8b989f;
+    margin: 0px;
+}
+
+/* Rich faces toggle panel  - overriding styles so that the default richfaces stuff isn't used*/
+.dr-stglpnl-h {
+    background-image: inherit;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+    border-top-style: inherit;
+    border-right-style: inherit;
+    border-left-style: inherit;
+    cursor: inherit;
+    font-family: inherit;
+    border-top-color: inherit;
+    border-right-color: inherit;
+    border-left-color: inherit;
+}
+
+/* Rich faces toggle panel  - overriding styles so that the default richfaces stuff isn't used*/
+.dr-stglpnl-h {
+    background-image: none;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+    border-top-style: none;
+    border-right-style: none;
+    border-left-style: none;
+    cursor: pointer;
+    font-family: Verdana, Arial, sans-serif;
+    border-top-color: inherit;
+    border-right-color: inherit;
+    border-left-color: inherit;
+}
+
+.dr-stglpnl-b {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0px;
+    text-align: inherit;
+    vertical-align: inherit;
+    background-color: inherit;
+}
+
+.dr-stglpnl {
+    border: 0px;
+    border-style: none;
+    border-color: inherit;
+    background-color: inherit;
+    padding: 0px;
+    background-x-position: right;
+    background-y-position: top;
+    background-repeat: no-repeat;
+}
+
+/* BLOCK */
+.BlockContent {
+}
+
+.BlockContentNoPadding {
+    padding: 0px;
+}
+
+/* OVERLOADING -----------------------------------------*/
+.ListTitle, .BlockTitle {
+}
+
+.ListHeader, .tableRowHeader, .tableCellHeader, .ListHeaderInactive, .tableRowInactive, .ListHeaderInactiveSorted, .ListHeaderInactiveCenter, .ListHeaderCheckbox, .ListHeaderSorted, .tableRowSorted {
+    color: #444444;
+    font-size: 9px;
+    font-weight: normal;
+    background-color: #d8d8d8;
+    border-top: solid #ABB1C7;
+    border-bottom: solid #D5D8DE;
+    border-width: 1px
+}
+
+.ListRow, .tableRowEven, .tableRowOdd {
+    background-color: #f4f4f4
+}
+
+/* EXTENSIONS ------------------------------------------*/
+.ListCell a, .tableCell a,
+    .ListCell a:link, .tableCell a:link,
+    .ListCell a:visited, .tableCell a:visited {
+    color: black;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.ListCell a:hover, .tableCell a:hover {
+    text-decoration: underline
+}
+
+/* Show/Hide functionality -----------------------------*/
+.switchcontent {
+    background-color: #D8D8D8;
+    border: 1px solid #A5A5A5;
+    padding: 2px;
+}
+
+.showHideSwitch {
+    cursor: hand;
+    cursor: pointer;
+}
+
+P.compact {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/*--- Resource ---------------------*/
+
+.data-table {
+    width: 100%;
+    border-style: none;
+    border-collapse: collapse;
+    margin: 2px, 2px, 2px, 2px;
+}
+
+.trait-cell {
+    width: 50%;
+    border-style: none;
+    padding: 2px;
+    vertical-align: top;
+}
+
+/*--- Configuration ---------------------*/
+
+.property-group-header {
+    padding: 4px;
+    background: #50667C;
+    color: #FFF;
+}
+
+.property-group-header a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #fff;
+}
+
+.property-group-header a:hover {
+    font-weight: bold;
+    color: #ccc;
+}
+
+.spinner {
+    font-size: .6em;
+    margin-left: 40px;
+}
+
+.group-description-panel {
+    background-color: #DDD;
+}
+
+.group-description-text-panel {
+    padding-left: 10px;
+    font-size: .9em;
+    color: #dae0e4;
+    font-weight: normal;
+}
+
+/* ------------ These are the primary table styles ----------------- */
+
+.properties-table, .nested-properties-table {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border-collapse: collapse;
+    border-style: none;
+    background-color: white;
+}
+
+.properties-table .EvenRow {
+    background-color: white;
+}
+
+.properties-table .OddRow {
+    background-color: #eff4f7;
+}
+
+.nested-properties-table {
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 1px solid #cad0d3;
+}
+
+.properties-table-header-cell {
+    background-color: #d9e0e3;
+    background-image: url(../images/TablePrimary_Norm.gif);
+    background-position: top;
+    background-repeat: repeat-x;
+    font-size: 10px;
+    font-weight: bold;
+    color: #5f6a6f;
+    text-align: left;
+    border-top: 1px solid #e7eaed;
+    border-right: 1px solid #a4b2b9;
+    border-bottom: 1px solid #a4b2b9;
+    border-left: 1px solid #e7eaed;
+    padding: 0px 5px;
+}
+
+.nested-properties-table-header-cell {
+    background-color: #d9e0e3;
+    background-image: url(../images/TableSecondary_Norm.gif);
+    background-position: top;
+    background-repeat: repeat-x;
+    font-size: 10px;
+    font-weight: bold;
+    color: #5f6a6f;
+    text-align: left;
+    border: 1px solid #cad0d3;
+    padding: 0px 5px;
+}
+
+.nested-properties-table-header-cell {
+}
+
+/* removed as unnecessary
+.nested-properties-table-indent-spacer {
+   margin-right: 10px;
+}
+*/
+
+.property-display-name-cell, .property-value-cell, .property-description-cell, .property-enabled-cell, .property-error-cell {
+    border-bottom: 1px solid #e6eaef;
+    padding: 6px;
+    vertical-align: top;
+    line-height: 125%;
+    white-space: normal;
+}
+
+.property-display-name-cell {
+    width: 225px;
+    border-right: 1px solid #d9e0e3;
+}
+
+.property-enabled-cell {
+    width: 22px;
+    text-align: center;
+    border-right: 1px solid #d9e0e3;
+}
+
+.property-value-cell {
+    width: 200px;
+    border-right: 1px solid #d9e0e3;
+}
+
+.property-description-cell {
+}
+
+.list-property-display-name-cell, .list-property-value-cell, .list-property-description-cell, .list-property-enabled-cell, .list-property-error-cell {
+    padding: 4px;
+    vertical-align: top;
+}
+
+.list-property-display-name-cell {
+    width: 200px;
+}
+
+.list-property-value-cell {
+    width: 175px;
+}
+
+.list-property-enabled-cell {
+    width: 22px;
+    text-align: center;
+}
+
+.list-property-children-cell {
+    border-bottom: 1px solid #e6eaef;
+}
+
+.display-name {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.description {
+    font-size: .9em;
+    font-weight: normal;
+}
+
+.required-marker-text {
+    color: #e13333;
+}
+
+ul.radio-group {
+    border: none;
+    list-style-type: none;
+    margin-left: 0;
+    margin-top: 2px;
+    padding-left: 5px;
+    font-size: .8em;
+}
+
+ul.radio-group .unspecified {
+    font-style: italic;
+}
+
+.links {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.note-panel {
+    font-size: .9em;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+.property-display-name-text {
+    font-size: .9em;
+    font-weight: bold;
+    white-space: normal;
+}
+
+/* ------------------ Button spacing -------------------- */
+
+.buttons-table {
+    border-style: none;
+    border-collapse: collapse;
+    margin-top: 6px;
+    margin-left: 6px;
+    margin-bottom: 6px;
+}
+
+.button-cell {
+    padding-right: 6px;
+}
+
+/* ------------------------------------- Buttons styles ------------------------------------------ */
+
+.buttonsmall {
+    font-size: 10px;
+    font-weight: normal;
+    color: #FFFFFF;
+    background-color: #d0a131;
+    border: 1px solid #8d6709;
+    padding: 0px 5px;
+    cursor: pointer;
+}
+
+.buttonmed {
+    font-size: 12px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #d0a131;
+    border: 1px solid #8d6709;
+    padding: 0px 10px;
+    cursor: pointer;
+}
+
+/*--- Inventory ---------------------*/
+
+.resources-table {
+    width: 100%;
+    border-style: none;
+    border-collapse: collapse;
+}
+
+.resource-checkbox, .resource-name-cell, .resource-category-cell, .resource-type-cell, .resource-description-cell, .resource-availability-cell {
+    border-style: none;
+    border-bottom: 1px solid #999;
+    padding: 4px;
+    vertical-align: top;
+}
+
+.resource-checkbox {
+    width: 20px;
+}
+
+.resource-name-cell {
+    width: 170px;
+}
+
+.resource-category-cell {
+    width: 70px;
+}
+
+.resource-type-cell {
+    width: 170px;
+}
+
+.resource-availability-cell {
+    width: 65px;
+    text-align: center;
+}
+
+.resources-control-cell {
+    border-style: none;
+    padding: 4px;
+    vertical-align: top;
+    width: 33%;
+}
+
+.general-props-cell {
+    width: 50%;
+    border-style: none;
+    padding: 4px;
+    vertical-align: top;
+}
+
+/* ----------------------------- INPUT Specific Styles --------------------------------- */
+
+input:disabled {
+    background-color: #e4edf1;
+}
+
+/* ------------------------------ List of Maps Styles ------------------------- */
+
+.property-map-summary-table {
+    margin: 4px 0px 6px 6px;
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #cad0d3;
+
+}
+
+.property-map-summary-data-header-cell {
+    background-color: #d9e0e3;
+    background-image: url(../images/TableSecondary_Norm.gif);
+    background-position: top;
+    background-repeat: repeat-x;
+    font-size: 10px;
+    font-weight: bold;
+    color: #5f6a6f;
+    text-align: left;
+    border: 1px solid #cad0d3;
+    padding: 0px 5px;
+}
+
+.property-map-summary-buttons-cell, .property-map-summary-data-cell {
+    border-bottom: 1px solid #d9e0e3;
+    vertical-align: top;
+    line-height: 125%;
+}
+
+.property-map-summary-data-cell {
+    padding: 6px;
+    border-right: 1px solid #d9e0e3;
+}
+
+.property-map-summary-data-header-cell {
+    width: 110px;
+}
+
+.property-map-summary-data-cell {
+    width: 110px;
+
+}
+
+.property-map-summary-header-text {
+    font-size: .9em;
+    font-weight: bold;
+    color: #444;
+}
+
+.property-map-summary-data-text {
+    font-size: .9em;
+    font-weight: normal;
+}
+
+/*  newly added style for embedded console  */
+
+.property-buttonfooterrow {
+    padding: 6px;
+    background-color: #e4edf1;
+}
+
+.error-msg {
+    background-image: url(../images/ico_message_inlineerror.gif);
+    background-repeat: no-repeat;
+    padding-left: 18px;
+    font-weight: bold;
+    color: #880000;
+}
+
+.inputerror {
+    background-color: #fceecf;
+}

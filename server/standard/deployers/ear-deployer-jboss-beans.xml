@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    EAR Deployers
+    $Id: ear-deployer-jboss-beans.xml 85945 2009-03-16 19:45:12Z dimitris@jboss.org $
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="EARStructureDeployer" class="org.jboss.deployment.EARStructure">
+     <property name="comparatorClassName">org.jboss.system.deployers.LegacyDeploymentContextComparator</property>
+     <!-- uncomment to disable xml validation property name="useValidation">false</property -->
+   </bean>
+
+   <!-- application.xml parsing deployer -->
+   <bean name="AppParsingDeployer" class="org.jboss.deployment.AppParsingDeployer">
+     <property name="useValidation"><inject bean="EARStructureDeployer" property="useValidation"/></property>
+     <!-- in case xml validation is disabled, it's also better to turn off schema validation property name="useSchemaValidation">false</property -->
+   </bean>
+   <!-- Implicit ear contents identifying deployer for ears without
+      an application.xml
+    -->
+   <bean name="EARContentsDeployer" class="org.jboss.deployment.EARContentsDeployer">
+      <constructor>
+         <parameter><inject bean="AppParsingDeployer" property="relativeOrder"/></parameter>
+      </constructor>
+
+      <!-- Does the deployment have to end in .ear to process it -->
+      <property name="requiresEarSuffix">true</property>
+   </bean>
+   <!-- jboss-app.xml parsing deployer -->
+   <bean name="JBossAppParsingDeployer" class="org.jboss.deployment.JBossAppParsingDeployer">
+      <install bean="ManagedDeploymentCreator" method="addAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.ear.jboss.JBossAppMetaData</value>
+         </parameter>
+         <parameter>
+            <value>ear</value>
+         </parameter>
+      </install>
+      <uninstall bean="ManagedDeploymentCreator" method="removeAttachmentType">
+         <parameter>
+            <value>org.jboss.metadata.ear.jboss.JBossAppMetaData</value>
+         </parameter>
+      </uninstall>
+      <!-- A flag indicating if the ear components should have in VM call
+         optimization disabled.
+      -->
+      <property name="callByValue">true</property> 
+         
+      <!-- Specify an unauthenticated identity -->
+      <property name="unauthenticatedIdentity">anonymous</property>    
+   </bean>
+   <bean name="EARClassLoaderDeployer" class="org.jboss.deployment.EarClassLoaderDeployer">
+      <!-- A flag indicating if ear deployments should have their own scoped
+         class loader to isolate their classes from other deployments.
+      -->      
+      <property name="isolated">true</property>
+   </bean>
+</deployment>

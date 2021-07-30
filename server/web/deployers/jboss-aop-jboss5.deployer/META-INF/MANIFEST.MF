@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.2
+Created-By: 11.3-b02 (Sun Microsystems Inc.)
+Specification-Title: JBoss AOP Aspect Library
+Specification-Version: jboss-aspect-library-1.3
+Specification-Vendor: JBoss (http://www.jboss.org/)
+Implementation-Title: JBoss AOP Aspect Library
+Implementation-URL: http://www.jboss.org/
+Implementation-Version: jboss-aspect-library-1.3
+Implementation-Vendor: JBoss Inc.
+Implementation-Vendor-Id: http://www.jboss.org/
+
